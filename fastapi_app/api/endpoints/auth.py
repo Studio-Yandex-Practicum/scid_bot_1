@@ -1,8 +1,9 @@
+from fastapi.routing import APIRouter
+from fastapi_users import FastAPIUsers
+
 from core.users import auth_backend, get_user_manager
 from models.user import User
 from schemas.users import UserCreate, UserRead, UserUpdate
-from fastapi.routing import APIRouter
-from fastapi_users import FastAPIUsers
 
 fastapi_users = FastAPIUsers[User, int](
     get_user_manager,

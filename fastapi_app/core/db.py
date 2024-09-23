@@ -1,9 +1,16 @@
 from typing import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
-                                    create_async_engine)
-from sqlalchemy.orm import (Mapped, declarative_base, declared_attr,
-                            mapped_column)
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlalchemy.orm import (
+    Mapped,
+    declarative_base,
+    declared_attr,
+    mapped_column,
+)
 
 from .config import settings
 
@@ -14,9 +21,7 @@ class PreBase:
         return cls.__name__.lower()
 
     id: Mapped[int] = mapped_column(
-        primary_key=True,
-        autoincrement=True,
-        index=True
+        primary_key=True, autoincrement=True, index=True
     )
 
 
