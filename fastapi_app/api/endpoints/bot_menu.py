@@ -22,7 +22,7 @@ router = APIRouter(prefix='/bot_menu', tags=['bot_menu'])
     '/{button_id}/get-content',
     response_model=MenuButtonResponse,
     summary='Возвращает контент, который должна отображать кнопка',
-    description=('Возвращает: текст, изображение, файлы, ссылку'),
+    description=('Возвращает: текст, изображение, файлы, ссылку')
 )
 async def get_button_content(
     button_id: int,
@@ -38,7 +38,7 @@ async def get_button_content(
     '/{button_id}/get-child-buttons',
     response_model=list[MenuButtonChildrenResponse],
     summary='Возвращает список дочерних кнопок, для текущей',
-    description=('Возвращает: id кнопки, родителя и её название'),
+    description=('Возвращает: id кнопки, родителя и её название')
 )
 async def get_button_children(
     button_id: int,
@@ -59,7 +59,7 @@ async def get_button_children(
     response_model=MenuButtonResponse,
     dependencies=[Depends(current_superuser)],
     summary='Добавляет кнопку в базу данных',
-    description=('Добавляет кнопку к родителю, как дочернюю'),
+    description=('Добавляет кнопку к родителю, как дочернюю')
 )
 async def create_new_bot_menu_button(
     button_id: int,
@@ -73,5 +73,53 @@ async def create_new_bot_menu_button(
     return await bot_menu_crud.create(
         obj_in=bot_menu_button,
         parent_id=button_id,
+        session=session,
+    )
+
+
+@router.patch(
+    '/{button_id}/update-button',
+    response_model=MenuButtonResponse,
+    dependencies=[Depends(current_superuser)],
+    summary='Обновляет кнопку меню',
+    description=(
+        'Не обновляет поле родителя, обновляет только поля:'
+        'название, контент текст, контент изображение (путь до файла), '
+        'контент ссылка'
+    )
+)
+async def update_bot_menu_button(
+    button_id: int,
+    bot_menu_button: MenuButtonUpdate,
+    session: AsyncSession = Depends(get_async_session),
+) -> MenuButton:
+    return await bot_menu_crud.update(
+        db_obj=await check_button_exist(
+            button_id=button_id,
+            session=session,
+        ),
+        obj_in=bot_menu_button,
+        session=session,
+    )
+
+
+@router.delete(
+    '/{button_id}/delete-button',
+    response_model=MenuButtonResponse,
+    dependencies=[Depends(current_superuser)],
+    summary='Удаляет кнопку меню',
+    description=(
+        'Безвозвратно удаляет кнопку меню.'
+    )
+)
+async def delete_bot_menu_button(
+    button_id: int,
+    session: AsyncSession = Depends(get_async_session),
+) -> MenuButton:
+    return await bot_menu_crud.delete(
+        db_obj=await check_button_exist(
+            button_id=button_id,
+            session=session,
+        ),
         session=session,
     )
