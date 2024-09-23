@@ -1,0 +1,43 @@
+volumes:
+  postgres_data:
+  static:
+
+services:
+  db:
+    restart: always
+    image: postgres:13
+    env_file:
+      - './.env'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - scid_bot_1
+
+  fastapi_app:
+    build:
+      context: ./fastapi_app
+    volumes:
+      - ./fastapi_app:/app
+    env_file:
+      - ./fastapi_app/.env
+    depends_on:
+      - db
+    networks:
+      - scid_bot_1
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+    depends_on:
+      - fastapi_app
+    networks:
+      - scid_bot_1
+
+
+networks:
+  scid_bot_1:
