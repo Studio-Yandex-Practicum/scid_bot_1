@@ -8,7 +8,6 @@ class MenuButtonBase(BaseModel):
     content_text: Optional[str] = None
     content_image: Optional[str] = None
     content_link: Optional[str] = None
-    parent_id: int
 
 
 class MenuButtonCreate(MenuButtonBase):

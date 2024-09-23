@@ -19,7 +19,7 @@ router = APIRouter(prefix='/bot_menu', tags=['bot_menu'])
 
 
 @router.get(
-    '/get-content/{button_id}',
+    '/{button_id}/get-content',
     response_model=MenuButtonResponse,
     summary='Возвращает контент, который должна отображать кнопка',
     description=('Возвращает: текст, изображение, файлы, ссылку'),
@@ -35,7 +35,7 @@ async def get_button_content(
 
 
 @router.get(
-    '/get-children-button/{button_id}',
+    '/{button_id}/get-child-buttons',
     response_model=list[MenuButtonChildrenResponse],
     summary='Возвращает список дочерних кнопок, для текущей',
     description=('Возвращает: id кнопки, родителя и её название'),
@@ -55,15 +55,23 @@ async def get_button_children(
 
 
 @router.post(
-    '/',
+    '/{button_id}/add-child-button',
     response_model=MenuButtonResponse,
     dependencies=[Depends(current_superuser)],
+    summary='Добавляет кнопку в базу данных',
+    description=('Добавляет кнопку к родителю, как дочернюю'),
 )
 async def create_new_bot_menu_button(
+    button_id: int,
     bot_menu_button: MenuButtonCreate,
     session: AsyncSession = Depends(get_async_session),
 ) -> MenuButton:
+    await check_button_exist(
+        button_id=button_id,
+        session=session,
+    )
     return await bot_menu_crud.create(
         obj_in=bot_menu_button,
+        parent_id=button_id,
         session=session,
     )
