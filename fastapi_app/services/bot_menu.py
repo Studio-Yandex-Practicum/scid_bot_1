@@ -24,7 +24,7 @@ async def create_main_menu_button(session: AsyncSession):
                 parent_id=None,
                 is_main_menu_button=True,
             ),
-            session=session
+            session=session,
         )
         print('Кнопка главного меню создана')
     else:

@@ -26,14 +26,16 @@ class MenuButtonUpdate(MenuButtonBase):
 
 class MenuButtonResponse(MenuButtonBase):
     id: int
+    parent_id: Optional[int]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
-class MenuButtonChildrenResponse:
+class MenuButtonChildrenResponse(BaseModel):
     id: int
-    children: list['MenuButtonResponse'] = []
+    label: str
+    parent_id: Optional[int]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
