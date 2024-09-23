@@ -23,6 +23,15 @@ class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):
         db_obj = self.model(**obj_in_data)
         return await self._commit_and_refresh(db_obj, session)
 
+    async def get_main_menu_button(
+        self,
+        session: AsyncSession
+    ) -> MenuButton:
+        result = await session.execute(
+            select(MenuButton).where(MenuButton.is_main_menu_button == True)
+        )
+        return result.scalars().first()
+
     async def get_children_button(
         self, button_id: int, session: AsyncSession
     ) -> list[MenuButton]:

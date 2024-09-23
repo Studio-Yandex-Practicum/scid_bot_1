@@ -19,6 +19,18 @@ router = APIRouter(prefix='/bot_menu', tags=['bot_menu'])
 
 
 @router.get(
+    '/{button_id}/get-main-menu-button',
+    response_model=MenuButtonResponse,
+    summary='Возвращает первую (базовую) кнопку',
+    description=('Изначальная кнопка, к которой привязываются все осталньые')
+)
+async def get_main_menu_button(
+    session: AsyncSession = Depends(get_async_session),
+) -> Optional[MenuButton]:
+    return await bot_menu_crud.get_main_menu_button(session=session)
+
+
+@router.get(
     '/{button_id}/get-content',
     response_model=MenuButtonResponse,
     summary='Возвращает контент, который должна отображать кнопка',
