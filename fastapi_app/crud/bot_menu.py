@@ -1,0 +1,44 @@
+from typing import Optional
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from crud.base import CRUDBase
+from models.bot_menu import MenuButton
+from schemas.bot_menu import MenuButtonCreate, MenuButtonUpdate
+
+
+class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):
+    def __init__(self) -> None:
+        super().__init__(MenuButton)
+
+    async def create(
+        self,
+        parent_id: int,
+        obj_in: MenuButtonCreate,
+        session: AsyncSession,
+    ) -> Optional[MenuButton]:
+        obj_in_data = obj_in.model_dump()
+        obj_in_data['parent_id'] = parent_id
+        db_obj = self.model(**obj_in_data)
+        return await self._commit_and_refresh(db_obj, session)
+
+    async def get_main_menu_button(
+        self,
+        session: AsyncSession
+    ) -> MenuButton:
+        result = await session.execute(
+            select(MenuButton).where(MenuButton.is_main_menu_button == True)
+        )
+        return result.scalars().first()
+
+    async def get_children_button(
+        self, button_id: int, session: AsyncSession
+    ) -> list[MenuButton]:
+        result = await session.execute(
+            select(MenuButton).where(MenuButton.parent_id == button_id)
+        )
+        return result.scalars().all()
+
+
+bot_menu_crud = CRUDBotMenu()
