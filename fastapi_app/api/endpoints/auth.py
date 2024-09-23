@@ -10,14 +10,13 @@ fastapi_users = FastAPIUsers[User, int](
     [auth_backend],
 )
 
-router = APIRouter()
+router = APIRouter(prefix='/auth')
 router.include_router(
     fastapi_users.get_auth_router(auth_backend),
-    prefix='/auth/jwt',
+    prefix='/jwt',
     tags=['auth'],
 )
 router.include_router(
     fastapi_users.get_reset_password_router(),
-    prefix='/auth',
     tags=['auth'],
 )

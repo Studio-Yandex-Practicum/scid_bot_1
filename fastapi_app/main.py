@@ -4,6 +4,8 @@ from fastapi import FastAPI
 
 from api.routers import main_router
 from core.config import settings
+from core.db import async_session_maker
+from services.bot_menu import create_main_menu_button
 from services.users import create_user
 
 
@@ -14,6 +16,8 @@ async def lifespan(app: FastAPI):
         password=settings.db.first_superuser_password,
         is_superuser=True,
     )
+    async with async_session_maker() as session:
+        await create_main_menu_button(session)
     yield
 
 

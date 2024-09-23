@@ -15,7 +15,7 @@ class MenuButton(Base):
     is_main_menu_button: Mapped[bool] = mapped_column(Boolean, default=False)
 
     children: Mapped[list['MenuButton']] = relationship(
-        'MenuButton', backref='parent', remote_side=[id]
+        'MenuButton', backref='parent', remote_side='MenuButton.id'
     )
 
     def __repr__(self):
