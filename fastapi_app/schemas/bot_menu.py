@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class MenuButtonBase(BaseModel):
@@ -20,7 +20,7 @@ class MenuButtonCreateMainButton(MenuButtonCreate):
 
 
 class MenuButtonUpdate(MenuButtonBase):
-    pass
+    label: Optional[str]
 
 
 class MenuButtonResponse(MenuButtonBase):
@@ -35,6 +35,27 @@ class MenuButtonChildrenResponse(BaseModel):
     id: int
     label: str
     parent_id: Optional[int]
+
+    class Config:
+        from_attributes = True
+
+
+class MenuButtonFileBase(BaseModel):
+    file_path: str
+    file_type: str
+
+
+class MenuButtonFileCreate(MenuButtonFileBase):
+    button_id: int
+
+
+class MenuButtonFileUpdate(MenuButtonFileBase):
+    pass
+
+
+class MenuButtonFileResponse(MenuButtonFileBase):
+    id: int
+    button_id: int
 
     class Config:
         from_attributes = True
