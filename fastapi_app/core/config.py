@@ -12,7 +12,10 @@ class AppConfig(BaseModel):
         'добавить сотрудников поддержки, к которым может обратиться '
         'пользователь, а так же просмотреть отзывы клиентов'
     )
-    base_dir_for_files: Path = Path('files/')
+    base_dir_for_files: Path = Path(
+        'files/'
+    )   # При изменении папки сохранения
+    # необхоидмо не забыть изменить настройки nginx и docker volume
     chunk_size: int = 1024
 
 

@@ -4,8 +4,13 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud.base import CRUDBase
-from models.bot_menu import MenuButton
-from schemas.bot_menu import MenuButtonCreate, MenuButtonUpdate
+from models.bot_menu import MenuButton, MenuButtonFile
+from schemas.bot_menu import (
+    MenuButtonCreate,
+    MenuButtonFileCreate,
+    MenuButtonFileUpdate,
+    MenuButtonUpdate,
+)
 
 
 class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):
@@ -23,10 +28,7 @@ class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):
         db_obj = self.model(**obj_in_data)
         return await self._commit_and_refresh(db_obj, session)
 
-    async def get_main_menu_button(
-        self,
-        session: AsyncSession
-    ) -> MenuButton:
+    async def get_main_menu_button(self, session: AsyncSession) -> MenuButton:
         result = await session.execute(
             select(MenuButton).where(MenuButton.is_main_menu_button == True)
         )
@@ -41,4 +43,20 @@ class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):
         return result.scalars().all()
 
 
+class CRUDBotMenuFiles(
+    CRUDBase[MenuButtonFile, MenuButtonFileCreate, MenuButtonFileUpdate]
+):
+    def __init__(self) -> None:
+        super().__init__(MenuButtonFile)
+
+    async def get_all_files_info(
+        self, button_id: int, session: AsyncSession
+    ) -> MenuButtonFile:
+        result = await session.execute(
+            select(MenuButtonFile).where(MenuButtonFile.button_id == button_id)
+        )
+        return result.scalars().all()
+
+
 bot_menu_crud = CRUDBotMenu()
+bot_menu_files_crud = CRUDBotMenuFiles()
