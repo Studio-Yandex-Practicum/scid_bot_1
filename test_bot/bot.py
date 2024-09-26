@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Вставьте сюда свой токен бота
 # TOKEN = os.getenv('TOKEN')
-TOKEN = '7645117875:AAHmdcACjB39JfEnWpwEfFtZ7XqQDzpcDsA'
+TOKEN = 
 
 # Создание экземпляра бота
 bot = Bot(token=TOKEN)
