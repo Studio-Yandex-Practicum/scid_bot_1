@@ -9,5 +9,5 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["bash", "start_server.sh"]
+ENTRYPOINT ["python", "/app/start_server.py"]
 
