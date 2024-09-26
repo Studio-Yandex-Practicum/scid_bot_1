@@ -9,70 +9,60 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     CallbackQuery)
-from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 
-# Загружаем токен и URL FastAPI из переменных окружения
-TOKEN = os.getenv('TOKEN')  # Токен вашего Telegram-бота
-API_URL = os.getenv('API_URL')  # URL FastAPI
+TOKEN = os.getenv('TOKEN')
+API_URL = os.getenv('API_URL')
 
 if not TOKEN or not API_URL:
     raise ValueError("Переменные окружения TOKEN или API_URL не установлены!")
 
-# Инициализация бота и диспетчера
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
-
-# Создаём объект Router для обработки команд
 router = Router()
-
-# Команда /start для приветствия и отображения кнопки
 
 
 @router.message(Command("start"))
 async def send_welcome(message: Message):
-    # Создаем кнопку для вызова команды API
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(
                 text="Получить данные API", callback_data="call_api")]
         ]
     )
-
     await message.answer("Да работаю я, успокойся уже!", reply_markup=keyboard)
 
-# Обработчик для нажатия кнопки с callback data "call_api"
-
-
+# получить эндпоинты API
 @router.callback_query(lambda c: c.data == 'call_api')
 async def call_api_callback(callback: CallbackQuery):
     await callback.message.answer("Обращаюсь к FastAPI...")
-
-    # Выполняем запрос к FastAPI
     async with aiohttp.ClientSession() as session:
         try:
-            async with session.get(f"{API_URL}/api") as response:
+            async with session.get(f"{API_URL}/openapi.json") as response:
                 if response.status == 200:
-                    data = await response.json()  # Парсим JSON-ответ
-                    # Отправляем результат пользователю
-                    await callback.message.answer(f"Ответ от FastAPI: {data}")
+                    data = await response.json()
+                    paths = data.get('paths', {})
+                    if paths:
+                        api_info = "\n".join([f"{method.upper()} {path}" for path, methods in paths.items(
+                        ) for method in methods.keys()])
+                        await callback.message.answer(
+                            f"Доступные эндпоинты FastAPI:\n{api_info}"
+                        )
+                    else:
+                        await callback.message.answer(
+                            "Не удалось получить информацию о путях из OpenAPI."
+                        )
                 else:
                     await callback.message.answer(
-                        "Ошибка при обращении к FastAPI:"
-                        f" статус {response.status}"
+                        f"Ошибка при обращении к FastAPI: статус {response.status}"
                     )
         except Exception as e:
-            await callback.message.answer(
-                f"Произошла ошибка при обращении к FastAPI: {str(e)}"
-            )
+            await callback.message.answer(f"Произошла ошибка при обращении к FastAPI: {str(e)}")
 
-# Регистрируем роутер в диспетчере
 dp.include_router(router)
-
-# Основная функция для запуска бота
 
 
 async def main():
