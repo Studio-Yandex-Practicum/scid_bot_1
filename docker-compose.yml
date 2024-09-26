@@ -29,6 +29,18 @@ services:
     networks:
       - scid_bot_1
 
+  bot:
+    build:
+      context: ./test_bot
+    env_file:
+      - './.env'
+    environment:
+      - API_URL=http://fastapi_app:8000
+    depends_on:
+      - fastapi_app
+    networks:
+      - scid_bot_1    
+
   nginx:
     image: nginx:alpine
     volumes:
