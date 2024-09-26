@@ -16,6 +16,7 @@ async def check_main_menu_exist(session: AsyncSession):
 async def create_main_menu_button(session: AsyncSession):
     if await check_main_menu_exist(session) is None:
         await bot_menu_crud.create(
+            parent_id=None,
             obj_in=MenuButtonCreateMainButton(
                 label='Главное меню',
                 content_text=None,

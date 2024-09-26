@@ -107,7 +107,10 @@ async def create_new_bot_menu_button(
         button_id=button_id,
         session=session,
     )
-    image_path = await save_file(image_file)
+    if image_file and isinstance(image_file, UploadFile):
+        image_path = await save_file(image_file)
+    else:
+        image_path = ''
     return await bot_menu_crud.create(
         obj_in=MenuButtonCreate(
             label=label,
@@ -142,7 +145,7 @@ async def update_bot_menu_button(
     existing_button = await check_button_exist(
         button_id=button_id, session=session
     )
-    if image_file:
+    if image_file and isinstance(image_file, UploadFile):
         await delete_file(existing_button.content_image)
         image_path = await save_file(image_file)
     else:

@@ -4,6 +4,7 @@ from typing import Optional
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.base_validators import check_object_exist
 from crud.bot_menu import bot_menu_crud, bot_menu_files_crud
 from models.bot_menu import MenuButton, MenuButtonFile
 from services.files import file_exists
@@ -13,25 +14,23 @@ async def check_button_exist(
     button_id: int,
     session: AsyncSession,
 ) -> Optional[MenuButton]:
-    button = await bot_menu_crud.get(obj_id=button_id, session=session)
-    if button is None:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail=f'Кнопки с id {button_id} не существует.',
-        )
-    return button
+    return await check_object_exist(
+        button_id,
+        bot_menu_crud,
+        f'Кнопки с id {button_id} не существует.',
+        session
+    )
 
 
 async def check_button_file_exist(
     file_id: int, session: AsyncSession
 ) -> MenuButtonFile:
-    file = await bot_menu_files_crud.get(file_id, session)
-    if not file:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail=f'Файл с id {file_id} не существует.',
-        )
-    return file
+    return await check_object_exist(
+        file_id,
+        bot_menu_files_crud,
+        f'Файл с id {file_id} не существует.',
+        session
+    )
 
 
 async def check_button_image_file_exist(

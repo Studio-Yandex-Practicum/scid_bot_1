@@ -24,6 +24,7 @@ class ContactRequestUpdate(BaseModel):
 
 class ContactRequestResponse(ContactRequestBase):
     id: int
+    is_processed: bool
     created_at: datetime = Field(...)
     closed_at: Optional[datetime] = Field(None)
 
