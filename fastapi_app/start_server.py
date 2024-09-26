@@ -8,10 +8,11 @@ def run_migrations():
         print('Запуск миграций...')
         subprocess.run(['alembic', 'upgrade', 'head'], check=True)
     except subprocess.CalledProcessError as e:
-        print(f"Ошибка применения миграций: {e}")
+        print(f'Ошибка применения миграций: {e}')
         sys.exit(1)
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     time.sleep(10)
     run_migrations()
     print('Запуск сервера fastapi...')
@@ -20,8 +21,9 @@ if __name__ == "__main__":
             'uvicorn',
             'main:app',
             '--proxy-headers',
-            '--host', '0.0.0.0',
-            '--port', 
-            '8000'
+            '--host',
+            '0.0.0.0',
+            '--port',
+            '8000',
         ]
     )

@@ -23,6 +23,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await session.refresh(obj)
         return obj
 
+    async def _get_by_attribute(
+        self, attribute: str, value: str, session: AsyncSession
+    ) -> list[ModelType]:
+        attr = getattr(self.model, attribute)
+        db_obj = await session.execute(select(self.model).where(attr == value))
+        return db_obj.scalars().all()
+
     async def get(
         self, obj_id: int, session: AsyncSession
     ) -> Optional[ModelType]:
@@ -30,6 +37,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             select(self.model).where(self.model.id == obj_id)
         )
         return db_obj.scalars().first()
+
+    async def get_all(self, session: AsyncSession) -> list[ModelType]:
+        db_obj = await session.execute(select(self.model))
+        return db_obj.scalars().all()
 
     async def create(
         self,

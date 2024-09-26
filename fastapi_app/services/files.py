@@ -3,13 +3,14 @@ import time
 
 import aiofiles
 import aiofiles.os
+import aiofiles.ospath
 from fastapi import UploadFile
 
 from core.config import settings
 
 
 async def file_exists(file_path: str) -> bool:
-    return os.path.exists(file_path)
+    return await aiofiles.ospath.exists(file_path)
 
 
 async def save_file(file: UploadFile) -> str:
@@ -23,6 +24,9 @@ async def save_file(file: UploadFile) -> str:
     return file_path
 
 
-async def delete_file(file_path: str) -> None:
-    if file_exists(file_path):
+async def delete_file(file_path: str) -> str | None:
+    print(file_path)
+    if await file_exists(file_path):
+        print('naiden')
         await aiofiles.os.remove(file_path)
+        return file_path

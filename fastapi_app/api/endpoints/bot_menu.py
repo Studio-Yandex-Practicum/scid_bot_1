@@ -21,6 +21,7 @@ from schemas.bot_menu import (
     MenuButtonResponse,
     MenuButtonUpdate,
 )
+from services.bot_menu import delete_image_file_if_exist
 from services.files import delete_file, save_file
 
 router = APIRouter(prefix='/bot_menu', tags=['bot_menu'])
@@ -63,6 +64,7 @@ async def get_button_image_file(
     button_id: int,
     session: AsyncSession = Depends(get_async_session),
 ):
+    await check_button_image_file_exist(button_id=button_id, session=session)
     return FileResponse(
         path=await check_button_image_file_exist(button_id, session)
     )
@@ -107,7 +109,10 @@ async def create_new_bot_menu_button(
         button_id=button_id,
         session=session,
     )
-    image_path = await save_file(image_file)
+    if image_file is not None:
+        image_path = await save_file(image_file)
+    else:
+        image_path = None
     return await bot_menu_crud.create(
         obj_in=MenuButtonCreate(
             label=label,
@@ -136,29 +141,32 @@ async def update_bot_menu_button(
     label: Optional[str] = Form(None),
     content_text: Optional[str] = Form(None),
     content_link: Optional[str] = Form(None),
-    image_file: Optional[UploadFile] = File(None),
+    content_image: Optional[UploadFile] = File(None),
+    remove_content_image: Optional[bool] = Form(None),
     session: AsyncSession = Depends(get_async_session),
 ) -> MenuButton:
     existing_button = await check_button_exist(
         button_id=button_id, session=session
     )
-    if image_file:
-        await delete_file(existing_button.content_image)
-        image_path = await save_file(image_file)
+    print(content_image)
+    if content_image is not None:
+        await delete_image_file_if_exist(existing_button)
+        image_path = await save_file(content_image)
     else:
         image_path = existing_button.content_image
+        if remove_content_image:
+            image_path = None
 
     update_data = MenuButtonUpdate(
-        label=label if label is not None else existing_button.label,
+        label=label if label else existing_button.label,
         content_text=content_text
-        if content_text is not None
+        if content_text
         else existing_button.content_text,
         content_link=content_link
-        if content_link is not None
+        if content_link
         else existing_button.content_link,
         content_image=image_path,
     )
-
     return await bot_menu_crud.update(
         db_obj=existing_button,
         obj_in=update_data,
