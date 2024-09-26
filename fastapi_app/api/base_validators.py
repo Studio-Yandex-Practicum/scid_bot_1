@@ -16,7 +16,6 @@ async def check_object_exist(
     obj = await crud_class.get(obj_id=object_id, session=session)
     if obj is None:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail=error_text
+            status_code=HTTPStatus.NOT_FOUND, detail=error_text
         )
     return obj

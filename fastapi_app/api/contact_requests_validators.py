@@ -17,5 +17,5 @@ async def check_contact_request_exist(
         contact_request_id,
         contact_requests_crud,
         f'Запроса на обратную связь с id {contact_request_id} не существует.',
-        session
+        session,
     )

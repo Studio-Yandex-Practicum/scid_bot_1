@@ -44,4 +44,6 @@ SQLAlchemy==2.0.35
 starlette==0.38.6
 tomli==2.0.1
 typing_extensions==4.12.2
+tzdata==2024.2
+tzlocal==5.2
 uvicorn==0.30.6

@@ -18,7 +18,7 @@ async def check_button_exist(
         button_id,
         bot_menu_crud,
         f'Кнопки с id {button_id} не существует.',
-        session
+        session,
     )
 
 
@@ -29,7 +29,7 @@ async def check_button_file_exist(
         file_id,
         bot_menu_files_crud,
         f'Файл с id {file_id} не существует.',
-        session
+        session,
     )
 
 
@@ -42,7 +42,7 @@ async def check_button_image_file_exist(
             status_code=HTTPStatus.NOT_FOUND,
             detail=f'Файл не назначен, для данной кнопки.',
         )
-    if not file_exists(button.content_image):
+    if not await file_exists(button.content_image):
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
             detail=f'Файл не найден на сервере.',

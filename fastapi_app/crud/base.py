@@ -17,22 +17,17 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model) -> None:
         self.model = model
 
-    async def __commit_and_refresh(self, obj: ModelType, session: AsyncSession):
+    async def _commit_and_refresh(self, obj: ModelType, session: AsyncSession):
         session.add(obj)
         await session.commit()
         await session.refresh(obj)
         return obj
 
-    async def __get_by_attribute(
-        self,
-        attribute: str,
-        value: str,
-        session: AsyncSession
+    async def _get_by_attribute(
+        self, attribute: str, value: str, session: AsyncSession
     ) -> list[ModelType]:
         attr = getattr(self.model, attribute)
-        db_obj = await session.execute(
-            select(self.model).where(attr == value)
-        )
+        db_obj = await session.execute(select(self.model).where(attr == value))
         return db_obj.scalars().all()
 
     async def get(
@@ -43,12 +38,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         )
         return db_obj.scalars().first()
 
-    async def get_all(
-        self, obj_id: int, session: AsyncSession
-    ) -> Optional[ModelType]:
-        db_obj = await session.execute(
-            select(self.model)
-        )
+    async def get_all(self, session: AsyncSession) -> list[ModelType]:
+        db_obj = await session.execute(select(self.model))
         return db_obj.scalars().all()
 
     async def create(
@@ -58,7 +49,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     ) -> Optional[ModelType]:
         obj_in_data = obj_in.model_dump()
         db_obj = self.model(**obj_in_data)
-        return await self.__commit_and_refresh(db_obj, session)
+        return await self._commit_and_refresh(db_obj, session)
 
     async def update(
         self,
@@ -71,7 +62,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         for field in obj_data:
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
-        return await self.__commit_and_refresh(db_obj, session)
+        return await self._commit_and_refresh(db_obj, session)
 
     async def delete(
         self, db_obj: ModelType, session: AsyncSession

@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 
 class ContactRequestBase(BaseModel):
-    user_id: int
+    telegram_user_id: str
     name: str
     phone: str
     contact_via_telegram: Optional[bool] = Field(default=False)
@@ -17,9 +17,9 @@ class ContactRequestCreate(ContactRequestBase):
 
 
 class ContactRequestUpdate(BaseModel):
-    is_processed: Optional[bool]
-    contact_via_telegram: Optional[bool]
-    contact_via_phone: Optional[bool]
+    is_processed: Optional[bool] = Field(None)
+    contact_via_telegram: Optional[bool] = Field(None)
+    contact_via_phone: Optional[bool] = Field(None)
 
 
 class ContactRequestResponse(ContactRequestBase):
