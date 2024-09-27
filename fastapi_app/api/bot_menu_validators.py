@@ -51,8 +51,7 @@ async def check_button_image_file_exist(
 
 
 async def check_button_is_main_menu(
-    button_id: int,
-    session: AsyncSession
+    button_id: int, session: AsyncSession
 ) -> MenuButton:
     button = await check_button_exist(button_id, session)
     if button.is_main_menu_button:

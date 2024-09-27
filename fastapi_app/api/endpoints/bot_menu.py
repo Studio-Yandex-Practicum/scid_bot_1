@@ -8,7 +8,7 @@ from api.bot_menu_validators import (
     check_button_exist,
     check_button_file_exist,
     check_button_image_file_exist,
-    check_button_is_main_menu
+    check_button_is_main_menu,
 )
 from core.db import get_async_session
 from core.users import current_superuser
@@ -20,7 +20,7 @@ from schemas.bot_menu import (
     MenuButtonFileCreate,
     MenuButtonFileResponse,
     MenuButtonResponse,
-    MenuButtonUpdate
+    MenuButtonUpdate,
 )
 from services.bot_menu import delete_image_file_if_exist
 from services.files import delete_file, save_file
@@ -125,11 +125,12 @@ async def create_new_bot_menu_button(
         session=session,
     )
 
+
 @router.patch(
     '/{button_id}/change_parent',
     response_model=MenuButtonResponse,
     dependencies=[Depends(current_superuser)],
-    summary='Изменяет родителя кнопки'
+    summary='Изменяет родителя кнопки',
 )
 async def change_parent(
     button_id: int,
@@ -137,8 +138,7 @@ async def change_parent(
     session: AsyncSession = Depends(get_async_session),
 ) -> MenuButton:
     return await bot_menu_crud.change_parent_button(
-        menu_button=
-        await check_button_is_main_menu(
+        menu_button=await check_button_is_main_menu(
             button_id=button_id, session=session
         ),
         new_parent_id=new_parent_id,

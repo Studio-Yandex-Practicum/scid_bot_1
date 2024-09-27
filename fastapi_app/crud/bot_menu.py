@@ -46,7 +46,7 @@ class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):
         self,
         menu_button: MenuButton,
         new_parent_id: int,
-        session: AsyncSession
+        session: AsyncSession,
     ) -> MenuButton:
         menu_button.parent_id = new_parent_id
         return await self._commit_and_refresh(menu_button, session)
