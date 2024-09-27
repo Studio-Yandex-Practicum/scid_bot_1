@@ -8,7 +8,7 @@ from api.bot_menu_validators import (
     check_button_exist,
     check_button_file_exist,
     check_button_image_file_exist,
-    check_button_is_main_menu_after_change_parent
+    check_button_is_main_menu
 )
 from core.db import get_async_session
 from core.users import current_superuser
@@ -137,7 +137,8 @@ async def change_parent(
     session: AsyncSession = Depends(get_async_session),
 ) -> MenuButton:
     return await bot_menu_crud.change_parent_button(
-        menu_button=await check_button_is_main_menu_after_change_parent(
+        menu_button=
+        await check_button_is_main_menu(
             button_id=button_id, session=session
         ),
         new_parent_id=new_parent_id,
@@ -198,17 +199,32 @@ async def update_bot_menu_button(
     response_model=MenuButtonResponse,
     dependencies=[Depends(current_superuser)],
     summary='Удаляет кнопку меню',
-    description=('Безвозвратно удаляет кнопку меню.'),
+    description=('Безвозвратно удаляет кнопку меню И ВСЕ ДОЧЕРНИЕ.'),
 )
 async def delete_bot_menu_button(
     button_id: int,
     session: AsyncSession = Depends(get_async_session),
 ) -> MenuButton:
+    button = await check_button_is_main_menu(
+        button_id=button_id,
+        session=session,
+    )
+    children = await bot_menu_crud.get_children_button(
+        button_id=button.id,
+        session=session,
+    )
+    files = await bot_menu_files_crud.get_all_files_info(
+        button_id=button_id,
+        session=session,
+    )
+    await delete_file(button.content_image)
+    for file in files:
+        await delete_file(file.file_path)
+        await bot_menu_files_crud.delete(file, session)
+    for child in children:
+        await delete_bot_menu_button(child.id, session)
     return await bot_menu_crud.delete(
-        db_obj=await check_button_exist(
-            button_id=button_id,
-            session=session,
-        ),
+        db_obj=button,
         session=session,
     )
 
@@ -272,7 +288,7 @@ async def get_bot_button_files_info(
     summary='Удаляет файл из кнопки',
     description=('Безвозвратно удаляет файл из вложений кнопки и с сервера'),
 )
-async def delete_bot_menu_button(
+async def delete_bot_menu_button_file(
     button_id: int,
     file_id: int,
     session: AsyncSession = Depends(get_async_session),

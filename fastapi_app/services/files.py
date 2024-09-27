@@ -25,8 +25,8 @@ async def save_file(file: UploadFile) -> str:
 
 
 async def delete_file(file_path: str) -> str | None:
-    print(file_path)
+    if file_path is None:
+        return None
     if await file_exists(file_path):
-        print('naiden')
         await aiofiles.os.remove(file_path)
         return file_path
