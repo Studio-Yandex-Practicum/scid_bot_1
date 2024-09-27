@@ -8,6 +8,7 @@ from api.bot_menu_validators import (
     check_button_exist,
     check_button_file_exist,
     check_button_image_file_exist,
+    check_button_is_main_menu_after_change_parent
 )
 from core.db import get_async_session
 from core.users import current_superuser
@@ -19,7 +20,7 @@ from schemas.bot_menu import (
     MenuButtonFileCreate,
     MenuButtonFileResponse,
     MenuButtonResponse,
-    MenuButtonUpdate,
+    MenuButtonUpdate
 )
 from services.bot_menu import delete_image_file_if_exist
 from services.files import delete_file, save_file
@@ -102,15 +103,15 @@ async def create_new_bot_menu_button(
     label: str = Form(...),
     content_text: Optional[str] = Form(None),
     content_link: Optional[str] = Form(None),
-    image_file: Optional[UploadFile] = File(None),
+    content_image: Optional[UploadFile] = File(None),
     session: AsyncSession = Depends(get_async_session),
 ) -> MenuButton:
     await check_button_exist(
         button_id=button_id,
         session=session,
     )
-    if image_file is not None:
-        image_path = await save_file(image_file)
+    if content_image is not None:
+        image_path = await save_file(content_image)
     else:
         image_path = None
     return await bot_menu_crud.create(
@@ -121,6 +122,25 @@ async def create_new_bot_menu_button(
             content_image=image_path,
         ),
         parent_id=button_id,
+        session=session,
+    )
+
+@router.patch(
+    '/{button_id}/change_parent',
+    response_model=MenuButtonResponse,
+    dependencies=[Depends(current_superuser)],
+    summary='Изменяет родителя кнопки'
+)
+async def change_parent(
+    button_id: int,
+    new_parent_id: int,
+    session: AsyncSession = Depends(get_async_session),
+) -> MenuButton:
+    return await bot_menu_crud.change_parent_button(
+        menu_button=await check_button_is_main_menu_after_change_parent(
+            button_id=button_id, session=session
+        ),
+        new_parent_id=new_parent_id,
         session=session,
     )
 
@@ -148,7 +168,6 @@ async def update_bot_menu_button(
     existing_button = await check_button_exist(
         button_id=button_id, session=session
     )
-    print(content_image)
     if content_image is not None:
         await delete_image_file_if_exist(existing_button)
         image_path = await save_file(content_image)

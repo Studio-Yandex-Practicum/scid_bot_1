@@ -48,3 +48,16 @@ async def check_button_image_file_exist(
             detail=f'Файл не найден на сервере.',
         )
     return button.content_image
+
+
+async def check_button_is_main_menu_after_change_parent(
+    button_id: int,
+    session: AsyncSession
+) -> MenuButton:
+    button = await check_button_exist(button_id, session)
+    if button.is_main_menu_button:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail=f'Нельзя именить родителя начальной кнопки.',
+        )
+    return button

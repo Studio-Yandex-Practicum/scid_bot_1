@@ -42,6 +42,15 @@ class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):
         )
         return result.scalars().all()
 
+    async def change_parent_button(
+        self,
+        menu_button: MenuButton,
+        new_parent_id: int,
+        session: AsyncSession
+    ) -> MenuButton:
+        menu_button.parent_id = new_parent_id
+        return await self._commit_and_refresh(menu_button, session)
+
 
 class CRUDBotMenuFiles(
     CRUDBase[MenuButtonFile, MenuButtonFileCreate, MenuButtonFileUpdate]
