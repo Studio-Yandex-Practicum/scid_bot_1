@@ -35,6 +35,25 @@ async def send_welcome(message: Message):
     )
     await message.answer("Да работаю я, успокойся уже!", reply_markup=keyboard)
 
+# test
+
+
+@router.message(Command("test"))
+async def send_content(message: Message):
+    async with aiohttp.ClientSession() as session:
+        data = session.get(API_URL/)
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(
+                text="Получить данные API", callback_data="call_api")]
+        ]
+    )
+    await message.answer("Да работаю я, успокойся уже!", reply_markup=keyboard)
+
+
+
+
+
 # получить эндпоинты API
 @router.callback_query(lambda c: c.data == 'call_api')
 async def call_api_callback(callback: CallbackQuery):
