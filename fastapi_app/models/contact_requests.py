@@ -9,10 +9,18 @@ from core.db import Base
 
 class ContactRequest(Base):
     telegram_user_id: Mapped[str] = mapped_column(String, nullable=False)
-    name: Mapped[str] = mapped_column(String, nullable=False)
-    phone: Mapped[str] = mapped_column(String, nullable=False)
+    name: Mapped[str] = mapped_column(
+        String, nullable=False, default='Не указано'
+    )
+    phone: Mapped[str] = mapped_column(
+        String, nullable=False, default='Не указано'
+    )
+    email: Mapped[str] = mapped_column(
+        String, nullable=False, default='Не указано'
+    )
     contact_via_telegram: Mapped[bool] = mapped_column(Boolean, default=False)
     contact_via_phone: Mapped[bool] = mapped_column(Boolean, default=False)
+    contact_via_email: Mapped[bool] = mapped_column(Boolean, default=False)
     is_processed: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),

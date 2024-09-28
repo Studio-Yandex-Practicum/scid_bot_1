@@ -1,4 +1,7 @@
-from fastapi import Depends
+import secrets
+from typing import Optional
+
+from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, IntegerIDMixin
 from fastapi_users.authentication import (
     AuthenticationBackend,
@@ -12,6 +15,10 @@ from core.config import settings
 from core.db import get_async_session
 from models.security import AccessToken
 from models.user import User
+from services.email import send_change_password_email
+
+
+PASSWORD_LENGTH = 8
 
 bearer_transport = BearerTransport(tokenUrl='auth/jwt/login')
 
@@ -43,6 +50,18 @@ async def get_access_token_db(
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     reset_password_token_secret = settings.security.secret
     verification_token_secret = settings.security.secret
+
+    async def on_after_forgot_password(
+            self, user: User, token: str, request: Optional[Request] = None
+        ):
+            new_password = secrets.token_urlsafe(PASSWORD_LENGTH)
+            await self.reset_password(
+                token,
+                new_password,
+                request
+            )
+            await send_change_password_email(user.email, new_password)
+            
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
