@@ -17,7 +17,6 @@ from models.security import AccessToken
 from models.user import User
 from services.email import send_change_password_email
 
-
 PASSWORD_LENGTH = 8
 
 bearer_transport = BearerTransport(tokenUrl='auth/jwt/login')
@@ -52,16 +51,11 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     verification_token_secret = settings.security.secret
 
     async def on_after_forgot_password(
-            self, user: User, token: str, request: Optional[Request] = None
-        ):
-            new_password = secrets.token_urlsafe(PASSWORD_LENGTH)
-            await self.reset_password(
-                token,
-                new_password,
-                request
-            )
-            await send_change_password_email(user.email, new_password)
-            
+        self, user: User, token: str, request: Optional[Request] = None
+    ):
+        new_password = secrets.token_urlsafe(PASSWORD_LENGTH)
+        await self.reset_password(token, new_password, request)
+        await send_change_password_email(user.email, new_password)
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
