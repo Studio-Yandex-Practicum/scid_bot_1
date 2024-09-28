@@ -33,6 +33,19 @@ class SecurityConfig(BaseModel):
     jwt_lifetime: int = 3500
 
 
+class EmailConfig(BaseModel):
+    mail_username: str = None,
+    mail_password: str = None,
+    mail_from: str = "scid_bot_1@admin.com",
+    mail_port: int = 587,
+    mail_server: str = None,
+    mail_from_name: str ="scid_bot_1",
+    mail_starttls: bool = True,
+    mail_ssl_tls: bool = False,
+    use_credentials: bool = True,
+    validate_certs: bool = True
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file='.env',
@@ -44,6 +57,7 @@ class Settings(BaseSettings):
     app: AppConfig = AppConfig()
     db: DBConfig = DBConfig()
     security: SecurityConfig = SecurityConfig()
+    email: EmailConfig = EmailConfig()
 
 
 settings = Settings()

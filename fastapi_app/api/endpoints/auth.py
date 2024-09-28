@@ -19,7 +19,6 @@ router.include_router(
     fastapi_users.get_reset_password_router(),
 )
 users_routers = fastapi_users.get_users_router(UserRead, UserPasswordUpdate)
-print(users_routers.routes)
 users_routers.routes = [
     route
     for route in users_routers.routes
