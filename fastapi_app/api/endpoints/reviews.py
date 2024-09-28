@@ -17,14 +17,23 @@ from schemas.reviews import (
 router = APIRouter(prefix='/reviews', tags=['reviews'])
 
 
-@router.post('/', response_model=ReviewResponse)
+@router.post(
+    '/',
+    response_model=ReviewResponse,
+    summary='Добавляет отзыв'
+)
 async def create_review(
     review: ReviewCreate, session: AsyncSession = Depends(get_async_session)
 ):
     return await reviews_crud.create(obj_in=review, session=session)
 
 
-@router.get('/count', response_model=None)
+@router.get(
+    '/count',
+    response_model=None,
+    summary='Получает количество отзывов',
+    description='Без диапазона дат вернёт количество всех отзывов'
+)
 async def get_reviews_count(
     start_date: Optional[datetime] = Query(None),
     end_date: Optional[datetime] = Query(None),
@@ -36,7 +45,12 @@ async def get_reviews_count(
     return {'count': total}
 
 
-@router.get('/average_rating', response_model=None)
+@router.get(
+    '/average_rating',
+    response_model=None,
+    summary='Получает средний рейтинг на основе отзывов',
+    description='Без диапазона дат вернёт средний рейтинг за все отзывы'
+)
 async def get_reviews_count(
     start_date: Optional[datetime] = Query(None),
     end_date: Optional[datetime] = Query(None),
@@ -49,7 +63,12 @@ async def get_reviews_count(
     }
 
 
-@router.get('/', response_model=ReviewPaginationResponse)
+@router.get(
+    '/',
+    response_model=ReviewPaginationResponse,
+    summary='Получает отзывы',
+    description='Без диапазона дат вернёт все отзывы. Поддерживает пагинацию'
+)
 async def get_reviews(
     offset: Optional[int] = Query(0, ge=0),
     limit: Optional[int] = Query(None, gt=0),
@@ -72,13 +91,27 @@ async def get_reviews(
     )
 
 
+@router.get(
+    '/{review_id}',
+    response_model=ReviewResponse,
+    summary='Получает конкретный отзыв'
+)
+async def get_review(
+    review_id: int, session: AsyncSession = Depends(get_async_session)
+):
+    return await check_review_exist(
+        review_id=review_id,
+        session=session
+    )
+
+
 @router.delete(
     '/{review_id}',
     response_model=ReviewResponse,
     dependencies=[Depends(current_superuser)],
     summary='Удаляет отзыв',
 )
-async def delete_contact_request(
+async def delete_review(
     review_id: int,
     session: AsyncSession = Depends(get_async_session),
 ):
