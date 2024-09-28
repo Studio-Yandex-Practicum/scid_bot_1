@@ -26,8 +26,20 @@ services:
       - ./fastapi_app/.env
     depends_on:
       - db
+    ports:
+      - "8000:8000"  
     networks:
       - scid_bot_1
+
+  # bot:
+  #   build:
+  #     context: ./test_bot
+  #   env_file:
+  #     - './.env'
+  #   depends_on:
+  #     - fastapi_app
+  #   networks:
+  #     - scid_bot_1    
 
   nginx:
     image: nginx:alpine
