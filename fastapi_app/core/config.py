@@ -17,6 +17,7 @@ class AppConfig(BaseModel):
     )   # При изменении папки сохранения
     # необхоидмо не забыть изменить настройки nginx и docker volume
     chunk_size: int = 1024
+    load_demo_data_fixtures: bool = False
 
 
 class DBConfig(BaseModel):
