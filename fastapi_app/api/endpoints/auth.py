@@ -3,17 +3,19 @@ from fastapi_users import FastAPIUsers
 
 from core.users import auth_backend, get_user_manager
 from models.user import User
-from schemas.users import UserRead, UserPasswordUpdate
+from schemas.users import UserPasswordUpdate, UserRead
 
 fastapi_users = FastAPIUsers[User, int](
     get_user_manager,
     [auth_backend],
 )
 
-router = APIRouter(prefix='/auth', tags=['auth'],)
+router = APIRouter(
+    prefix='/auth',
+    tags=['auth'],
+)
 router.include_router(
-    fastapi_users.get_auth_router(auth_backend),
-    prefix='/jwt'
+    fastapi_users.get_auth_router(auth_backend), prefix='/jwt'
 )
 router.include_router(
     fastapi_users.get_reset_password_router(),

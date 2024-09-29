@@ -1,15 +1,15 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Float, Integer, String
+from sqlalchemy import Column, DateTime, Integer, String
 
 from core.db import Base
 
 
 class Review(Base):
-    telegram_user_id = Column(Integer, nullable=False)
+    telegram_user_id = Column(String, nullable=False)
     text = Column(String, nullable=False)
-    rating = Column(Float, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    rating = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=datetime.now())
 
     def __repr__(self):
         return (

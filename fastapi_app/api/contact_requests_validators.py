@@ -1,7 +1,5 @@
-from http import HTTPStatus
 from typing import Optional
 
-from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.base_validators import check_object_exist
