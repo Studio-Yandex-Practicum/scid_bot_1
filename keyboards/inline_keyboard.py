@@ -26,7 +26,7 @@ async def inline_menu(buttons: list[dict[str, int, str]],
 
     for button in buttons:
         keyboard.add(InlineKeyboardButton(text=button["label"],
-                                          callback_data=f"{button['id'], button['parent_id']}"))
+                                          callback_data=f"{button['id']}, {button['parent_id']}"))
     keyboard.adjust(columns)
 
     service_keyboard = InlineKeyboardBuilder()
