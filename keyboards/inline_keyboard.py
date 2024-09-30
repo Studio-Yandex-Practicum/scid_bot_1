@@ -2,8 +2,8 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
-
-async def inline_menu(buttons: list[dict[str, int, str]]) -> InlineKeyboardMarkup:
+async def inline_menu(buttons: list[dict[str, int, str]],
+                      columns: int = 2) -> InlineKeyboardMarkup:
     """
     buttons = [
     {
@@ -17,6 +17,8 @@ async def inline_menu(buttons: list[dict[str, int, str]]) -> InlineKeyboardMarku
         "parent_id": 2
     }
     ]
+
+    columns: Buttons in row
     """
 
 
@@ -24,9 +26,8 @@ async def inline_menu(buttons: list[dict[str, int, str]]) -> InlineKeyboardMarku
 
     for button in buttons:
         keyboard.add(InlineKeyboardButton(text=button["label"],
-                                          callback_data=f""
-                                                        f"{button['id'], button['parent_id']}"))
-    keyboard.adjust(2)
+                                          callback_data=f"{button['id'], button['parent_id']}"))
+    keyboard.adjust(columns)
 
     service_keyboard = InlineKeyboardBuilder()
     service_keyboard.add(InlineKeyboardButton(text="Назад",
