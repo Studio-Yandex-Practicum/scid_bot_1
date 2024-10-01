@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import TIMESTAMP, Boolean, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import TIMESTAMP, Boolean, ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.db import Base
 
@@ -29,6 +29,12 @@ class ContactRequest(Base):
         nullable=False,
     )
     closed_at: Mapped[Optional[datetime]] = mapped_column(nullable=True)
+    manager_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey('user.id'), nullable=True
+    )
+    manager: Mapped[Optional['User']] = relationship(
+        'User', backref='manager_contact_requests'
+    )
 
     def __repr__(self):
         return (
