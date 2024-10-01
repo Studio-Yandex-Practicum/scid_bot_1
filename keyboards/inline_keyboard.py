@@ -47,4 +47,3 @@ async def inline_menu(buttons, columns=2, start_id=1) -> InlineKeyboardMarkup:
 
     keyboard.attach(service_keyboard)
     return keyboard.as_markup()
-
