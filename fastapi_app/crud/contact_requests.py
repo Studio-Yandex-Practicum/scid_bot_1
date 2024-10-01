@@ -29,35 +29,19 @@ class CRUDContactRequests(
         session: AsyncSession,
         user: User,
         is_processed: Optional[bool] = None,
+        in_progress: Optional[bool] = None,
         for_current_user: Optional[bool] = None,
     ) -> list[ContactRequest]:
         attributes = {}
         if is_processed is not None:
             attributes.update({'is_processed': is_processed})
+        if in_progress is not None:
+            attributes.update({'in_progress': in_progress})
         attributes, options = await self._add_manager_id_and_options_to_query(
             attributes, for_current_user, user
         )
         return await self._get_by_attributes(attributes, options, session)
 
-    async def get_all_not_processed(
-        self, for_current_user: bool, user: User, session: AsyncSession
-    ) -> list[ContactRequest]:
-        return await self.get_all(
-            for_current_user=for_current_user,
-            user=user,
-            is_processed=False,
-            session=session,
-        )
-
-    async def get_all_processed(
-        self, for_current_user: bool, user: User, session: AsyncSession
-    ) -> list[ContactRequest]:
-        return await self.get_all(
-            for_current_user=for_current_user,
-            user=user,
-            is_processed=True,
-            session=session,
-        )
 
     async def get_contact_request_with_manager(
         self, contact_request_id: int, session: AsyncSession

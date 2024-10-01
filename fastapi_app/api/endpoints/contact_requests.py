@@ -77,6 +77,13 @@ async def get_contact_request_with_is_processed_filter(
             'False - только не выполненные заявки.'
         ),
     ),
+    in_progress: Optional[bool] = Query(
+        None,
+        description=(
+            'None - все заявки, True - только выполненные заявки, '
+            'False - только не выполненные заявки.'
+        ),
+    ),
     for_current_user: bool = Query(
         False,
         description=('Если True, то получает заявки текущего пользователя'),
@@ -84,19 +91,9 @@ async def get_contact_request_with_is_processed_filter(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[ContactRequest]:
-    if is_processed is None:
-        return await contact_requests_crud.get_all(
-            for_current_user=for_current_user,
-            user=user,
-            session=session
-        )
-    if is_processed == True:
-        return await contact_requests_crud.get_all_processed(
-            for_current_user=for_current_user,
-            user=user,
-            session=session
-        )
-    return await contact_requests_crud.get_all_not_processed(
+    return await contact_requests_crud.get_all(
+        is_processed=is_processed,
+        in_progress=in_progress,
         for_current_user=for_current_user,
         user=user,
         session=session
