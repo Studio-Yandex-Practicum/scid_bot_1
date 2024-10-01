@@ -11,6 +11,7 @@ from api.users_validators import (
     check_user_exist_by_tg_id,
     check_user_is_manager,
 )
+from api.dependencies.users import get_manager_or_superuser
 from core.db import get_async_session
 from core.users import current_superuser
 from crud.contact_requests import contact_requests_crud
@@ -27,6 +28,7 @@ router = APIRouter(prefix='/contact_requests', tags=['contact_requests'])
 @router.post(
     '{contact_request_id}/take-to-work',
     response_model=ContactRequestResponse,
+    dependencies=[Depends(get_manager_or_superuser)],
     summary='Устанавливает статус заявки на "В работе", и указывает менеджера',
 )
 async def take_contact_request_to_work(
@@ -88,7 +90,7 @@ async def get_contact_request_with_is_processed_filter(
 @router.get(
     '/{request_id}',
     response_model=ContactRequestResponse,
-    dependencies=[Depends(current_superuser)],
+    dependencies=[Depends(get_manager_or_superuser)],
     summary='Получает конкретную заявку',
 )
 async def get_contact_request(
@@ -104,7 +106,7 @@ async def get_contact_request(
 @router.patch(
     '/{request_id}',
     response_model=ContactRequestResponse,
-    dependencies=[Depends(current_superuser)],
+    dependencies=[Depends(get_manager_or_superuser)],
     summary='Обновляет заявку',
     description=('Возможно обновить отметку о выполнении и способ связи.'),
 )
