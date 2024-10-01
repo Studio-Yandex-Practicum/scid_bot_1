@@ -11,6 +11,7 @@ class ContactRequestBase(BaseModel):
     name: str
     phone: str
     email: str
+    text: Optional[str] = Field(None)
     contact_via_telegram: Optional[bool] = Field(default=False)
     contact_via_phone: Optional[bool] = Field(default=False)
     contact_via_email: Optional[bool] = Field(default=False)

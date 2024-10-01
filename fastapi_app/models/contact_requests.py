@@ -35,6 +35,7 @@ class ContactRequest(Base):
     manager: Mapped[Optional['User']] = relationship(
         'User', backref='manager_contact_requests'
     )
+    text: Mapped[str] = mapped_column(String, nullable=True)
 
     def __repr__(self):
         return (
