@@ -3,7 +3,14 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.contact_requests_validators import check_contact_request_exist
+from api.contact_requests_validators import (
+    check_contact_request_exist,
+    check_contact_request_is_not_to_work,
+)
+from api.users_validators import (
+    check_user_exist_by_tg_id,
+    check_user_is_manager,
+)
 from core.db import get_async_session
 from core.users import current_superuser
 from crud.contact_requests import contact_requests_crud
@@ -15,6 +22,29 @@ from schemas.contact_requests import (
 )
 
 router = APIRouter(prefix='/contact_requests', tags=['contact_requests'])
+
+
+@router.post(
+    '{contact_request_id}/take-to-work',
+    response_model=ContactRequestResponse,
+    summary='Устанавливает статус заявки на "В работе", и указывает менеджера',
+)
+async def take_contact_request_to_work(
+    contact_request_id: int,
+    managet_telegram_id: str,
+    session: AsyncSession = Depends(get_async_session),
+) -> ContactRequest:
+    user = await check_user_exist_by_tg_id(
+        user_telegram_id=managet_telegram_id, session=session
+    )
+    await check_user_is_manager(user_id=user.id, session=session)
+    return await contact_requests_crud.take_to_work(
+        contact_request=await check_contact_request_is_not_to_work(
+            contact_request_id=contact_request_id, session=session
+        ),
+        manager=user,
+        session=session,
+    )
 
 
 @router.post(

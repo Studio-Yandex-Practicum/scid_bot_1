@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 from schemas.users import UserContactRequestResponse
 
+
 class ContactRequestBase(BaseModel):
     telegram_user_id: str
     name: str

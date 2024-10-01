@@ -18,7 +18,7 @@ async def lifespan(app: FastAPI):
         telegram_user_id=None,
         password=settings.db.first_superuser_password,
         is_superuser=True,
-        is_manager=True
+        is_manager=True,
     )
     async with async_session_maker() as session:
         await create_main_menu_button(session)

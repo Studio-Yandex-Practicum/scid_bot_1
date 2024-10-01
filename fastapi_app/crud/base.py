@@ -30,6 +30,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_obj = await session.execute(select(self.model).where(attr == value))
         return db_obj.scalars().all()
 
+    async def _get_first_by_attribute(
+        self, attribute: str, value: str, session: AsyncSession
+    ) -> list[ModelType]:
+        attr = getattr(self.model, attribute)
+        db_obj = await session.execute(select(self.model).where(attr == value))
+        return db_obj.scalars().first()
+
     async def get(
         self, obj_id: int, session: AsyncSession
     ) -> Optional[ModelType]:

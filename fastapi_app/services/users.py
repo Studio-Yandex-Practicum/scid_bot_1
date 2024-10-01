@@ -17,7 +17,7 @@ async def create_user(
     password: str,
     telegram_user_id: str = None,
     is_superuser: bool = False,
-    is_manager: bool = False
+    is_manager: bool = False,
 ):
     try:
         async with get_async_session_context() as session:
@@ -30,7 +30,7 @@ async def create_user(
                             password=password,
                             telegram_user_id=telegram_user_id,
                             is_superuser=is_superuser,
-                            is_manager=is_manager
+                            is_manager=is_manager,
                         )
                     )
                     print(f'Пользователь создан: {user.email}')

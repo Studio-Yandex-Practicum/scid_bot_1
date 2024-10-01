@@ -1,6 +1,5 @@
 import aiofiles
 import yaml
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -23,8 +22,6 @@ async def insert_fixtures_to_db(data: dict, session: AsyncSession):
                 session.add(model(**entry))
     await session.commit()
     print('Фикстуры загружены')
-    
-        
 
 
 async def load_fixtures(file_path: str, session: AsyncSession):
