@@ -22,8 +22,7 @@ class AppConfig(BaseModel):
 
 class DBConfig(BaseModel):
     database_url: str = None
-    sheduler_database_url: str = None
-    echo: bool = False
+    echo: bool = True
     echo_pool: bool = False
     first_superuser_email: Optional[EmailStr] = None
     first_superuser_password: Optional[str] = None

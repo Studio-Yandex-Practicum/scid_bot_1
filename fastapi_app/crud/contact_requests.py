@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -14,15 +16,48 @@ class CRUDContactRequests(
     def __init__(self) -> None:
         super().__init__(ContactRequest)
 
-    async def get_all_not_processed(
-        self, session: AsyncSession
+    async def _add_manager_id_and_options_to_query(
+        self, attributes: dict[str, any], for_current_user: bool, user: User
+    ) -> tuple[any, any]:
+        if for_current_user:
+            attributes.update({'manager_id': user.id})
+        options = [selectinload(ContactRequest.manager)]
+        return attributes, options
+
+    async def get_all(
+        self,
+        session: AsyncSession,
+        user: User,
+        is_processed: Optional[bool] = None,
+        for_current_user: Optional[bool] = None,
     ) -> list[ContactRequest]:
-        return await self._get_by_attribute('is_processed', False, session)
+        attributes = {}
+        if is_processed is not None:
+            attributes.update({'is_processed': is_processed})
+        attributes, options = await self._add_manager_id_and_options_to_query(
+            attributes, for_current_user, user
+        )
+        return await self._get_by_attributes(attributes, options, session)
+
+    async def get_all_not_processed(
+        self, for_current_user: bool, user: User, session: AsyncSession
+    ) -> list[ContactRequest]:
+        return await self.get_all(
+            for_current_user=for_current_user,
+            user=user,
+            is_processed=False,
+            session=session,
+        )
 
     async def get_all_processed(
-        self, session: AsyncSession
+        self, for_current_user: bool, user: User, session: AsyncSession
     ) -> list[ContactRequest]:
-        return await self._get_by_attribute('is_processed', True, session)
+        return await self.get_all(
+            for_current_user=for_current_user,
+            user=user,
+            is_processed=True,
+            session=session,
+        )
 
     async def get_contact_request_with_manager(
         self, contact_request_id: int, session: AsyncSession
