@@ -1,7 +1,7 @@
 from typing import Optional
 
 from fastapi_users import schemas
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 
 class ScidUserMixin:
@@ -24,3 +24,12 @@ class UserUpdate(schemas.BaseUserUpdate, ScidUserMixin):
 
 class UserPasswordUpdate(schemas.CreateUpdateDictModel):
     password: str
+
+
+class UserContactRequestResponse(BaseModel):
+    id: int
+    name: str
+    telegram_user_id: Optional[str]
+
+    class Config:
+        from_attributes = True
