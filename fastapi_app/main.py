@@ -14,8 +14,11 @@ from services.users import create_user
 async def lifespan(app: FastAPI):
     await create_user(
         email=settings.db.first_superuser_email,
+        name='Администратор',
+        telegram_user_id=None,
         password=settings.db.first_superuser_password,
         is_superuser=True,
+        is_manager=True,
     )
     async with async_session_maker() as session:
         await create_main_menu_button(session)

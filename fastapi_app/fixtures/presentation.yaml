@@ -214,30 +214,37 @@ ContactRequest:
   - id: 1
     telegram_user_id: "12345"
     name: "user 1"
+    text: "test 1"
     phone: "00000000000"
     email: "mail@mail.com"
     contact_via_telegram: false
     contact_via_phone: true
     contact_via_email: false
     is_processed: false
+    in_progress: true
+    manager_id: 1
   - id: 2
     telegram_user_id: "54432"
     name: "user 2"
+    text: "test 2"
     phone: "56745356785"
     email: "mail@mail.com"
     contact_via_telegram: true
     contact_via_phone: false
     contact_via_email: false
     is_processed: false
+    in_progress: false
   - id: 3
     telegram_user_id: "554433"
     name: "user 3"
     phone: "77788866554"
     email: "mail@mail.com"
+    text: "test 3"
     contact_via_telegram: false
     contact_via_phone: false
     contact_via_email: true
     is_processed: true
+    in_progress: false
     closed_at: 2024-10-27T08:26:49
 
 Review:

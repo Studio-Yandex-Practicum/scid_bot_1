@@ -1,4 +1,4 @@
-from typing import Generic, Optional, TypeVar
+from typing import Any, Generic, Optional, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
@@ -29,6 +29,30 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         attr = getattr(self.model, attribute)
         db_obj = await session.execute(select(self.model).where(attr == value))
         return db_obj.scalars().all()
+
+    async def _get_by_attributes(
+        self,
+        attributes: dict[str, Any],
+        query_options: list[Any],
+        session: AsyncSession,
+    ) -> list[ModelType]:
+        query = select(self.model)
+        for attribute, value in attributes.items():
+            attr = getattr(self.model, attribute)
+            query = query.where(attr == value)
+            print(attr)
+            print(value)
+        for option in query_options:
+            query = query.options(option)
+        result = await session.execute(query)
+        return result.scalars().all()
+
+    async def _get_first_by_attribute(
+        self, attribute: str, value: str, session: AsyncSession
+    ) -> list[ModelType]:
+        attr = getattr(self.model, attribute)
+        db_obj = await session.execute(select(self.model).where(attr == value))
+        return db_obj.scalars().first()
 
     async def get(
         self, obj_id: int, session: AsyncSession
