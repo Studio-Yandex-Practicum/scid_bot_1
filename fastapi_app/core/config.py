@@ -26,6 +26,7 @@ class DBConfig(BaseModel):
     echo_pool: bool = False
     first_superuser_email: Optional[EmailStr] = None
     first_superuser_password: Optional[str] = None
+    first_superuser_tg_id: Optional[str] = None
 
 
 class SecurityConfig(BaseModel):

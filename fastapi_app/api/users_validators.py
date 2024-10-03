@@ -47,3 +47,32 @@ async def check_user_is_manager(
             detail=(f'Пользователя с id {user_id} не является менеджером.'),
         )
     return user
+
+
+async def check_user_is_not_superuser(
+    user: User
+) -> Optional[User]:
+    if user.is_superuser:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail=(f'Пользователь {user.name} - это суперпользователь.'),
+        )
+    return user
+
+
+async def check_email_not_use(
+    user_email: int,
+    session: AsyncSession,
+) -> bool:
+    user = await user_crud._get_first_by_attribute(
+        attribute='email',
+        value=user_email,
+        session=session
+    )
+    print(user)
+    if user is not None:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail=(f'Пользователя с email {user_email} уже существует.'),
+        )
+    return True

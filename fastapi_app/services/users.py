@@ -34,5 +34,7 @@ async def create_user(
                         )
                     )
                     print(f'Пользователь создан: {user.email}')
+                    return user
     except UserAlreadyExists:
         print(f'Пользователь {email} уже существует')
+        return None
