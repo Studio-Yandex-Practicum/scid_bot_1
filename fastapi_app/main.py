@@ -1,10 +1,12 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from api.routers import main_router
 from core.config import settings
 from core.db import async_session_maker
+from frontend import frontend_router
 from services.bot_menu import create_main_menu_button
 from services.fixtures import load_fixtures
 from services.users import create_user
@@ -32,4 +34,6 @@ app = FastAPI(
     description=settings.app.app_description,
     lifespan=lifespan,
 )
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(main_router)
+app.include_router(frontend_router)

@@ -41,6 +41,7 @@ pydantic-settings==2.5.2
 pydantic_core==2.23.4
 pyflakes==2.4.0
 PyJWT==2.8.0
+pytailwindcss==0.2.0
 python-dotenv==1.0.1
 python-multipart==0.0.9
 PyYAML==6.0.2

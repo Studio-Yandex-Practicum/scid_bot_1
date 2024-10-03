@@ -16,7 +16,7 @@ conf = ConnectionConfig(
     MAIL_SSL_TLS=settings.email.mail_ssl_tls,
     USE_CREDENTIALS=settings.email.use_credentials,
     VALIDATE_CERTS=settings.email.validate_certs,
-    TEMPLATE_FOLDER=os.path.join(os.getcwd(), 'templates', 'email'),
+    TEMPLATE_FOLDER=os.path.join(os.getcwd(), 'static', 'templates', 'email'),
 )
 
 
