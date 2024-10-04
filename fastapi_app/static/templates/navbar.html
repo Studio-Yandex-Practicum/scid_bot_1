@@ -1,32 +1,42 @@
 <div
   class="py-2 px-6 bg-background_light_secondary dark:bg-background_dark_secondary text-text_light_secondary dark:text-text_dark_secondary flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30"
 >
-  <button
-    type="button"
-    class="text-lg text-gray-900 font-semibold sidebar-toggle"
-  >
-    <i class="ri-menu-line"></i>
-  </button>
-
   <ul class="ml-auto flex items-center">
     {% include 'elements/theme_changer.html' %}
-    <li class="dropdown ml-3">
-      <button type="button" class="dropdown-toggle flex items-center">
-        <div class="p-2 md:block text-left">
-          <h2 class="text-sm font-semibold text-text_light dark:text-text_dark">
-            {{ user.name }}
-          </h2>
-          <p class="text-xs text-gray-500">{{ user.email }}</p>
-        </div>
-      </button>
+    <button
+      id="dropdownDefaultButton"
+      data-dropdown-toggle="dropdown"
+      type="button"
+    >
+      <div class="p-2 md:block text-left">
+        <h2 class="text-sm font-semibold text-text_light dark:text-text_dark">
+          {{ user.name }}
+        </h2>
+        <p class="text-xs text-gray-500">{{ user.email }}</p>
+      </div>
+    </button>
+
+    <div
+      id="dropdown"
+      class="z-60 hidden bg-background_light_secondary divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-background_dark_secondary border-background_light dark:border-background_dark"
+    >
       <ul
-        class="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-background_light dark:bg-background_dark border border-background_light-100 dark:border-background_dark-100 w-full max-w-[140px]"
+        class="py-2 text-sm"
+        aria-labelledby="dropdownDefaultButton"
       >
+        <li>
+          <a
+            href="{{ url_for('change_password') }}"
+            class="block px-4 py-2 hover:bg-background_light dark:hover:bg-background_dark"
+            >Смена пароля</a
+          >
+        </li>
+        <hr>
         <li>
           <form method="POST" action="">
             <a
               role="menuitem"
-              class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-contrast cursor-pointer"
+              class="flex items-center py-1.5 px-4 text-text_light dark:text-text_dark hover:text-contrast dark:hover:text-contrast cursor-pointer"
               onclick="event.preventDefault();
                         this.closest('form').submit();"
             >
@@ -35,6 +45,6 @@
           </form>
         </li>
       </ul>
-    </li>
+    </div>
   </ul>
 </div>

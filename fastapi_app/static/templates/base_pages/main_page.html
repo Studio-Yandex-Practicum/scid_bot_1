@@ -1,0 +1,18 @@
+{% extends 'base_pages/head_and_body.html' %}
+{% block title %}SCID_BOT_1 admin panel{% endblock title %}
+{% block script %}
+
+{% endblock script %}
+{% block body_content %} 
+
+{% include 'sidebar.html' %}
+<main
+    class="w-full md:w-[calc(100%-256px)] md:ml-64 bg-content_background_light dark:bg-content_background_dark min-h-screen transition-all main">
+    {% set user=user %}
+    {% include 'navbar.html' %}
+
+    <div class="overflow-scroll">
+    {% block main_content %}{% endblock main_content %}
+    </div>
+</main>
+{% endblock body_content%}

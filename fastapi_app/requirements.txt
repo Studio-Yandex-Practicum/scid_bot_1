@@ -10,6 +10,7 @@ bcrypt==4.1.2
 black==22.1.0
 blinker==1.8.2
 blue==0.9.1
+certifi==2024.8.30
 cffi==1.17.1
 click==8.1.7
 colorama==0.4.6
@@ -23,6 +24,8 @@ fastapi-users-db-sqlalchemy==6.0.1
 flake8==4.0.1
 greenlet==3.1.1
 h11==0.14.0
+httpcore==1.0.6
+httpx==0.27.2
 idna==3.10
 isort==5.13.2
 Jinja2==3.1.4

@@ -20,10 +20,14 @@ conf = ConnectionConfig(
 )
 
 
-async def send_change_password_email(email_to: str, new_password: str) -> bool:
+async def send_change_password_email(
+    email_to: str,
+    new_password: str,
+    template: str
+) -> bool:
     try:
         template_path = os.path.join(
-            conf.TEMPLATE_FOLDER, 'mail_template.html'
+            conf.TEMPLATE_FOLDER, template
         )
         with open(template_path, 'r', encoding='utf-8') as file:
             html_template = file.read()
