@@ -18,6 +18,22 @@ router = APIRouter(tags=['frontend'])
 templates = Jinja2Templates(directory='static/templates')
 
 
+@router.post(
+    '/logout_user',
+    response_class=HTMLResponse,
+    summary='Выход пользователя из системы'
+)
+async def logout_user(
+    request: Request,
+):
+    response = RedirectResponse(
+        request.url_for('main_page'),
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+    response.delete_cookie(key='Authorization', httponly=True, secure=True)
+    return response
+
+
 async def change_user_password(
     request: Request,
     new_password: str,

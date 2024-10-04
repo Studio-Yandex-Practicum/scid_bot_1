@@ -33,14 +33,11 @@
         </li>
         <hr>
         <li>
-          <form method="POST" action="">
+          <form method="post" action="{{ url_for('logout_user') }}">
             <a
-              role="menuitem"
               class="flex items-center py-1.5 px-4 text-text_light dark:text-text_dark hover:text-contrast dark:hover:text-contrast cursor-pointer"
-              onclick="event.preventDefault();
-                        this.closest('form').submit();"
             >
-              Выход
+              <button type="submit">Выход</button>
             </a>
           </form>
         </li>

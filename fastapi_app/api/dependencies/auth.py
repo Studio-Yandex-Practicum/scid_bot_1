@@ -46,7 +46,7 @@ async def verify_jwt_token(
     raise HTTPException(
         headers={
             'location': f'/login?error={
-                quote("Пользователь не найден")
+                quote("Пользователь не авторизован")
             }'
         },
         status_code=status.HTTP_302_FOUND,
