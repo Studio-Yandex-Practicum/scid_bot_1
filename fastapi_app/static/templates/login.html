@@ -1,106 +1,48 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SCID_BOT_1 admin panel</title>
-    <link
-      href="{{ url_for('static', path='/css/main.css') }}"
-      rel="stylesheet"
-    />
-    <link
-      href="{{ url_for('static', path='/css/scid_bot_1.css') }}"
-      rel="stylesheet"
-    />
-    <script
-      defer
-      src="{{ url_for('static', path='js/theme_loader.js') }}"
-    ></script>
-  </head>
+{% extends 'base_pages/auth_pages.html' %}
+{% block title %}SCID_BOT_1 вход{% endblock title %}
+{% block page_name %}ADMIN PANEL{% endblock page_name %}
+{% block page_text %}Вход в профиль{% endblock page_text %}
+{% block error %}{% if error %}{{ error }}{% endif %}{% endblock error %}
 
-  <body
-    class="bg-content_background_light dark:bg-content_background_dark text-text_light dark:text-text_dark"
+{% block page_form %}
+<form class="space-y-4 md:space-y-6" action="{{ url_for('authorization') }}" method="post">
+  <div>
+    <label for="email" class="block mb-2 text-sm font-medium">Ваш email</label>
+    <input
+      type="email"
+      name="username"
+      id="username"
+      class="bg-background_light border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-background_dark dark:border-gray-600 dark:placeholder-gray-400"
+      placeholder="name@company.com"
+      required=""
+    />
+  </div>
+  <div>
+    <label
+      for="password"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Ваш пароль</label
+    >
+    <input
+      type="password"
+      name="password"
+      id="password"
+      placeholder="••••••••"
+      class="bg-background_light border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-background_dark dark:border-gray-600 dark:placeholder-gray-400"
+      required=""
+    />
+  </div>
+  <div class="grid justify-items-end">
+    <a href="{{ url_for('forgot_password')}}" class="text-sm font-medium hover:underline">Забыли пароль?</a>
+  </div>
+  <button
+    type="submit"
+    class="w-full bg-background_light_secondary hover:bg-background_light_secondary-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background_dark_secondary dark:hover:bg-background_dark_secondary-700 border border-content_background_light dark:border-content_background_dark"
   >
-    <section>
-      <div
-        class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"
-      >
-        <div
-          class="w-full bg-background_light dark:bg-background_dark rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:border-gray-700"
-        >
-          <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <div class="flex justify-center">
-              <a
-                href="#"
-                class="flex items-center pb-4 border-b border-b-gray-800"
-              >
-                <h2 class="font-bold text-xl">
-                  ADMIN PANEL
-                  <span class="bg-contrast text-white px-2 rounded-md"
-                    >SCID_BOT_1</span
-                  >
-                </h2>
-              </a>
-            </div>
-            <div class="flex justify-center">
-              <p class="text-contrast flex items-center">{{ error }}</p>
-            </div>
-            <h1
-              class="text-xl font-bold leading-tight tracking-tight md:text-2xl"
-            >
-              Вход в профиль
-            </h1>
-            <form
-              class="space-y-4 md:space-y-6"
-              action="/authorization"
-              method="post"
-            >
-              <div>
-                <label for="email" class="block mb-2 text-sm font-medium"
-                  >Ваш email</label
-                >
-                <input
-                  type="email"
-                  name="username"
-                  id="username"
-                  class="bg-background_light border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-background_dark dark:border-gray-600 dark:placeholder-gray-400"
-                  placeholder="name@company.com"
-                  required=""
-                />
-              </div>
-              <div>
-                <label
-                  for="password"
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >Ваш пароль</label
-                >
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="••••••••"
-                  class="bg-background_light border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-background_dark dark:border-gray-600 dark:placeholder-gray-400"
-                  required=""
-                />
-              </div>
-              <div class="grid justify-items-end">
-                <a href="#" class="text-sm font-medium hover:underline"
-                  >Забыли пароль?</a
-                >
-              </div>
-              <button
-                type="submit"
-                class="w-full bg-background_light_secondary hover:bg-background_light_secondary-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background_dark_secondary dark:hover:bg-background_dark_secondary-700 border border-content_background_light dark:border-content_background_dark"
-              >
-                Войти
-              </button>
-              <div class="grid justify-items-end">
-                {% include 'elements/theme_changer.html' %}
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-  </body>
-</html>
+    Войти
+  </button>
+  <div class="grid justify-items-end">
+    {% include 'elements/theme_changer.html' %}
+  </div>
+</form>
+{% endblock page_form %}

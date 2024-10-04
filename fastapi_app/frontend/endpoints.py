@@ -26,6 +26,35 @@ async def login_page(request: Request, error: Optional[str] = None):
 
 
 @router.get(
+    '/forgot-password',
+    response_class=HTMLResponse,
+    summary='Страница сброса пароля'
+)
+async def forgot_password(request: Request):
+    context = {'request': request}
+    return templates.TemplateResponse('forgot_password.html', context)
+
+
+@router.post(
+    '/forgot-password',
+    response_class=HTMLResponse,
+    summary='запуск механизма сброса пароля'
+)
+async def start_forgot_password(
+    request: Request,
+    email: str = Form(...),
+    user_manager = Depends(get_user_manager)
+):
+    user = await user_manager.get_by_email(email)
+    if user:
+        await user_manager.forgot_password(user, request)
+    return RedirectResponse(
+        request.url_for('login_page'),
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
+@router.get(
     '/',
     response_class=HTMLResponse,
     summary='Загрузка главной страницы',

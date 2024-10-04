@@ -53,6 +53,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ):
+        self.forgot_password()
         new_password = secrets.token_urlsafe(PASSWORD_LENGTH)
         await self.reset_password(token, new_password, request)
         await send_change_password_email(user.email, new_password)
