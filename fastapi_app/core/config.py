@@ -31,7 +31,7 @@ class DBConfig(BaseModel):
 
 class SecurityConfig(BaseModel):
     secret: str = 'YOUR_SECRET_KEY'
-    jwt_lifetime: int = 3500
+    jwt_lifetime: int = 86400
 
 
 class EmailConfig(BaseModel):

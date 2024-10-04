@@ -12,18 +12,10 @@
       href="{{ url_for('static', path='/css/scid_bot_1.css') }}"
       rel="stylesheet"
     />
-
-    <script>
-      if (
-        localStorage.getItem("color-theme") === "dark" ||
-        (!("color-theme" in localStorage) &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      ) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    </script>
+    <script
+      defer
+      src="{{ url_for('static', path='js/theme_loader.js') }}"
+    ></script>
   </head>
 
   <body
@@ -35,7 +27,7 @@
       class="w-full md:w-[calc(100%-256px)] md:ml-64 bg-content_background_light dark:bg-content_background_dark min-h-screen transition-all main"
     >
       {% set user={"name": "Пользователь", "email":"user@user.ru"} %}
-	  {% include 'navbar.html' %}
+      {% include 'navbar.html' %}
 
       <!-- Content -->
       <div class="p-6">

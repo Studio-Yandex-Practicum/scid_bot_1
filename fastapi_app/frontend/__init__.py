@@ -1,1 +1,1 @@
-from .endpoints import router as frontend_router #noqa
+from .endpoints import router as frontend_router  # noqa
