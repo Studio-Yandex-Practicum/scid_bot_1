@@ -2,12 +2,13 @@ from typing import Optional
 from urllib.parse import quote
 
 import httpx
-from fastapi import APIRouter, Depends, Form, Request, status, HTTPException
+from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_users.password import PasswordHelper
 
-from api.dependencies.auth import get_user_token, verify_jwt_token
+from api.dependencies.auth import (check_user_is_manager_or_superuser,
+                                   get_user_token)
 from core.config import settings
 from core.frontend import templates
 from core.users import get_jwt_strategy, get_user_manager
@@ -103,7 +104,7 @@ async def start_forgot_password(
     response_class=HTMLResponse,
     summary='Страница смены пароля',
     name='change_password',
-    dependencies=[Depends(verify_jwt_token)]
+    dependencies=[Depends(check_user_is_manager_or_superuser)]
 )
 async def change_password(
     request: Request,
@@ -123,7 +124,7 @@ async def start_change_password(
     old_password: str = Form(...),
     new_password1: str = Form(...),
     new_password2: str = Form(...),
-    user: User = Depends(verify_jwt_token),
+    user: User = Depends(check_user_is_manager_or_superuser),
     user_manager = Depends(get_user_manager)
 ):
     if new_password1 != new_password2:
@@ -173,7 +174,10 @@ async def start_change_password(
     response_class=HTMLResponse,
     summary='Загрузка главной страницы',
 )
-async def main_page(request: Request, user: User = Depends(verify_jwt_token)):
+async def main_page(
+    request: Request,
+    user: User = Depends(check_user_is_manager_or_superuser)
+):
     context = {'request': request, 'user': user}
     return templates.TemplateResponse('index.html', context)
 

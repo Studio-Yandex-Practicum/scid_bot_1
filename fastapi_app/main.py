@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from api.routers import main_router
 from core.config import settings
 from core.db import async_session_maker
-from frontend.endopints import frontend_router
+from frontend.routers import frontend_router
 from services.bot_menu import create_main_menu_button
 from services.fixtures import load_fixtures
 from services.users import create_user
@@ -21,6 +21,22 @@ async def lifespan(app: FastAPI):
         password=settings.db.first_superuser_password,
         is_superuser=True,
         is_manager=True,
+    )
+    await create_user(
+        email='test@test.com',
+        name='Тест Менеджер',
+        telegram_user_id='test',
+        password='test',
+        is_superuser=False,
+        is_manager=True,
+    )
+    await create_user(
+        email='test2@test2.com',
+        name='Тест Подозрительный',
+        telegram_user_id='test2',
+        password='test',
+        is_superuser=False,
+        is_manager=False,
     )
     async with async_session_maker() as session:
         await create_main_menu_button(session)
