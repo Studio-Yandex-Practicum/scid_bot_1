@@ -5,17 +5,16 @@ import httpx
 from fastapi import APIRouter, Depends, Form, Request, status, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.templating import Jinja2Templates
 from fastapi_users.password import PasswordHelper
 
 from api.dependencies.auth import get_user_token, verify_jwt_token
 from core.config import settings
-from core.users import get_jwt_strategy, get_user_manager, current_user
+from core.frontend import templates
+from core.users import get_jwt_strategy, get_user_manager
 from models.user import User
 from services.email import send_change_password_email
 
-router = APIRouter(tags=['frontend'])
-templates = Jinja2Templates(directory='static/templates')
+router = APIRouter(tags=['frontend_base'])
 
 
 @router.post(

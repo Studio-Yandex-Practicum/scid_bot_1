@@ -4,11 +4,12 @@
 
 {% endblock script %}
 {% block body_content %} 
+{% set user=user %}
 
 {% include 'sidebar.html' %}
 <main
-    class="w-full md:w-[calc(100%-256px)] md:ml-64 bg-content_background_light dark:bg-content_background_dark min-h-screen transition-all main">
-    {% set user=user %}
+    class="w-full md:w-[calc(100%-256px)] md:ml-64 bg-background-content-light dark:bg-background-content-dark min-h-screen transition-all main">
+    
     {% include 'navbar.html' %}
 
     <div class="overflow-scroll">

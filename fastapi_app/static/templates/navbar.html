@@ -1,5 +1,5 @@
 <div
-  class="py-2 px-6 bg-background_light_secondary dark:bg-background_dark_secondary text-text_light_secondary dark:text-text_dark_secondary flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30"
+  class="py-2 px-6 bg-background-light-secondary dark:bg-background-dark-secondary text-text-light-secondary dark:text-text-dark-secondary flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30"
 >
   <ul class="ml-auto flex items-center">
     {% include 'elements/theme_changer.html' %}
@@ -9,7 +9,7 @@
       type="button"
     >
       <div class="p-2 md:block text-left">
-        <h2 class="text-sm font-semibold text-text_light dark:text-text_dark">
+        <h2 class="text-sm font-semibold text-text-light dark:text-text-dark">
           {{ user.name }}
         </h2>
         <p class="text-xs text-gray-500">{{ user.email }}</p>
@@ -18,7 +18,7 @@
 
     <div
       id="dropdown"
-      class="z-60 hidden bg-background_light_secondary divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-background_dark_secondary border-background_light dark:border-background_dark"
+      class="z-60 hidden bg-background-light-secondary divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-background-dark-secondary border-background-light dark:border-background-dark"
     >
       <ul
         class="py-2 text-sm"
@@ -27,7 +27,7 @@
         <li>
           <a
             href="{{ url_for('change_password') }}"
-            class="block px-4 py-2 hover:bg-background_light dark:hover:bg-background_dark"
+            class="block px-4 py-2 hover:bg-background-light-300 dark:hover:bg-background-dark"
             >Смена пароля</a
           >
         </li>
@@ -35,7 +35,7 @@
         <li>
           <form method="post" action="{{ url_for('logout_user') }}">
             <a
-              class="flex items-center py-1.5 px-4 text-text_light dark:text-text_dark hover:text-contrast dark:hover:text-contrast cursor-pointer"
+              class="flex items-center py-1.5 px-4 text-text-light dark:text-text_dark hover:text-contrast dark:hover:text-contrast cursor-pointer"
             >
               <button type="submit">Выход</button>
             </a>

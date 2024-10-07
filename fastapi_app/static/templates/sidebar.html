@@ -1,5 +1,5 @@
 <div
-  class="fixed left-0 top-0 w-64 h-full bg-[#f8f4f3] p-4 z-50 sidebar-menu transition-transform"
+  class="fixed left-0 top-0 w-64 h-full p-4 z-50 sidebar-menu transition-transform bg-background-light-secondary dark:bg-background-dark-secondary text-text-light_secondary dark:text-text-dark-secondary"
 >
   <a href="#" class="flex items-center pb-4 border-b border-b-gray-800">
     <h2 class="font-bold text-xl">
@@ -7,117 +7,53 @@
       <span class="bg-contrast text-white px-2 rounded-md">SCID_BOT_1</span>
     </h2>
   </a>
+    
   <ul class="mt-4">
-    <span class="text-gray-400 font-bold">ADMIN</span>
-    <li class="mb-1 group">
+    <span class="text-text-light-600 dark:text-text-dark-400 font-bold">Телеграм-бот</span>
+    <li class="mb-1 group {% if 'setting-bot-menu' in request.path %}active{% endif %}">
       <a
         href=""
-        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+        class="flex font-semibold items-center py-2 px-4 text-text-light hover:bg-background-dark hover:text-text-dark rounded-md group-[.active]:bg-background-dark group-[.active]:text-text-dark dark:text-text-dark dark:hover:bg-background-dark-950 dark:hover:text-text-dark dark:group-[.active]:bg-background-dark-950 dark:group-[.active]:text-text-dark"
       >
         <i class="ri-home-2-line mr-3 text-lg"></i>
-        <span class="text-sm">Dashboard</span>
+        <span class="text-sm">Структура бота</span>
       </a>
     </li>
-    <li class="mb-1 group">
+    <span class="text-text-light-600 dark:text-text-dark-400 font-bold">Заявки на обратную связь</span>
+    <li class="mb-1 group {% if 'setting-bot-menu' in request.path %}active{% endif %}">
       <a
         href=""
-        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100 sidebar-dropdown-toggle"
+        class="flex font-semibold items-center py-2 px-4 text-text-light hover:bg-background-dark hover:text-text-dark rounded-md group-[.active]:bg-background-dark group-[.active]:text-text-dark dark:text-text-dark dark:hover:bg-background-dark-950 dark:hover:text-text-dark dark:group-[.active]:bg-background-dark-950 dark:group-[.active]:text-text-dark"
       >
-        <i class="bx bx-user mr-3 text-lg"></i>
-        <span class="text-sm">Users</span>
-        <i
-          class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90"
-        ></i>
-      </a>
-      <ul class="pl-7 mt-2 hidden group-[.selected]:block">
-        <li class="mb-4">
-          <a
-            href=""
-            class="text-gray-900 text-sm flex items-center hover:text-[#f84525] before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3"
-            >All</a
-          >
-        </li>
-        <li class="mb-4">
-          <a
-            href=""
-            class="text-gray-900 text-sm flex items-center hover:text-[#f84525] before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3"
-            >Roles</a
-          >
-        </li>
-      </ul>
-    </li>
-    <li class="mb-1 group">
-      <a
-        href=""
-        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
-      >
-        <i class="bx bx-list-ul mr-3 text-lg"></i>
-        <span class="text-sm">Activities</span>
+        <i class="ri-home-2-line mr-3 text-lg"></i>
+        <span class="text-sm">Список заявок</span>
       </a>
     </li>
-    <span class="text-gray-400 font-bold">BLOG</span>
-    <li class="mb-1 group">
+    <span class="text-text-light-600 dark:text-text-dark-400 font-bold">Отзывы</span>
+    <li class="mb-1 group {% if 'setting-bot-menu' in request.path %}active{% endif %}">
       <a
         href=""
-        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100 sidebar-dropdown-toggle"
+        class="flex font-semibold items-center py-2 px-4 text-text-light hover:bg-background-dark hover:text-text-dark rounded-md group-[.active]:bg-background-dark group-[.active]:text-text-dark dark:text-text-dark dark:hover:bg-background-dark-950 dark:hover:text-text-dark dark:group-[.active]:bg-background-dark-950 dark:group-[.active]:text-text-dark"
       >
-        <i class="bx bxl-blogger mr-3 text-lg"></i>
-        <span class="text-sm">Post</span>
-        <i
-          class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90"
-        ></i>
-      </a>
-      <ul class="pl-7 mt-2 hidden group-[.selected]:block">
-        <li class="mb-4">
-          <a
-            href=""
-            class="text-gray-900 text-sm flex items-center hover:text-[#f84525] before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3"
-            >All</a
-          >
-        </li>
-        <li class="mb-4">
-          <a
-            href=""
-            class="text-gray-900 text-sm flex items-center hover:text-[#f84525] before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3"
-            >Categories</a
-          >
-        </li>
-      </ul>
-    </li>
-    <li class="mb-1 group">
-      <a
-        href=""
-        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
-      >
-        <i class="bx bx-archive mr-3 text-lg"></i>
-        <span class="text-sm">Archive</span>
+        <i class="ri-home-2-line mr-3 text-lg"></i>
+        <span class="text-sm">Список отзывов</span>
       </a>
     </li>
-    <span class="text-gray-400 font-bold">PERSONAL</span>
-    <li class="mb-1 group">
+    <span class="text-text-light-600 dark:text-text-dark-400 font-bold">Менеджеры</span>
+    <li class="mb-1 group {% if 'setting-bot-menu' in request.path %}active{% endif %}">
       <a
         href=""
-        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+        class="flex font-semibold items-center py-2 px-4 text-text-light hover:bg-background-dark hover:text-text-dark rounded-md group-[.active]:bg-background-dark group-[.active]:text-text-dark dark:text-text-dark dark:hover:bg-background-dark-950 dark:hover:text-text-dark dark:group-[.active]:bg-background-dark-950 dark:group-[.active]:text-text-dark"
       >
-        <i class="bx bx-bell mr-3 text-lg"></i>
-        <span class="text-sm">Notifications</span>
-        <span
-          class="md:block px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-600 bg-red-200 rounded-full"
-          >5</span
-        >
+        <i class="ri-home-2-line mr-3 text-lg"></i>
+        <span class="text-sm">Список менеджеров</span>
       </a>
-    </li>
-    <li class="mb-1 group">
       <a
         href=""
-        class="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+        class="flex font-semibold items-center py-2 px-4 text-text-light hover:bg-background-dark hover:text-text-dark rounded-md group-[.active]:bg-background-dark group-[.active]:text-text-dark dark:text-text-dark dark:hover:bg-background-dark-950 dark:hover:text-text-dark dark:group-[.active]:bg-background-dark-950 dark:group-[.active]:text-text-dark"
       >
-        <i class="bx bx-envelope mr-3 text-lg"></i>
-        <span class="text-sm">Messages</span>
-        <span
-          class="md:block px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-green-600 bg-green-200 rounded-full"
-          >2 New</span
-        >
+        <i class="ri-home-2-line mr-3 text-lg"></i>
+        <span class="text-sm">Добавить менеджера</span>
       </a>
     </li>
   </ul>

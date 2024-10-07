@@ -5,14 +5,14 @@
 {% block error %}{% if error %}{{ error }}{% endif %}{% endblock error %}
 
 {% block page_form %}
-<form class="space-y-4 md:space-y-6" action="{{ url_for('authorization') }}" method="post">
+<form class="space-y-4 md:space-y-6 text-text-light dark:text-text-dark" action="{{ url_for('authorization') }}" method="post">
   <div>
     <label for="email" class="block mb-2 text-sm font-medium">Ваш email</label>
     <input
       type="email"
       name="username"
       id="username"
-      class="bg-background_light border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-background_dark dark:border-gray-600 dark:placeholder-gray-400"
+      class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
       placeholder="name@company.com"
       required=""
     />
@@ -28,7 +28,7 @@
       name="password"
       id="password"
       placeholder="••••••••"
-      class="bg-background_light border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-background_dark dark:border-gray-600 dark:placeholder-gray-400"
+      class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
       required=""
     />
   </div>
@@ -37,7 +37,7 @@
   </div>
   <button
     type="submit"
-    class="w-full bg-background_light_secondary hover:bg-background_light_secondary-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background_dark_secondary dark:hover:bg-background_dark_secondary-700 border border-content_background_light dark:border-content_background_dark"
+    class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
   >
     Войти
   </button>
