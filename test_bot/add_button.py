@@ -158,7 +158,7 @@ async def send_post_request(message: Message, state: FSMContext):
     form_data.add_field('content_image', content_image)
     form_data.add_field('content_link', content_link)
     form_data.add_field('parent_id', str(parent_id))
-
+    print(JWT_TOKEN)
     headers = {
         "Authorization": f"Bearer {JWT_TOKEN}"
     }

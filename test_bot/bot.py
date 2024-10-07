@@ -41,7 +41,8 @@ async def send_welcome(message: Message):
 @router.message(Command("test"))
 async def send_content(message: Message):
     async with aiohttp.ClientSession() as session:
-        data = session.get(API_URL/)
+        # data = session.get(API_URL/)
+        data = session.get(API_URL)
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(
