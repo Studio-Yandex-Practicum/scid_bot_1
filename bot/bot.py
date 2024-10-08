@@ -22,6 +22,14 @@ async def main():
 
     bot = Bot(token=TOKEN)
 
+    # Andrey
+    # Создаем бота
+    #bot = Bot(
+    #    token=TOKEN,
+    #    session=AiohttpSession(),
+    #    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+    #)
+
     dp.include_router(main_button.router) # здесь подключаем хендлеры
 
     await dp.start_polling(bot)
