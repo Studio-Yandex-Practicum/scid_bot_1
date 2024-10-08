@@ -1,7 +1,6 @@
 import logging
 import os
 import asyncio
-import requests
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.filters import Command
@@ -19,9 +18,19 @@ if not API_TOKEN:
 
 logging.basicConfig(level=logging.INFO)
 
-storage = MemoryStorage()
 bot = Bot(token=API_TOKEN)
-dp = Dispatcher(storage=storage)
+dp = Dispatcher()
+
+
+admin_start_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="Поздороваться", callback_data="greet")],
+        [InlineKeyboardButton(text="Сказать пока", callback_data="say_bye")],
+        [
+            InlineKeyboardButton(text="Перейти на сайт 1", url="https://example1.com"),
+            InlineKeyboardButton(text="Перейти на сайт 2", url="https://example2.com")
+        ],
+        [InlineKeyboardButton(text="Показать уведомление", callback_data="show_alert")]
+    ])
 
 
 admin_start_keyboard_structure = {
@@ -32,7 +41,7 @@ admin_start_keyboard_structure = {
             {"text": "Получить контент кнопки", "callback_data": "get_button_content"},
             {"text": "Получить все дочерние кнопки", "callback_data": "get_button_subs"},
             {"text": "Изменить контент кнопки", "callback_data": "putch_button_content"},
-            {"text": "Изменить родителя кнопки", "callback_data": "putch_button_parent"},
+            {"text": "Изменить родителя кнопки", "callback_data": "putch_button_head"},
             {"text": "Удалить кнопку", "callback_data": "delete_button"}
         ]
     }
@@ -50,43 +59,18 @@ def generate_main_menu(buttons_structure):
 @dp.message(Command(commands=['admin']))
 async def show_base_admin_panel(message: types.Message):
     await message.answer(
+        # "Привет! Нажми на кнопку для входа в админку.",
         admin_start_keyboard_structure['admin_block_start_message'],
+        # reply_markup=admin_start_keyboard
         reply_markup=generate_main_menu(admin_start_keyboard_structure)
     )
 
 
-class Button(StatesGroup):
-    name = State()
-    parent = State()
-
-
-@dp.callback_query(F.data == "post_button")
-async def handle_say_bye(callback: types.CallbackQuery):
-    await callback.message.answer("Йоу менчик, ща создам кнопку!")
-    await callback.message.answer("Введи текст, который будет на кнопке")
-    await state.set_state(Form.name)
-    await state.update_data(name=message.text)
-    await callback.message.answer("Введи айди родителя кнопки")
-    await state.set_state(Form.parent)
-    await state.update_data(parent=message.text)
-    name = user_data.get('name')
-    parent = user_data.get('parent')
-    url = f'http://127.0.0.1/bot_menu/{parent}/add-child-button'
-    headers = {
-        'accept': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiYXVkIjpbImZhc3RhcGktdXNlcnM6YXV0aCJdLCJleHAiOjE3MjkxMjM4OTl9.llAqWSztLSDr7q33YcKzHpgXxb4sNAiX43zIyPuKvIw'
-        }
-    data = {
-        'label': name,
-        'content_text': 'string',
-        'content_link': 'string'
-        }
-    # files = {'content_image': open('/path/to/your/image.png', 'rb')}
-    response = requests.post(url, headers=headers, data=data)
-    # response = requests.post(url, headers=headers, data=data, files=files)
-    print(response.status_code)
-    print(response.json())
-    await callback.answer()
+@dp.message(Command(commands=['help']))
+async def send_help_info(message: types.Message):
+    await message.answer(
+        "Привет! Тут все просто. Нажми /start и нажимай на кнопки."
+    )
 
 
 async def main():
