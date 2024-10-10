@@ -22,6 +22,9 @@ async def add_child_button(
         "content_link": content_link,
     }
     files = {"content_image": content_image}
-    response = requests.post(url, headers=headers, data=data, files=files)
+    response = requests.post(url,
+                             headers=headers,
+                             data=data,
+                             files=files)
 
     return response.json()

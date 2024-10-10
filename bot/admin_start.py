@@ -4,15 +4,15 @@ import os
 
 from aiogram import Bot, Dispatcher, F, types
 from aiogram.enums import ParseMode
-from aiogram.filters import Command, StateFilter
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
-                           KeyboardButton, Message, ReplyKeyboardMarkup,
-                           ReplyKeyboardRemove)
+                           KeyboardButton, Message, ReplyKeyboardMarkup)
 from crud import add_child_button
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -171,7 +171,8 @@ async def content_link_sent(message: Message, state: FSMContext):
     if message.text != "Пропустить":
         await state.update_data(typed_content_link=message.text)
     await message.answer(
-        text="Теперь отправьте изображение, которое будет над кнопкой (можно пропустить):",
+        text="Теперь отправьте изображение, "
+        "которое будет над кнопкой (можно пропустить):",
         reply_markup=not_required_reply_markup,
     )
     await state.set_state(CreateButton.adding_content_image)
@@ -198,7 +199,8 @@ async def content_image_sent(message: Message, state: FSMContext):
             f"Кнопка почти готова, осталось подтвердить:\n"
             f"Текст на кнопке: <b>{user_data['typed_name']}</b>\n"
             f"Айди кнопки-родителя: <b>{user_data['typed_parent_id']}</b>\n"
-            f"Текст сообщения над кнопкой: <b>{user_data.get('typed_content_text', '')}</b>\n"
+            f"Текст сообщения над кнопкой: "
+            f"<b>{user_data.get('typed_content_text', '')}</b>\n"
             f"Линк кнопки: <b>{user_data.get('typed_content_link', '')}</b>\n"
             f"Изображение:"
         ),
@@ -225,8 +227,6 @@ async def button_submited(message: Message, state: FSMContext):
     button = await add_child_button(
         label, parent_id, content_text, content_link, content_image
     )
-    # button = await add_child_button(label, parent_id, content_text, content_link)
-    print(button)
     await message.answer(
         text=(
             f"Успешно создал кнопку:\n"
@@ -249,8 +249,6 @@ async def cancel_and_return_to_admin_panel(
     await message.answer(
         "Возвращаюсь в основное меню", reply_markup=types.ReplyKeyboardRemove()
     )
-    # await message.answer("Действие отменено.", reply_markup=types.ReplyKeyboardRemove())
-    # Вызов вашей админ панели
     await show_base_admin_panel(message)
 
 
