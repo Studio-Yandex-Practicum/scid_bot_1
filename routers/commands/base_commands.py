@@ -1,23 +1,22 @@
 from aiogram import Router, types
-from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart
-from aiogram.utils import markdown
-
-from keyboards.common_keyboards import (
-    get_start_keyboard,
-)
-
-# Cоздание маршрутизатора
-# __name__ - для идентификации в логировании
-router = Router(name=__name__)
+from aiogram.filters import Command
+from keyboards.common_keyboards import generate_keyboard
 
 
-# Обработка команды /start
-@router.message(CommandStart())
-async def handle_command_code(message: types.Message):
+router = Router()
+
+# Хендлер для команды /start
+@router.message(Command("start"))
+async def start_command(message: types.Message):
+    buttons = [
+        {"id": 1, "name": "Получить информацию о компании", "url": None},
+        {"id": 2, "name": "Узнать о продуктах и услугах", "url": None},
+        {"id": 3, "name": "Получить техническую поддержку", "url": None},
+        {"id": 4, "name": "Посмотреть портфолио", "url": None},
+        {"id": 5, "name": "Связаться с менеджером", "url": None},
+    ]
+    keyboard = await generate_keyboard(buttons)
     await message.answer(
-        text=f"Привет, {markdown.hbold(message.from_user.full_name)}!\nСпасибо, что установили наш бот!\n\nФункционал нашего бота:\n- Первое\n- Второе\n- Третье",
-        parse_mode=ParseMode.HTML,
-        # Ответ который отправил еще и клавиатуру
-        reply_markup=get_start_keyboard(),
+        "Здравствуйте! Я ваш виртуальный помощник. Как я могу помочь вам сегодня?",
+        reply_markup=keyboard,
     )

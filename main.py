@@ -13,25 +13,22 @@ from routers import router as main_router
 
 
 async def main():
-    # Создаем диспатчер. Он управляет всеми входящими сообщениями и командами.
-    # Отвечает за маршрутизацию событий от Telegram к обработчикам в боте.
-    dp = Dispatcher()
-    # Объявляем маршрутизатор. Управляет как определнные команды или типы
-    # сообщений будут обрабатываться. Для структурированно обработки.
-    dp.include_router(main_router)
-
-    # Подключаем логирование
+    # Устанавливаем уровень логирования
     logging.basicConfig(level=logging.INFO)
 
-    # Создаем бота
+    # Создаем бота с сессией и настройками по умолчанию
     bot = Bot(
         token=bot_token,
         session=AiohttpSession(),
         default=DefaultBotProperties(parse_mode=ParseMode.HTML)
     )
-    # Включаем поллинг. Пингуем сервера Telegram на входящие сообщения
-    await dp.start_polling(bot)
 
+    # Создаем диспетчер и подключаем маршрутизатор для обработки событий
+    dp = Dispatcher()
+    dp.include_router(main_router)
+
+    # Запускаем поллинг для приема сообщений от Telegram
+    await dp.start_polling(bot)
 
 if __name__ == "__main__":
     asyncio.run(main())
