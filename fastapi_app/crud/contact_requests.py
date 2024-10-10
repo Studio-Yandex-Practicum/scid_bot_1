@@ -1,13 +1,12 @@
 from typing import Optional
 
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
-
 from crud.base import CRUDBase
 from models.contact_requests import ContactRequest
 from models.user import User
 from schemas.contact_requests import ContactRequestCreate, ContactRequestUpdate
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 
 class CRUDContactRequests(

@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Integer, String
-
 from core.db import Base
+from sqlalchemy import Column, DateTime, Integer, String
 
 
 class Review(Base):

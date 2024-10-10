@@ -1,12 +1,11 @@
 from http import HTTPStatus
 from typing import Optional
 
-from fastapi import HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from api.base_validators import check_object_exist
 from crud.contact_requests import contact_requests_crud
+from fastapi import HTTPException
 from models.contact_requests import ContactRequest
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def check_contact_request_exist(

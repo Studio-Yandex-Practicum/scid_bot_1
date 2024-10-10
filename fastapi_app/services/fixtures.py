@@ -1,9 +1,8 @@
 import aiofiles
+import core.base
 import yaml
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
-
-import core.base
 
 
 async def reset_sequences(table_name: str, session: AsyncSession):

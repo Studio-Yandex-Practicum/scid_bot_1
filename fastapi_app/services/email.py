@@ -1,9 +1,8 @@
 import os
 
+from core.config import settings
 from fastapi.exceptions import HTTPException
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-
-from core.config import settings
 
 conf = ConnectionConfig(
     MAIL_USERNAME=settings.email.mail_username,

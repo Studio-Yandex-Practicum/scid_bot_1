@@ -1,29 +1,21 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, File, Form, UploadFile
-from fastapi.responses import FileResponse
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from api.bot_menu_validators import (
-    check_button_exist,
-    check_button_file_exist,
-    check_button_image_file_exist,
-    check_button_is_main_menu,
-)
+from api.bot_menu_validators import (check_button_exist,
+                                     check_button_file_exist,
+                                     check_button_image_file_exist,
+                                     check_button_is_main_menu)
 from core.db import get_async_session
 from core.users import current_superuser
 from crud.bot_menu import bot_menu_crud, bot_menu_files_crud
+from fastapi import APIRouter, Depends, File, Form, UploadFile
+from fastapi.responses import FileResponse
 from models.bot_menu import MenuButton
-from schemas.bot_menu import (
-    MenuButtonChildrenResponse,
-    MenuButtonCreate,
-    MenuButtonFileCreate,
-    MenuButtonFileResponse,
-    MenuButtonResponse,
-    MenuButtonUpdate,
-)
+from schemas.bot_menu import (MenuButtonChildrenResponse, MenuButtonCreate,
+                              MenuButtonFileCreate, MenuButtonFileResponse,
+                              MenuButtonResponse, MenuButtonUpdate)
 from services.bot_menu import delete_image_file_if_exist
 from services.files import delete_file, save_file
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/bot_menu", tags=["bot_menu"])
 

@@ -1,10 +1,9 @@
 from typing import Optional
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from api.base_validators import check_object_exist
 from crud.reviews import reviews_crud
 from models.reviews import Review
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def check_review_exist(

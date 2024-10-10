@@ -1,11 +1,10 @@
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from api.bot_menu_validators import check_button_image_file_exist
 from crud.bot_menu import bot_menu_crud
 from models.bot_menu import MenuButton
 from schemas.bot_menu import MenuButtonCreateMainButton
 from services.files import delete_file, file_exists
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def check_main_menu_exist(session: AsyncSession):

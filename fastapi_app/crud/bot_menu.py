@@ -1,16 +1,11 @@
 from typing import Optional
 
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from crud.base import CRUDBase
 from models.bot_menu import MenuButton, MenuButtonFile
-from schemas.bot_menu import (
-    MenuButtonCreate,
-    MenuButtonFileCreate,
-    MenuButtonFileUpdate,
-    MenuButtonUpdate,
-)
+from schemas.bot_menu import (MenuButtonCreate, MenuButtonFileCreate,
+                              MenuButtonFileUpdate, MenuButtonUpdate)
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):

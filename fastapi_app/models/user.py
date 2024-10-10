@@ -1,8 +1,7 @@
+from core.db import Base
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import Boolean, String
 from sqlalchemy.orm import Mapped, mapped_column
-
-from core.db import Base
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):

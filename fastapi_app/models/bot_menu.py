@@ -1,9 +1,8 @@
 import enum
 
+from core.db import Base
 from sqlalchemy import Boolean, Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from core.db import Base
 
 
 class MenuButton(Base):

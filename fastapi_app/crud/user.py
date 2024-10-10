@@ -1,8 +1,7 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from crud.base import CRUDBase
 from models.user import User
 from schemas.users import UserCreate, UserUpdate
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class CRUDUser(CRUDBase[User, UserUpdate, UserCreate]):

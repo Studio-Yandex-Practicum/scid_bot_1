@@ -1,18 +1,14 @@
 from datetime import datetime
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from api.reviews_validators import check_review_exist
 from core.db import get_async_session
 from core.users import current_superuser
 from crud.reviews import reviews_crud
-from schemas.reviews import (
-    ReviewCreate,
-    ReviewPaginationResponse,
-    ReviewResponse,
-)
+from fastapi import APIRouter, Depends, Query
+from schemas.reviews import (ReviewCreate, ReviewPaginationResponse,
+                             ReviewResponse)
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/reviews", tags=["reviews"])
 

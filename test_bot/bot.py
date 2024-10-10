@@ -1,15 +1,12 @@
-import os
-from dotenv import load_dotenv
 import logging
+import os
+
 import aiohttp
 from aiogram import Bot, Dispatcher, Router
 from aiogram.filters import Command
-from aiogram.types import (
-    Message,
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    CallbackQuery,
-)
+from aiogram.types import (CallbackQuery, InlineKeyboardButton,
+                           InlineKeyboardMarkup, Message)
+from dotenv import load_dotenv
 
 load_dotenv()
 

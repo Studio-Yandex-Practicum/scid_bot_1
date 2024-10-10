@@ -1,10 +1,9 @@
 from datetime import datetime, timezone
 from typing import Optional
 
+from core.db import Base
 from sqlalchemy import TIMESTAMP, Boolean, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from core.db import Base
 
 
 class ContactRequest(Base):

@@ -1,26 +1,19 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from api.contact_requests_validators import (
-    check_contact_request_exist,
-    check_contact_request_is_not_to_work,
-)
-from api.users_validators import (
-    check_user_exist_by_tg_id,
-)
+    check_contact_request_exist, check_contact_request_is_not_to_work)
 from api.dependencies.users import get_manager_or_superuser
+from api.users_validators import check_user_exist_by_tg_id
 from core.db import get_async_session
-from core.users import current_user, current_superuser
+from core.users import current_superuser, current_user
 from crud.contact_requests import contact_requests_crud
+from fastapi import APIRouter, Depends, Query
 from models.contact_requests import ContactRequest
 from models.user import User
-from schemas.contact_requests import (
-    ContactRequestCreate,
-    ContactRequestResponse,
-    ContactRequestUpdate,
-)
+from schemas.contact_requests import (ContactRequestCreate,
+                                      ContactRequestResponse,
+                                      ContactRequestUpdate)
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/contact_requests", tags=["contact_requests"])
 

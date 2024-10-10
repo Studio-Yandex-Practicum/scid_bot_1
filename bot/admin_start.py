@@ -1,25 +1,23 @@
+import asyncio
 import logging
 import os
-import asyncio
-from aiogram import Bot, Dispatcher, types
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.filters import Command, StateFilter
-from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.fsm.state import StatesGroup, State
-from aiogram import F
+
+from aiogram import Bot, Dispatcher, F, types
 from aiogram.enums import ParseMode
+from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
-from dotenv import load_dotenv
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from aiogram.types import Message, ReplyKeyboardRemove
-
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
+                           KeyboardButton, Message, ReplyKeyboardMarkup,
+                           ReplyKeyboardRemove)
 from crud import add_child_button
-
+from dotenv import load_dotenv
 
 load_dotenv()
 
-# API_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
+API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+# API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
 if not API_TOKEN:
     raise ValueError(
         "Не найден токен бота. Пожалуйста,"
@@ -102,9 +100,10 @@ base_reply_markup = ReplyKeyboardMarkup(
 )
 
 not_required_reply_markup = ReplyKeyboardMarkup(
-        keyboard=[[KeyboardButton(text="Пропустить")]] + base_reply_markup.keyboard,
-        resize_keyboard=True
-    )
+    keyboard=[[KeyboardButton(text="Пропустить")]]
+    + base_reply_markup.keyboard,
+    resize_keyboard=True,
+)
 
 
 @dp.callback_query(F.data == "post_button")
@@ -185,30 +184,29 @@ async def content_image_sent(message: Message, state: FSMContext):
         return
     if message.text != "Пропустить":
         photo = message.photo[-1].file_id
-        await state.update_data(
-            sent_content_image=photo
-        )
+        await state.update_data(sent_content_image=photo)
     user_data = await state.get_data()
     new_reply_markup = ReplyKeyboardMarkup(
-        keyboard=[[KeyboardButton(text="✅ Создать кнопку")]] + base_reply_markup.keyboard,
-        resize_keyboard=True
+        keyboard=[[KeyboardButton(text="✅ Создать кнопку")]]
+        + base_reply_markup.keyboard,
+        resize_keyboard=True,
     )
     await message.answer(
-    # await message.answer_photo(
+        # await message.answer_photo(
         # photo=user_data['sent_content_image'],
-        text=(f"Кнопка почти готова, осталось подтвердить:\n"
-              f"Текст на кнопке: <b>{user_data['typed_name']}</b>\n"
-              f"Айди кнопки-родителя: <b>{user_data['typed_parent_id']}</b>\n"
-              f"Текст сообщения над кнопкой: <b>{user_data.get('typed_content_text', '')}</b>\n"
-              f"Линк кнопки: <b>{user_data.get('typed_content_link', '')}</b>\n"
-              f"Изображение:"
-              ),
+        text=(
+            f"Кнопка почти готова, осталось подтвердить:\n"
+            f"Текст на кнопке: <b>{user_data['typed_name']}</b>\n"
+            f"Айди кнопки-родителя: <b>{user_data['typed_parent_id']}</b>\n"
+            f"Текст сообщения над кнопкой: <b>{user_data.get('typed_content_text', '')}</b>\n"
+            f"Линк кнопки: <b>{user_data.get('typed_content_link', '')}</b>\n"
+            f"Изображение:"
+        ),
         reply_markup=new_reply_markup,
-        parse_mode=ParseMode.HTML
+        parse_mode=ParseMode.HTML,
     )
-    if 'sent_content_image' in user_data:
-        await message.answer_photo(
-            photo=photo)
+    if "sent_content_image" in user_data:
+        await message.answer_photo(photo=photo)
     await state.set_state(CreateButton.submiting_button)
 
 
@@ -219,31 +217,38 @@ async def button_submited(message: Message, state: FSMContext):
         return
     user_data = await state.get_data()
     label = user_data["typed_name"]
-    parent_id = user_data['typed_parent_id']
-    content_text = user_data.get('typed_content_text', '')
-    content_link = user_data.get('typed_content_link', '')
-    content_image = user_data.get('sent_content_image', None)
+    parent_id = user_data["typed_parent_id"]
+    content_text = user_data.get("typed_content_text", "")
+    content_link = user_data.get("typed_content_link", "")
+    content_image = user_data.get("sent_content_image", None)
 
-    button = await add_child_button(label, parent_id, content_text, content_link, content_image)
+    button = await add_child_button(
+        label, parent_id, content_text, content_link, content_image
+    )
     # button = await add_child_button(label, parent_id, content_text, content_link)
     print(button)
     await message.answer(
-        text=(f"Успешно создал кнопку:\n"
-              f"Текст на кнпоке: <b>{button['label']}</b>\n"
-              f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
-              f"Текст сообщения над кнопкой: <b>{button['content_text']}</b>\n"
-              f"Линк кнопки: <b>{button['content_link']}</b>\n"
-              f"Изображение: <b>{button['content_image']}</b>"
-              ),
-        parse_mode=ParseMode.HTML
+        text=(
+            f"Успешно создал кнопку:\n"
+            f"Текст на кнпоке: <b>{button['label']}</b>\n"
+            f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
+            f"Текст сообщения над кнопкой: <b>{button['content_text']}</b>\n"
+            f"Линк кнопки: <b>{button['content_link']}</b>\n"
+            f"Изображение: <b>{button['content_image']}</b>"
+        ),
+        parse_mode=ParseMode.HTML,
     )
     await cancel_and_return_to_admin_panel(message, state)
 
 
 # отмена операции
-async def cancel_and_return_to_admin_panel(message: Message, state: FSMContext):
+async def cancel_and_return_to_admin_panel(
+    message: Message, state: FSMContext
+):
     await state.clear()
-    await message.answer("Возвращаюсь в основное меню", reply_markup=types.ReplyKeyboardRemove())
+    await message.answer(
+        "Возвращаюсь в основное меню", reply_markup=types.ReplyKeyboardRemove()
+    )
     # await message.answer("Действие отменено.", reply_markup=types.ReplyKeyboardRemove())
     # Вызов вашей админ панели
     await show_base_admin_panel(message)

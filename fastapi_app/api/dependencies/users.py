@@ -1,7 +1,6 @@
-from fastapi import Depends, HTTPException, status
-
-from models.user import User
 from core.users import current_user
+from fastapi import Depends, HTTPException, status
+from models.user import User
 
 
 async def get_manager_or_superuser(
