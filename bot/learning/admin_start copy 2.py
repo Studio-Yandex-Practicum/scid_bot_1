@@ -60,12 +60,34 @@ async def show_base_admin_panel(message: types.Message):
     )
 
 
+@dp.message(Command(commands=['start']))
+async def show_start_panel(message: types.Message):
+    await message.answer(
+        admin_start_keyboard_structure['admin_block_start_message'],
+        reply_markup = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="Поздороваться", callback_data="greet")],
+            [InlineKeyboardButton(text="Поиск", switch_inline_query="начни искать")],
+            [InlineKeyboardButton(text="Поиск в этом чате", switch_inline_query_current_chat="найди здесь")],
+            [
+                InlineKeyboardButton(text="Перейти на сайт 1", url="https://example1.com"),
+                InlineKeyboardButton(text="Перейти на сайт 2", url="https://example2.com")
+            ],
+            [InlineKeyboardButton(text="Показать уведомление", callback_data="show_alert")]
+        ])
+    )
+
+
 # пробую получить название кнопки
 
 class CreateButton(StatesGroup):
     typing_button_name = State()
     typing_parent_id = State()
-    creating_button = State()
+
+
+# base_reply_markup = InlineKeyboardMarkup(inline_keyboard=[
+#             [InlineKeyboardButton(text="Назад", callback_data="back")],
+#             [InlineKeyboardButton(text="Отмена", callback_data="cancel")],
+#         ])
 
 
 base_reply_markup = ReplyKeyboardMarkup(
@@ -78,19 +100,34 @@ base_reply_markup = ReplyKeyboardMarkup(
 )
 
 
+# @dp.callback_query(F.data == "post_button")
+# async def handle_post_button(callback: types.CallbackQuery):
+#     await callback.message.answer("Введите название новой кнопки")
+#     await callback.answer()
+
+
 @dp.callback_query(F.data == "post_button")
 async def handle_post_button(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.answer(
         text="Введите название новой кнопки",
         reply_markup=base_reply_markup
     )
-    await callback.answer()
     # Устанавливаем пользователю состояние "выбирает название"
     await state.set_state(CreateButton.typing_button_name)
 
 
+# @dp.message(Command("post_button"))
+# async def cmd_food(message: Message, state: FSMContext):
+#     await message.answer(
+#         text="Введите название новой кнопки",
+#         reply_markup=base_reply_markup
+#     )
+#     # Устанавливаем пользователю состояние "выбирает название"
+#     await state.set_state(CreateButton.typing_button_name)
+
+
 @dp.message(CreateButton.typing_button_name)
-async def name_typed(message: Message, state: FSMContext):
+async def food_chosen(message: Message, state: FSMContext):
     await state.update_data(typed_name=message.text)
     await message.answer(
         text="Спасибо. Теперь, пожалуйста, введите айди кнопки-родителя:",
@@ -100,39 +137,14 @@ async def name_typed(message: Message, state: FSMContext):
 
 
 @dp.message(CreateButton.typing_parent_id)
-async def parent_id_typed(message: Message, state: FSMContext):
+async def parent_id_chosen(message: Message, state: FSMContext):
+    # await state.update_data(typed_id=message.text)
     user_data = await state.get_data()
-    await state.update_data(typed_parent_id=message.text)  # так можно будет дальше использовать
     await message.answer(
-        text=f"Создаю кнопку с именем:{user_data['typed_name']}, дочернюю от айди {message.text}",
-        reply_markup=base_reply_markup  # добавить здесь, что идти дальше если нажали окей
+        text=f"{message.text}{user_data['typed_name']}",
+        # reply_markup=base_reply_markup
     )
-    print('aaaaaaaaaaaaaaaaaa')
-    user_data = await state.get_data()
-    name = user_data['typed_name']
-    parent_id = message.text  # и user_data['typed_parent_id']
-
-    url = f'http://127.0.0.1/bot_menu/{int(parent_id)}/add-child-button'
-    # url = f'http://127.0.0.1/bot_menu/2/add-child-button'
-    headers = {
-        'accept': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiYXVkIjpbImZhc3RhcGktdXNlcnM6YXV0aCJdLCJleHAiOjE3MjkxMjM4OTl9.llAqWSztLSDr7q33YcKzHpgXxb4sNAiX43zIyPuKvIw'
-        }
-    data = {
-        'label': name,
-        'content_text': 'string',
-        'content_link': 'string'
-        }
-    # files = {'content_image': open('/path/to/your/image.png', 'rb')}
-    response = requests.post(url, headers=headers, data=data)
-    # response = requests.post(url, headers=headers, data=data, files=files)
-    # print(response)
-    # print(response.status_code)
-    # print(str(response.json()))
-    text = f"Успешно создал кнопку с именем:{response.json()['label']}, дочернюю от кнопки с айди {response.json()['parent_id']}"
-    await message.answer(text)
-    # Сброс состояния и сохранённых данных у пользователя
-    await state.clear()
+    await state.set_state(CreateButton.typing_parent_id)
 
 
 # проверка, что кнопка работает

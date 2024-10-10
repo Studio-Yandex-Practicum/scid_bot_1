@@ -12,7 +12,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+# API_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+API_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN2')
 if not API_TOKEN:
     raise ValueError("Не найден токен бота. Пожалуйста, добавьте TELEGRAM_BOT_TOKEN в .env файл.")
 

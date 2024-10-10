@@ -107,13 +107,19 @@ async def parent_id_typed(message: Message, state: FSMContext):
         text=f"Создаю кнопку с именем:{user_data['typed_name']}, дочернюю от айди {message.text}",
         reply_markup=base_reply_markup  # добавить здесь, что идти дальше если нажали окей
     )
-    print('aaaaaaaaaaaaaaaaaa')
+    await state.set_state(CreateButton.creating_button)
+
+
+@dp.message(CreateButton.creating_button)
+async def creating_button_api(message: Message, state: FSMContext):
+    current_state = await state.get_state()
+    print(f"Текущее состояние: {current_state}")
+    print('aaaaaaaaaaaaaaaaaa') # почему сюда не доходит код?
     user_data = await state.get_data()
     name = user_data['typed_name']
     parent_id = message.text  # и user_data['typed_parent_id']
 
-    url = f'http://127.0.0.1/bot_menu/{int(parent_id)}/add-child-button'
-    # url = f'http://127.0.0.1/bot_menu/2/add-child-button'
+    url = f'http://127.0.0.1/bot_menu/{parent_id}/add-child-button'
     headers = {
         'accept': 'application/json',
         'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiYXVkIjpbImZhc3RhcGktdXNlcnM6YXV0aCJdLCJleHAiOjE3MjkxMjM4OTl9.llAqWSztLSDr7q33YcKzHpgXxb4sNAiX43zIyPuKvIw'
@@ -126,11 +132,9 @@ async def parent_id_typed(message: Message, state: FSMContext):
     # files = {'content_image': open('/path/to/your/image.png', 'rb')}
     response = requests.post(url, headers=headers, data=data)
     # response = requests.post(url, headers=headers, data=data, files=files)
-    # print(response)
-    # print(response.status_code)
-    # print(str(response.json()))
-    text = f"Успешно создал кнопку с именем:{response.json()['label']}, дочернюю от кнопки с айди {response.json()['parent_id']}"
-    await message.answer(text)
+    print(response.status_code)
+    print(response.json())
+    await message.answer(response.json())
     # Сброс состояния и сохранённых данных у пользователя
     await state.clear()
 
