@@ -16,7 +16,7 @@ async def check_contact_request_exist(
     return await check_object_exist(
         contact_request_id,
         contact_requests_crud,
-        f'Запроса на обратную связь с id {contact_request_id} не существует.',
+        f"Запроса на обратную связь с id {contact_request_id} не существует.",
         session,
     )
 
@@ -32,8 +32,8 @@ async def check_contact_request_is_not_to_work(
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
             detail=(
-                f'Заявка на обратную связь с id {contact_request_id} '
-                f'уже в работе.'
+                f"Заявка на обратную связь с id {contact_request_id} "
+                f"уже в работе."
             ),
         )
     return contact_request

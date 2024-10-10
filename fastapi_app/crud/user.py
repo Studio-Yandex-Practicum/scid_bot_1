@@ -13,7 +13,7 @@ class CRUDUser(CRUDBase[User, UserUpdate, UserCreate]):
         self, user_tg_id: str, session: AsyncSession
     ) -> User:
         return await self._get_first_by_attribute(
-            'telegram_user_id', user_tg_id, session
+            "telegram_user_id", user_tg_id, session
         )
 
 

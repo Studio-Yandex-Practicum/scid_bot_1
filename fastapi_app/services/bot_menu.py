@@ -20,7 +20,7 @@ async def create_main_menu_button(session: AsyncSession):
         await bot_menu_crud.create(
             parent_id=None,
             obj_in=MenuButtonCreateMainButton(
-                label='Главное меню',
+                label="Главное меню",
                 content_text=None,
                 content_image=None,
                 content_link=None,
@@ -29,9 +29,9 @@ async def create_main_menu_button(session: AsyncSession):
             ),
             session=session,
         )
-        print('Кнопка главного меню создана')
+        print("Кнопка главного меню создана")
     else:
-        print('Кнопка главного меню уже существует')
+        print("Кнопка главного меню уже существует")
 
 
 async def delete_image_file_if_exist(button: MenuButton) -> str:

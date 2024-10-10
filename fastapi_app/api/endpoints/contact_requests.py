@@ -22,11 +22,11 @@ from schemas.contact_requests import (
     ContactRequestUpdate,
 )
 
-router = APIRouter(prefix='/contact_requests', tags=['contact_requests'])
+router = APIRouter(prefix="/contact_requests", tags=["contact_requests"])
 
 
 @router.post(
-    '{contact_request_id}/take-to-work',
+    "{contact_request_id}/take-to-work",
     response_model=ContactRequestResponse,
     dependencies=[Depends(get_manager_or_superuser)],
     summary='Устанавливает статус заявки на "В работе", и указывает менеджера',
@@ -49,9 +49,9 @@ async def take_contact_request_to_work(
 
 
 @router.post(
-    '/',
+    "/",
     response_model=ContactRequestResponse,
-    summary='Создаёт заявку на обратную связь',
+    summary="Создаёт заявку на обратную связь",
     description=('Заявка будет иметь статус "Не выполнена". Время UTC.'),
 )
 async def create_contact_request(
@@ -64,29 +64,29 @@ async def create_contact_request(
 
 
 @router.get(
-    '/all',
+    "/all",
     response_model=list[ContactRequestResponse],
     dependencies=[Depends(get_manager_or_superuser)],
-    summary='Получает все заявки',
+    summary="Получает все заявки",
 )
 async def get_contact_request_with_is_processed_filter(
     is_processed: Optional[bool] = Query(
         None,
         description=(
-            'None - все заявки, True - только выполненные заявки, '
-            'False - только не выполненные заявки.'
+            "None - все заявки, True - только выполненные заявки, "
+            "False - только не выполненные заявки."
         ),
     ),
     in_progress: Optional[bool] = Query(
         None,
         description=(
-            'None - все заявки, True - только выполненные заявки, '
-            'False - только не выполненные заявки.'
+            "None - все заявки, True - только выполненные заявки, "
+            "False - только не выполненные заявки."
         ),
     ),
     for_current_user: bool = Query(
         False,
-        description=('Если True, то получает заявки текущего пользователя'),
+        description=("Если True, то получает заявки текущего пользователя"),
     ),
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
@@ -96,15 +96,15 @@ async def get_contact_request_with_is_processed_filter(
         in_progress=in_progress,
         for_current_user=for_current_user,
         user=user,
-        session=session
+        session=session,
     )
 
 
 @router.get(
-    '/{request_id}',
+    "/{request_id}",
     response_model=ContactRequestResponse,
     dependencies=[Depends(get_manager_or_superuser)],
-    summary='Получает конкретную заявку',
+    summary="Получает конкретную заявку",
 )
 async def get_contact_request(
     request_id: int,
@@ -117,11 +117,11 @@ async def get_contact_request(
 
 
 @router.patch(
-    '/{request_id}',
+    "/{request_id}",
     response_model=ContactRequestResponse,
     dependencies=[Depends(get_manager_or_superuser)],
-    summary='Обновляет заявку',
-    description=('Возможно обновить отметку о выполнении и способ связи.'),
+    summary="Обновляет заявку",
+    description=("Возможно обновить отметку о выполнении и способ связи."),
 )
 async def update_contact_request(
     request_id: int,
@@ -139,10 +139,10 @@ async def update_contact_request(
 
 
 @router.delete(
-    '/{request_id}',
+    "/{request_id}",
     response_model=ContactRequestResponse,
     dependencies=[Depends(current_superuser)],
-    summary='Удаляет заявку',
+    summary="Удаляет заявку",
 )
 async def delete_contact_request(
     request_id: int,

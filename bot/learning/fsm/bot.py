@@ -23,7 +23,7 @@ async def main():
     dp = Dispatcher(storage=MemoryStorage())
 
     # bot = Bot(config.TELEGRAM_BOT_TOKEN2.get_secret_value())
-    API_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN2')
+    API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
     bot = Bot(API_TOKEN)
 
     dp.include_router(common.router)
@@ -33,5 +33,5 @@ async def main():
     await dp.start_polling(bot)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main())

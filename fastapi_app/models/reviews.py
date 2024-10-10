@@ -13,7 +13,7 @@ class Review(Base):
 
     def __repr__(self):
         return (
-            f'<Review(id={self.id}, telegram_user_id='
-            f'{self.telegram_user_id}, rating={self.rating}, '
-            f'created_at={self.created_at}'
+            f"<Review(id={self.id}, telegram_user_id="
+            f"{self.telegram_user_id}, rating={self.rating}, "
+            f"created_at={self.created_at}"
         )

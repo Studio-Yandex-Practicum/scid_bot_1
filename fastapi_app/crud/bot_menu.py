@@ -24,7 +24,7 @@ class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):
         session: AsyncSession,
     ) -> Optional[MenuButton]:
         obj_in_data = obj_in.model_dump()
-        obj_in_data['parent_id'] = parent_id
+        obj_in_data["parent_id"] = parent_id
         db_obj = self.model(**obj_in_data)
         return await self._commit_and_refresh(db_obj, session)
 

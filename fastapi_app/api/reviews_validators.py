@@ -14,6 +14,6 @@ async def check_review_exist(
     return await check_object_exist(
         review_id,
         reviews_crud,
-        f'Отзыв с id {review_id} не существует.',
+        f"Отзыв с id {review_id} не существует.",
         session,
     )

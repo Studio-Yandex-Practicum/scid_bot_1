@@ -26,10 +26,7 @@ class PreBase:
 
 
 Base = declarative_base(cls=PreBase)
-engine = create_async_engine(
-    settings.db.database_url,
-    echo=settings.db.echo
-)
+engine = create_async_engine(settings.db.database_url, echo=settings.db.echo)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 

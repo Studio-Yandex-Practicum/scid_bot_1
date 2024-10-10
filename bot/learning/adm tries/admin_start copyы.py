@@ -15,9 +15,11 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 load_dotenv()
 
-API_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if not API_TOKEN:
-    raise ValueError("Не найден токен бота. Пожалуйста, добавьте TELEGRAM_BOT_TOKEN в .env файл.")
+    raise ValueError(
+        "Не найден токен бота. Пожалуйста, добавьте TELEGRAM_BOT_TOKEN в .env файл."
+    )
 
 logging.basicConfig(level=logging.INFO)
 
@@ -31,46 +33,87 @@ admin_start_keyboard_structure = {
     "main_menu": {
         "buttons": [
             {"text": "Создать кнопку", "callback_data": "post_button"},
-            {"text": "Получить контент кнопки", "callback_data": "get_button_content"},
-            {"text": "Получить все дочерние кнопки", "callback_data": "get_button_subs"},
-            {"text": "Изменить контент кнопки", "callback_data": "putch_button_content"},
-            {"text": "Изменить родителя кнопки", "callback_data": "putch_button_parent"},
-            {"text": "Удалить кнопку", "callback_data": "delete_button"}
+            {
+                "text": "Получить контент кнопки",
+                "callback_data": "get_button_content",
+            },
+            {
+                "text": "Получить все дочерние кнопки",
+                "callback_data": "get_button_subs",
+            },
+            {
+                "text": "Изменить контент кнопки",
+                "callback_data": "putch_button_content",
+            },
+            {
+                "text": "Изменить родителя кнопки",
+                "callback_data": "putch_button_parent",
+            },
+            {"text": "Удалить кнопку", "callback_data": "delete_button"},
         ]
-    }
+    },
 }
 
 
 def generate_main_menu(buttons_structure):
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=button['text'], callback_data=button['callback_data'])]
-        for button in buttons_structure['main_menu']['buttons']
-    ])
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=button["text"], callback_data=button["callback_data"]
+                )
+            ]
+            for button in buttons_structure["main_menu"]["buttons"]
+        ]
+    )
     return keyboard
 
 
-@dp.message(Command(commands=['admin']))
+@dp.message(Command(commands=["admin"]))
 async def show_base_admin_panel(message: types.Message):
     await message.answer(
-        admin_start_keyboard_structure['admin_block_start_message'],
-        reply_markup=generate_main_menu(admin_start_keyboard_structure)
+        admin_start_keyboard_structure["admin_block_start_message"],
+        reply_markup=generate_main_menu(admin_start_keyboard_structure),
     )
 
 
-@dp.message(Command(commands=['start']))
+@dp.message(Command(commands=["start"]))
 async def show_start_panel(message: types.Message):
     await message.answer(
-        admin_start_keyboard_structure['admin_block_start_message'],
-        reply_markup = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Поздороваться", callback_data="greet")],
-            [InlineKeyboardButton(text="Поиск", switch_inline_query="начни искать")],
-            [InlineKeyboardButton(text="Поиск в этом чате", switch_inline_query_current_chat="найди здесь")],
-            [
-                InlineKeyboardButton(text="Перейти на сайт 1", url="https://example1.com"),
-                InlineKeyboardButton(text="Перейти на сайт 2", url="https://example2.com")
-            ],
-            [InlineKeyboardButton(text="Показать уведомление", callback_data="show_alert")]
-        ])
+        admin_start_keyboard_structure["admin_block_start_message"],
+        reply_markup=InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="Поздороваться", callback_data="greet"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Поиск", switch_inline_query="начни искать"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Поиск в этом чате",
+                        switch_inline_query_current_chat="найди здесь",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Перейти на сайт 1", url="https://example1.com"
+                    ),
+                    InlineKeyboardButton(
+                        text="Перейти на сайт 2", url="https://example2.com"
+                    ),
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Показать уведомление", callback_data="show_alert"
+                    )
+                ],
+            ]
+        ),
     )
 
 
@@ -97,7 +140,8 @@ def make_row_keyboard(items: list[str]) -> ReplyKeyboardMarkup:
 async def main():
     await dp.start_polling(bot)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     asyncio.run(main())
 
 

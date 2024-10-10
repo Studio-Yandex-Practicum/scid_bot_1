@@ -16,7 +16,7 @@ async def check_user_exist(
     return await check_object_exist(
         user_id,
         user_crud,
-        f'Пользователтя с id {user_id} не существует.',
+        f"Пользователтя с id {user_id} не существует.",
         session,
     )
 
@@ -31,7 +31,7 @@ async def check_user_exist_by_tg_id(
     if user is None:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail=(f'Пользователя с ТГ-id {user_telegram_id} не существует.'),
+            detail=(f"Пользователя с ТГ-id {user_telegram_id} не существует."),
         )
     return user
 
@@ -44,6 +44,6 @@ async def check_user_is_manager(
     if not user.is_manager:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail=(f'Пользователя с id {user_id} не является менеджером.'),
+            detail=(f"Пользователя с id {user_id} не является менеджером."),
         )
     return user

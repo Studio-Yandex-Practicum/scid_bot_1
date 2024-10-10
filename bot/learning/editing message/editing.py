@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 # API_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-API_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN2')
+API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
@@ -24,9 +24,13 @@ def get_keyboard():
     buttons = [
         [
             types.InlineKeyboardButton(text="-1", callback_data="num_decr"),
-            types.InlineKeyboardButton(text="+1", callback_data="num_incr")
+            types.InlineKeyboardButton(text="+1", callback_data="num_incr"),
         ],
-        [types.InlineKeyboardButton(text="Подтвердить", callback_data="num_finish")]
+        [
+            types.InlineKeyboardButton(
+                text="Подтвердить", callback_data="num_finish"
+            )
+        ],
     ]
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
@@ -34,8 +38,7 @@ def get_keyboard():
 
 async def update_num_text(message: types.Message, new_value: int):
     await message.edit_text(
-        f"Укажите число: {new_value}",
-        reply_markup=get_keyboard()
+        f"Укажите число: {new_value}", reply_markup=get_keyboard()
     )
 
 
@@ -55,13 +58,13 @@ async def callbacks_num(callback: types.CallbackQuery):
     if action == "incr":
         print(callback)
         print(callback.message)
-        user_data[callback.from_user.id] = user_value+1
+        user_data[callback.from_user.id] = user_value + 1
         print(callback)
         print(callback.message)
-        await update_num_text(callback.message, user_value+1)
+        await update_num_text(callback.message, user_value + 1)
     elif action == "decr":
-        user_data[callback.from_user.id] = user_value-1
-        await update_num_text(callback.message, user_value-1)
+        user_data[callback.from_user.id] = user_value - 1
+        await update_num_text(callback.message, user_value - 1)
     elif action == "finish":
         await callback.message.edit_text(f"Итого: {user_value}")
 
@@ -70,13 +73,12 @@ async def callbacks_num(callback: types.CallbackQuery):
 
 @dp.message()
 async def handle_other_messages(message: types.Message):
-    await message.answer(
-        "Нажми /start или /help."
-    )
+    await message.answer("Нажми /start или /help.")
 
 
 async def main():
     await dp.start_polling(bot)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     asyncio.run(main())
