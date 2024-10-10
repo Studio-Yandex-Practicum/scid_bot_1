@@ -7,6 +7,7 @@ from aiogram.filters import Command, StateFilter
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.state import StatesGroup, State
 from aiogram import F
+from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from dotenv import load_dotenv
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
@@ -82,22 +83,28 @@ async def show_base_admin_panel(message: types.Message):
 
 
 # FSM создать кнопку
-
-
 class CreateButton(StatesGroup):
     typing_button_name = State()
     typing_parent_id = State()
-    # creating_button = State()
+    typing_content_text = State()
+    typing_content_link = State()
+    adding_content_image = State()
+    submiting_button = State()
 
 
 base_reply_markup = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="Назад")],
+        # [KeyboardButton(text="Назад")],
         [KeyboardButton(text="Отмена")],
     ],
     resize_keyboard=True,  # Опционально: делает клавиатуру компактной
     # one_time_keyboard=True  # Опционально: убирает клавиатуру после нажатия
 )
+
+not_required_reply_markup = ReplyKeyboardMarkup(
+        keyboard=[[KeyboardButton(text="Пропустить")]] + base_reply_markup.keyboard,
+        resize_keyboard=True
+    )
 
 
 @dp.callback_query(F.data == "post_button")
@@ -112,6 +119,9 @@ async def handle_post_button(callback: types.CallbackQuery, state: FSMContext):
 
 @dp.message(CreateButton.typing_button_name)
 async def name_typed(message: Message, state: FSMContext):
+    if message.text == "Отмена":
+        await cancel_and_return_to_admin_panel(message, state)
+        return
     await state.update_data(typed_name=message.text)
     await message.answer(
         text="Теперь введите айди кнопки-родителя:",
@@ -122,26 +132,121 @@ async def name_typed(message: Message, state: FSMContext):
 
 @dp.message(CreateButton.typing_parent_id)
 async def parent_id_typed(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    await state.update_data(
-        typed_parent_id=message.text
-    )  # так можно будет дальше использовать
+    if message.text == "Отмена":
+        await cancel_and_return_to_admin_panel(message, state)
+        return
+    # if message.text == "Назад":
+    #     await state.set_state(CreateButton.typing_button_name)
+    #     await message.answer(
+    #         text="Введите название новой кнопки",
+    #         reply_markup=base_reply_markup
+    #     )
+    #     return
+    await state.update_data(typed_parent_id=message.text)
     await message.answer(
-        text=(f"Создаю кнопку с именем:{user_data['typed_name']},"
-              f"дочернюю от айди {message.text}"),
-        reply_markup=base_reply_markup,  # добавить здесь, что идти дальше если нажали окей
+        text="Теперь введите текст сообщения над кнопкой (можно пропустить):",
+        reply_markup=not_required_reply_markup,
     )
-    user_data = await state.get_data()
-    name = user_data["typed_name"]
-    parent_id = message.text  # и user_data['typed_parent_id']
+    await state.set_state(CreateButton.typing_content_text)
 
-    button = await add_child_button(name, parent_id)
 
+@dp.message(CreateButton.typing_content_text)
+async def content_text_typed(message: Message, state: FSMContext):
+    if message.text == "Отмена":
+        await cancel_and_return_to_admin_panel(message, state)
+        return
+    if message.text != "Пропустить":
+        await state.update_data(typed_content_text=message.text)
     await message.answer(
-        f"Успешно создал кнопку с именем:{button['label']},"
-        f"дочернюю от кнопки с айди {button['parent_id']}"
+        text="Теперь отправьте линк кнопки (можно пропустить):",  # где будет этот линк?
+        reply_markup=not_required_reply_markup,
     )
+    await state.set_state(CreateButton.typing_content_link)
+
+
+@dp.message(CreateButton.typing_content_link)
+async def content_link_sent(message: Message, state: FSMContext):
+    if message.text == "Отмена":
+        await cancel_and_return_to_admin_panel(message, state)
+        return
+    if message.text != "Пропустить":
+        await state.update_data(typed_content_link=message.text)
+    await message.answer(
+        text="Теперь отправьте изображение, которое будет над кнопкой (можно пропустить):",
+        reply_markup=not_required_reply_markup,
+    )
+    await state.set_state(CreateButton.adding_content_image)
+
+
+@dp.message(CreateButton.adding_content_image)
+async def content_image_sent(message: Message, state: FSMContext):
+    if message.text == "Отмена":
+        await cancel_and_return_to_admin_panel(message, state)
+        return
+    if message.text != "Пропустить":
+        photo = message.photo[-1].file_id
+        await state.update_data(
+            sent_content_image=photo
+        )
+    user_data = await state.get_data()
+    new_reply_markup = ReplyKeyboardMarkup(
+        keyboard=[[KeyboardButton(text="✅ Создать кнопку")]] + base_reply_markup.keyboard,
+        resize_keyboard=True
+    )
+    await message.answer(
+    # await message.answer_photo(
+        # photo=user_data['sent_content_image'],
+        text=(f"Кнопка почти готова, осталось подтвердить:\n"
+              f"Текст на кнопке: <b>{user_data['typed_name']}</b>\n"
+              f"Айди кнопки-родителя: <b>{user_data['typed_parent_id']}</b>\n"
+              f"Текст сообщения над кнопкой: <b>{user_data.get('typed_content_text', '')}</b>\n"
+              f"Линк кнопки: <b>{user_data.get('typed_content_link', '')}</b>\n"
+              f"Изображение:"
+              ),
+        reply_markup=new_reply_markup,
+        parse_mode=ParseMode.HTML
+    )
+    if 'sent_content_image' in user_data:
+        await message.answer_photo(
+            photo=photo)
+    await state.set_state(CreateButton.submiting_button)
+
+
+@dp.message(CreateButton.submiting_button)
+async def button_submited(message: Message, state: FSMContext):
+    if message.text == "Отмена":
+        await cancel_and_return_to_admin_panel(message, state)
+        return
+    user_data = await state.get_data()
+    label = user_data["typed_name"]
+    parent_id = user_data['typed_parent_id']
+    content_text = user_data.get('typed_content_text', '')
+    content_link = user_data.get('typed_content_link', '')
+    content_image = user_data.get('sent_content_image', None)
+
+    button = await add_child_button(label, parent_id, content_text, content_link, content_image)
+    # button = await add_child_button(label, parent_id, content_text, content_link)
+    print(button)
+    await message.answer(
+        text=(f"Успешно создал кнопку:\n"
+              f"Текст на кнпоке: <b>{button['label']}</b>\n"
+              f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
+              f"Текст сообщения над кнопкой: <b>{button['content_text']}</b>\n"
+              f"Линк кнопки: <b>{button['content_link']}</b>\n"
+              f"Изображение: <b>{button['content_image']}</b>"
+              ),
+        parse_mode=ParseMode.HTML
+    )
+    await cancel_and_return_to_admin_panel(message, state)
+
+
+# отмена операции
+async def cancel_and_return_to_admin_panel(message: Message, state: FSMContext):
     await state.clear()
+    await message.answer("Возвращаюсь в основное меню", reply_markup=types.ReplyKeyboardRemove())
+    # await message.answer("Действие отменено.", reply_markup=types.ReplyKeyboardRemove())
+    # Вызов вашей админ панели
+    await show_base_admin_panel(message)
 
 
 # проверка, что кнопка работает
