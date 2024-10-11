@@ -32,6 +32,9 @@ async def create_user(
                             is_manager=is_manager,
                         )
                     )
-                    print(f"Пользователь создан: {user.email}")
+                    print(f'Пользователь создан: {user.email}')
+                    return user
     except UserAlreadyExists:
-        print(f"Пользователь {email} уже существует")
+        print(f'Пользователь {email} уже существует')
+        return None
+      

@@ -13,8 +13,8 @@ from services.users import create_user
 async def lifespan(app: FastAPI):
     await create_user(
         email=settings.db.first_superuser_email,
-        name="Администратор",
-        telegram_user_id=None,
+        name='Администратор',
+        telegram_user_id=settings.db.first_superuser_tg_id,
         password=settings.db.first_superuser_password,
         is_superuser=True,
         is_manager=True,

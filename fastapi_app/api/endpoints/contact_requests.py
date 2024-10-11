@@ -43,6 +43,25 @@ async def take_contact_request_to_work(
 
 @router.post(
     "/",
+    '/close_request',
+    response_model=ContactRequestResponse,
+    summary='"Закрывает" заявку. Устанавливает статус выполнена.'
+)
+async def create_contact_request(
+    contact_request_id: int,
+    session: AsyncSession = Depends(get_async_session),
+) -> ContactRequest:
+    return await contact_requests_crud.close_request(
+        contact_request=await check_contact_request_exist(
+            contact_request_id=contact_request_id,
+            session=session
+        ),
+        session=session
+    )
+
+
+@router.post(
+    '/',
     response_model=ContactRequestResponse,
     summary="Создаёт заявку на обратную связь",
     description=('Заявка будет иметь статус "Не выполнена". Время UTC.'),
