@@ -41,7 +41,11 @@ async def lifespan(app: FastAPI):
     async with async_session_maker() as session:
         await create_main_menu_button(session)
         if settings.app.load_demo_data_fixtures:
-            await load_fixtures('fixtures/presentation.yaml', session)
+            await load_fixtures(
+                'fixtures/presentation.yaml',
+                'fixtures/images',
+                session
+            )
     yield
 
 

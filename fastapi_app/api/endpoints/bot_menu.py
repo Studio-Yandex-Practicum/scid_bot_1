@@ -20,7 +20,7 @@ from schemas.bot_menu import (
     MenuButtonFileCreate,
     MenuButtonFileResponse,
     MenuButtonResponse,
-    MenuButtonUpdate,
+    MenuButtonUpdate
 )
 from services.bot_menu import delete_image_file_if_exist
 from services.files import delete_file, save_file

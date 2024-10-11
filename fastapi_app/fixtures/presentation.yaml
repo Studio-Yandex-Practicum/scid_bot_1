@@ -2,25 +2,25 @@ MenuButton:
   - label: "Получить информацию о компании"
     content_text: "Вот несколько вариантов информации о нашей компании. Что именно вас интересует?"
     content_link: null
-    content_image: "fixtures/images/logo.png"
+    content_image: "files/images/logo.png"
     parent_id: 1
     id: 2
   - label: "Презентация компании"
     content_text: "Вот ссылка на презентацию о компании"
     content_link: "https://scid.ru/upload/presentation_scid_2024.pdf"
-    content_image: "fixtures/images/presentation.jpg"
+    content_image: "files/images/presentation.jpg"
     parent_id: 2
     id: 3
   - label: "Карточка компании"
     content_text: "Вот ссылка на карточку компании"
     content_link: "https://scid.ru/agency"
-    content_image: "fixtures/images/agency.jpg"
+    content_image: "files/images/agency.jpg"
     parent_id: 2
     id: 4
   - label: "Узнать о продуктах и услугах"
     content_text: "Мы предлагаем следующие продукты и услуги. Какой из них вас интересует?"
     content_link: null
-    content_image: "fixtures/images/logo.png"
+    content_image: "files/images/logo.png"
     parent_id: 1
     id: 5
   - label: "Разработка сайтов"
@@ -146,7 +146,7 @@ MenuButton:
   - label: "Получить техническую поддержку"
     content_text: "Какой вид поддержки вам нужен"
     content_link: null
-    content_image: "fixtures/images/support.jpeg"
+    content_image: "files/images/support.jpeg"
     parent_id: 1
     id: 26
   - label: "Общие вопросы"
@@ -170,7 +170,7 @@ MenuButton:
   - label: "Посмотреть портфолио"
     content_text: "Вот ссылка на наше портфолио. Хотите узнать больше о конкретных проектах или услугах?"
     content_link: "https://scid.ru/cases"
-    content_image: "fixtures/images/potfolio.jpg"
+    content_image: "files/images/potfolio.jpg"
     parent_id: 1
     id: 30
   - label: "Посмотреть проекты"
@@ -207,7 +207,7 @@ MenuButton:
 MenuButtonFile:
   - id: 1
     button_id: 3
-    file_path: "fixtures/images/presentation_scid_2024.pdf"
+    file_path: "files/images/presentation_scid_2024.pdf"
     file_type: "application/pdf"
 
 ContactRequest:
