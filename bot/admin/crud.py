@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
+API_URL = os.getenv('API_URL')  # проставить
 
 
 async def add_child_button(
@@ -27,4 +28,13 @@ async def add_child_button(
                              data=data,
                              files=files)
 
+    return response.json()
+
+
+async def get_button_content(button_id):
+    url = f'http://127.0.0.1/bot_menu/{button_id}/get-content'
+    headers = {
+        'accept': 'application/json',
+    }
+    response = requests.get(url, headers=headers)
     return response.json()
