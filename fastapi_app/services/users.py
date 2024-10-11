@@ -1,9 +1,8 @@
 import contextlib
 
-from fastapi_users.exceptions import UserAlreadyExists
-
 from core.db import get_async_session
 from core.users import current_user, get_user_db, get_user_manager
+from fastapi_users.exceptions import UserAlreadyExists
 from schemas.users import UserCreate, UserPasswordUpdate
 
 get_async_session_context = contextlib.asynccontextmanager(get_async_session)
@@ -38,3 +37,4 @@ async def create_user(
     except UserAlreadyExists:
         print(f'Пользователь {email} уже существует')
         return None
+      

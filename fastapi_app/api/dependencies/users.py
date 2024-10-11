@@ -1,7 +1,6 @@
-from fastapi import Depends, HTTPException, status
-
-from models.user import User
 from core.users import current_user
+from fastapi import Depends, HTTPException, status
+from models.user import User
 
 
 async def get_manager_or_superuser(
@@ -10,6 +9,6 @@ async def get_manager_or_superuser(
     if not current_user.is_manager and not current_user.is_superuser:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Доступно только для менеджера или администратора."
+            detail="Доступно только для менеджера или администратора.",
         )
     return current_user

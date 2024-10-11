@@ -5,6 +5,7 @@ from crud.base import CRUDBase
 from models.contact_requests import ContactRequest
 from models.user import User
 from schemas.users import UserCreate, UserUpdate
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class CRUDUser(CRUDBase[User, UserUpdate, UserCreate]):
@@ -15,7 +16,7 @@ class CRUDUser(CRUDBase[User, UserUpdate, UserCreate]):
         self, user_tg_id: str, session: AsyncSession
     ) -> User:
         return await self._get_first_by_attribute(
-            'telegram_user_id', user_tg_id, session
+            "telegram_user_id", user_tg_id, session
         )
 
     async def get_all_managers(

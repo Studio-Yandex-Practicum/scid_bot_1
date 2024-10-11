@@ -1,38 +1,30 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, File, Form, UploadFile
-from fastapi.responses import FileResponse
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from api.bot_menu_validators import (
-    check_button_exist,
-    check_button_file_exist,
-    check_button_image_file_exist,
-    check_button_is_main_menu,
-)
+from api.bot_menu_validators import (check_button_exist,
+                                     check_button_file_exist,
+                                     check_button_image_file_exist,
+                                     check_button_is_main_menu)
 from core.db import get_async_session
 from core.users import current_superuser
 from crud.bot_menu import bot_menu_crud, bot_menu_files_crud
+from fastapi import APIRouter, Depends, File, Form, UploadFile
+from fastapi.responses import FileResponse
 from models.bot_menu import MenuButton
-from schemas.bot_menu import (
-    MenuButtonChildrenResponse,
-    MenuButtonCreate,
-    MenuButtonFileCreate,
-    MenuButtonFileResponse,
-    MenuButtonResponse,
-    MenuButtonUpdate,
-)
+from schemas.bot_menu import (MenuButtonChildrenResponse, MenuButtonCreate,
+                              MenuButtonFileCreate, MenuButtonFileResponse,
+                              MenuButtonResponse, MenuButtonUpdate)
 from services.bot_menu import delete_image_file_if_exist
 from services.files import delete_file, save_file
+from sqlalchemy.ext.asyncio import AsyncSession
 
-router = APIRouter(prefix='/bot_menu', tags=['bot_menu'])
+router = APIRouter(prefix="/bot_menu", tags=["bot_menu"])
 
 
 @router.get(
-    '/get-main-menu-button',
+    "/get-main-menu-button",
     response_model=MenuButtonResponse,
-    summary='Возвращает первую (базовую) кнопку',
-    description=('Изначальная кнопка, к которой привязываются все осталньые'),
+    summary="Возвращает первую (базовую) кнопку",
+    description=("Изначальная кнопка, к которой привязываются все осталньые"),
 )
 async def get_main_menu_button(
     session: AsyncSession = Depends(get_async_session),
@@ -41,10 +33,10 @@ async def get_main_menu_button(
 
 
 @router.get(
-    '/{button_id}/get-content',
+    "/{button_id}/get-content",
     response_model=MenuButtonResponse,
-    summary='Возвращает контент, который должна отображать кнопка',
-    description=('Возвращает: текст, изображение, файлы, ссылку'),
+    summary="Возвращает контент, который должна отображать кнопка",
+    description=("Возвращает: текст, изображение, файлы, ссылку"),
 )
 async def get_button_content(
     button_id: int,
@@ -57,9 +49,9 @@ async def get_button_content(
 
 
 @router.get(
-    '/{button_id}/get-image-file',
-    summary='Возвращает файл изображения кнопки',
-    description=('Передаёт файл изображения, указанный для кнопки'),
+    "/{button_id}/get-image-file",
+    summary="Возвращает файл изображения кнопки",
+    description=("Передаёт файл изображения, указанный для кнопки"),
 )
 async def get_button_image_file(
     button_id: int,
@@ -72,10 +64,10 @@ async def get_button_image_file(
 
 
 @router.get(
-    '/{button_id}/get-child-buttons',
+    "/{button_id}/get-child-buttons",
     response_model=list[MenuButtonChildrenResponse],
-    summary='Возвращает список дочерних кнопок, для текущей',
-    description=('Возвращает: id кнопки, родителя и её название'),
+    summary="Возвращает список дочерних кнопок, для текущей",
+    description=("Возвращает: id кнопки, родителя и её название"),
 )
 async def get_button_children(
     button_id: int,
@@ -92,11 +84,11 @@ async def get_button_children(
 
 
 @router.post(
-    '/{button_id}/add-child-button',
+    "/{button_id}/add-child-button",
     response_model=MenuButtonResponse,
     dependencies=[Depends(current_superuser)],
-    summary='Добавляет кнопку в базу данных',
-    description=('Добавляет кнопку к родителю, как дочернюю'),
+    summary="Добавляет кнопку в базу данных",
+    description=("Добавляет кнопку к родителю, как дочернюю"),
 )
 async def create_new_bot_menu_button(
     button_id: int,
@@ -127,10 +119,10 @@ async def create_new_bot_menu_button(
 
 
 @router.patch(
-    '/{button_id}/change_parent',
+    "/{button_id}/change_parent",
     response_model=MenuButtonResponse,
     dependencies=[Depends(current_superuser)],
-    summary='Изменяет родителя кнопки',
+    summary="Изменяет родителя кнопки",
 )
 async def change_parent(
     button_id: int,
@@ -147,14 +139,14 @@ async def change_parent(
 
 
 @router.patch(
-    '/{button_id}',
+    "/{button_id}",
     response_model=MenuButtonResponse,
     dependencies=[Depends(current_superuser)],
-    summary='Обновляет кнопку меню',
+    summary="Обновляет кнопку меню",
     description=(
-        'Не обновляет поле родителя, обновляет только поля:'
-        'название, контент текст, контент изображение (путь до файла), '
-        'контент ссылка'
+        "Не обновляет поле родителя, обновляет только поля:"
+        "название, контент текст, контент изображение (путь до файла), "
+        "контент ссылка"
     ),
 )
 async def update_bot_menu_button(
@@ -179,12 +171,12 @@ async def update_bot_menu_button(
 
     update_data = MenuButtonUpdate(
         label=label if label else existing_button.label,
-        content_text=content_text
-        if content_text
-        else existing_button.content_text,
-        content_link=content_link
-        if content_link
-        else existing_button.content_link,
+        content_text=(
+            content_text if content_text else existing_button.content_text
+        ),
+        content_link=(
+            content_link if content_link else existing_button.content_link
+        ),
         content_image=image_path,
     )
     return await bot_menu_crud.update(
@@ -195,11 +187,11 @@ async def update_bot_menu_button(
 
 
 @router.delete(
-    '/{button_id}',
+    "/{button_id}",
     response_model=MenuButtonResponse,
     dependencies=[Depends(current_superuser)],
-    summary='Удаляет кнопку меню',
-    description=('Безвозвратно удаляет кнопку меню И ВСЕ ДОЧЕРНИЕ.'),
+    summary="Удаляет кнопку меню",
+    description=("Безвозвратно удаляет кнопку меню И ВСЕ ДОЧЕРНИЕ."),
 )
 async def delete_bot_menu_button(
     button_id: int,
@@ -230,11 +222,11 @@ async def delete_bot_menu_button(
 
 
 @router.post(
-    '/{button_id}/files',
+    "/{button_id}/files",
     response_model=list[MenuButtonFileResponse],
     dependencies=[Depends(current_superuser)],
-    summary='Добавляет файлы к кнопке',
-    description=('Добавляет файлы, как вложение, для возможности скачивания'),
+    summary="Добавляет файлы к кнопке",
+    description=("Добавляет файлы, как вложение, для возможности скачивания"),
 )
 async def add_files_to_button(
     button_id: int,
@@ -263,9 +255,9 @@ async def add_files_to_button(
 
 
 @router.get(
-    '/{button_id}/files',
+    "/{button_id}/files",
     response_model=list[MenuButtonFileResponse],
-    summary='Возвращает информацию о прикреплённых к кнопке файлах',
+    summary="Возвращает информацию о прикреплённых к кнопке файлах",
 )
 async def get_bot_button_files_info(
     button_id: int,
@@ -282,11 +274,11 @@ async def get_bot_button_files_info(
 
 
 @router.delete(
-    '/{button_id}/files',
+    "/{button_id}/files",
     response_model=MenuButtonFileResponse,
     dependencies=[Depends(current_superuser)],
-    summary='Удаляет файл из кнопки',
-    description=('Безвозвратно удаляет файл из вложений кнопки и с сервера'),
+    summary="Удаляет файл из кнопки",
+    description=("Безвозвратно удаляет файл из вложений кнопки и с сервера"),
 )
 async def delete_bot_menu_button_file(
     button_id: int,

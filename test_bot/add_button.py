@@ -1,12 +1,13 @@
-import os
 import logging
+import os
+
+import aiohttp
 from aiogram import Bot, Dispatcher, Router
-from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
 from dotenv import load_dotenv
-import aiohttp
 
 # Загрузка переменных окружения
 load_dotenv()
@@ -33,19 +34,24 @@ class ButtonStates(StatesGroup):
     choosing_parent_id = State()
     final_choice = State()
 
+
 # Стартовая команда для редактирования
 
 
 @router.message(Command("start_edit"))
 async def start_edit(message: Message, state: FSMContext):
     # Показываем клавиатуру с вариантами
-    keyboard = ReplyKeyboardMarkup(keyboard=[
-        [KeyboardButton(text="Создать новую кнопку")],
-        [KeyboardButton(text="Добавить кнопку к родительской")]
-    ], resize_keyboard=True)
+    keyboard = ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text="Создать новую кнопку")],
+            [KeyboardButton(text="Добавить кнопку к родительской")],
+        ],
+        resize_keyboard=True,
+    )
 
     await message.answer("Что вы хотите сделать?", reply_markup=keyboard)
     await state.set_state(ButtonStates.choosing_action)
+
 
 # Обработка выбора действия
 
@@ -86,6 +92,7 @@ async def add_to_existing_button(message: Message, state: FSMContext):
     await message.answer("Введите ID родительской кнопки:")
     await state.set_state(ButtonStates.choosing_parent_id)
 
+
 # Ввод parent_id
 
 
@@ -95,6 +102,7 @@ async def set_parent_id(message: Message, state: FSMContext):
     await state.update_data(parent_id=parent_id)
     await message.answer("Введите label для новой кнопки (обязательно):")
     await state.set_state(ButtonStates.entering_label)
+
 
 # Ввод label (обязательное поле)
 
@@ -108,6 +116,7 @@ async def set_label(message: Message, state: FSMContext):
     await message.answer("Введите content_text (или отправьте 'пропустить'):")
     await state.set_state(ButtonStates.entering_content_text)
 
+
 # Пропуск или ввод content_text
 
 
@@ -119,16 +128,20 @@ async def set_content_text(message: Message, state: FSMContext):
     await message.answer("Введите content_image (или отправьте 'пропустить'):")
     await state.set_state(ButtonStates.entering_content_image)
 
+
 # Пропуск или ввод content_image
 
 
 @router.message(ButtonStates.entering_content_image)
 async def set_content_image(message: Message, state: FSMContext):
-    content_image = message.text if message.text.lower() != "пропустить" else ""
+    content_image = (
+        message.text if message.text.lower() != "пропустить" else ""
+    )
     await state.update_data(content_image=content_image)
 
     await message.answer("Введите content_link (или отправьте 'пропустить'):")
     await state.set_state(ButtonStates.entering_content_link)
+
 
 # Пропуск или ввод content_link
 
@@ -141,34 +154,33 @@ async def set_content_link(message: Message, state: FSMContext):
     # Отправляем POST запрос на API
     await send_post_request(message, state)
 
+
 # Отправка POST-запроса на API
 
 
 async def send_post_request(message: Message, state: FSMContext):
     user_data = await state.get_data()
-    parent_id = user_data.get('parent_id')
-    label = user_data.get('label')
-    content_text = user_data.get('content_text')
-    content_image = user_data.get('content_image')
-    content_link = user_data.get('content_link')
+    parent_id = user_data.get("parent_id")
+    label = user_data.get("label")
+    content_text = user_data.get("content_text")
+    content_image = user_data.get("content_image")
+    content_link = user_data.get("content_link")
 
     form_data = aiohttp.FormData()
-    form_data.add_field('label', label)
-    form_data.add_field('content_text', content_text)
-    form_data.add_field('content_image', content_image)
-    form_data.add_field('content_link', content_link)
-    form_data.add_field('parent_id', str(parent_id))
-
-    headers = {
-        "Authorization": f"Bearer {JWT_TOKEN}"
-    }
+    form_data.add_field("label", label)
+    form_data.add_field("content_text", content_text)
+    form_data.add_field("content_image", content_image)
+    form_data.add_field("content_link", content_link)
+    form_data.add_field("parent_id", str(parent_id))
+    print(JWT_TOKEN)
+    headers = {"Authorization": f"Bearer {JWT_TOKEN}"}
 
     async with aiohttp.ClientSession() as session:
         try:
             async with session.post(
                 f"{API_URL}/bot_menu/{parent_id}/add-child-button",
                 data=form_data,
-                headers=headers
+                headers=headers,
             ) as response:
                 if response.status == 200:
                     result = await response.json()
@@ -186,24 +198,29 @@ async def send_post_request(message: Message, state: FSMContext):
                 f"Произошла ошибка при обращении к FastAPI: {str(e)}"
             )
 
+
 # После добавления кнопки — выбор действия
 
 
 # Добавляем state здесь!
-async def show_choice_menu(message: Message,
-                           new_button_id: int,
-                           state: FSMContext):
-    keyboard = ReplyKeyboardMarkup(keyboard=[
-        [KeyboardButton(text="Создать дочернюю кнопку")],
-        [KeyboardButton(text="Создать новую кнопку")]
-    ], resize_keyboard=True)
+async def show_choice_menu(
+    message: Message, new_button_id: int, state: FSMContext
+):
+    keyboard = ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text="Создать дочернюю кнопку")],
+            [KeyboardButton(text="Создать новую кнопку")],
+        ],
+        resize_keyboard=True,
+    )
 
     await message.answer(
         "Кнопка успешно добавлена!"
         f" ID: {new_button_id}\nЧто хотите сделать дальше?",
-        reply_markup=keyboard
+        reply_markup=keyboard,
     )
     await state.set_state(ButtonStates.final_choice)  # Обновляем состояние
+
 
 # Обработка выбора после добавления
 
@@ -252,6 +269,7 @@ async def create_new_button_after(message: Message, state: FSMContext):
     await message.answer("Введите label для новой кнопки (обязательно):")
     await state.set_state(ButtonStates.entering_label)
 
+
 # Регистрация маршрутов
 dp.include_router(router)
 
@@ -261,6 +279,8 @@ dp.include_router(router)
 async def main():
     await dp.start_polling(bot)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import asyncio
+
     asyncio.run(main())

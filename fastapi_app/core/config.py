@@ -6,15 +6,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class AppConfig(BaseModel):
-    app_title: str = 'Настройка и взаимодействие с телеграм ботом scid'
+    app_title: str = "Настройка и взаимодействие с телеграм ботом scid"
     app_description: str = (
-        'Позволяет настроить телеграм бот scid: создать меню, контент, '
-        'добавить сотрудников поддержки, к которым может обратиться '
-        'пользователь, а так же просмотреть отзывы клиентов'
+        "Позволяет настроить телеграм бот scid: создать меню, контент, "
+        "добавить сотрудников поддержки, к которым может обратиться "
+        "пользователь, а так же просмотреть отзывы клиентов"
     )
-    base_dir_for_files: Path = Path(
-        'files/'
-    )   # При изменении папки сохранения
+    base_dir_for_files: Path = Path("files/")  # При изменении папки сохранения
     # необхоидмо не забыть изменить настройки nginx и docker volume
     chunk_size: int = 1024
     load_demo_data_fixtures: bool = False
@@ -30,17 +28,17 @@ class DBConfig(BaseModel):
 
 
 class SecurityConfig(BaseModel):
-    secret: str = 'YOUR_SECRET_KEY'
-    jwt_lifetime: int = 3500
+    secret: str = "YOUR_SECRET_KEY"
+    jwt_lifetime: int = 720000
 
 
 class EmailConfig(BaseModel):
     mail_username: str = (None,)
     mail_password: str = (None,)
-    mail_from: str = ('scid_bot_1@admin.com',)
+    mail_from: str = ("scid_bot_1@admin.com",)
     mail_port: int = (587,)
     mail_server: str = (None,)
-    mail_from_name: str = ('scid_bot_1',)
+    mail_from_name: str = ("scid_bot_1",)
     mail_starttls: bool = (True,)
     mail_ssl_tls: bool = (False,)
     use_credentials: bool = (True,)
@@ -49,11 +47,11 @@ class EmailConfig(BaseModel):
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file='.env',
-        env_file_encoding='utf-8',
+        env_file=".env",
+        env_file_encoding="utf-8",
         case_sensitive=False,
-        env_nested_delimiter='__',
-        env_prefix='APP_CONFIG__',
+        env_nested_delimiter="__",
+        env_prefix="APP_CONFIG__",
     )
     app: AppConfig = AppConfig()
     db: DBConfig = DBConfig()
