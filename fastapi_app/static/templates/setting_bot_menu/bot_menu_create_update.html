@@ -1,95 +1,318 @@
 {% extends 'base_pages/main_page.html' %} {% block main_content %}
+{% block script %}
+<script>
 
-<div class="max-w-md mx-auto bg-white p-5 rounded-md shadow-md">
-  <h2 class="text-2xl font-bold text-center mb-5">Добавить кнопку меню</h2>
-  <form action="/your-post-endpoint" method="POST">
-    <div class="mb-4">
-      <label for="label" class="block text-sm font-medium text-gray-700"
-        >Метка</label
-      >
-      <input
-        type="text"
-        name="label"
-        id="label"
-        required
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-      />
-    </div>
+function download_attach_file(url) {
+    fetch(url)
+    .then(res => {
+        const disposition = res.headers.get('Content-Disposition');
+        filename = disposition.split(/;(.+)/)[1].split(/=(.+)/)[1];
+        if (filename.toLowerCase().startsWith("utf-8''"))
+            filename = decodeURIComponent(filename.replace("utf-8''", ''));
+        else
+            filename = filename.replace(/['"]/g, '');
+        return res.blob();
+    })
+    .then(blob => {
+        var url = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove(); 
+    });
+}
 
-    <div class="mb-4">
-      <label for="content_text" class="block text-sm font-medium text-gray-700"
-        >Текст контента</label
-      >
-      <textarea
-        name="content_text"
-        id="content_text"
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-      ></textarea>
-    </div>
+function delete_attach_file(url) {
+    if (confirm('Точно удалить файл? Файл будет удалён с сервера безвозвратно! Так же сохраните изменени в карточке, перед удалением.')) {
+        fetch(url, {
+            method: "DELETE",
+            headers: {
+              "Content-type": "application/json; charset=UTF-8"
+            }
+          }).then(res => {
+            location.reload()
+          })
+          .catch(error => {
+            aler(error)
+          });
+      } else {
+      }
+}
 
-    <div class="mb-4">
-      <label for="content_image" class="block text-sm font-medium text-gray-700"
-        >Ссылка на изображение</label
-      >
-      <input
-        type="text"
-        name="content_image"
-        id="content_image"
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-      />
-    </div>
 
-    <div class="mb-4">
-      <label for="content_link" class="block text-sm font-medium text-gray-700"
-        >Ссылка на контент</label
+</script>
+{% endblock script %}
+<div class="p-5">
+  <div
+    class="mx-auto bg-background-light dark:bg-background-dark p-5 rounded-md shadow-md"
+  >
+    <h2 class="text-2xl font-bold text-left mb-5">
+      {% if update %}
+      <span
+        class="font-bold text-xl text-text-light-800 dark:text-text-dark-300"
+        >Редактирование карточки:</span
       >
-      <input
-        type="text"
-        name="content_link"
-        id="content_link"
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-      />
-    </div>
-
-    <div class="mb-4">
-      <label for="parent_id" class="block text-sm font-medium text-gray-700"
-        >Родительская кнопка</label
-      >
-      <select
-        name="parent_id"
-        id="parent_id"
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-      >
-        <option value="">Нет родителя</option>
-        <!-- Здесь предполагается, что вы будете генерировать опции динамически из базы данных -->
-        <option value="1">Кнопка 1</option>
-        <option value="2">Кнопка 2</option>
-      </select>
-    </div>
-
-    <div class="mb-4">
-      <label for="is_main_menu_button" class="flex items-center">
-        <input
-          type="checkbox"
-          name="is_main_menu_button"
-          id="is_main_menu_button"
-          value="true"
-          class="mr-2 leading-tight"
-        />
-        <span class="text-sm font-medium text-gray-700"
-          >Главная кнопка меню</span
+      <br />
+      <span class="font-bold text-lg">"{{ button.label }}"</span> {% else %}
+      Создать новую карточку {% endif %}
+    </h2>
+    <hr class="mb-2" />
+    <div class="flex-wrap gap-4">
+      <div class="flex-shrink">
+        <form
+          class="space-y-4 md:space-y-6 text-text-light dark:text-text-dark"
+          action="{% if update %}{{ url_for('start_setting_bot_menu_update_button', button_id=button.id) }}{% endif %}"
+          method="post"
+          enctype="multipart/form-data"
         >
-      </label>
-    </div>
+          <div>
+            <label for="label" class="block mb-2 text-sm font-medium"
+              >Наименование карточки</label
+            >
+            <input
+              type="text"
+              name="label"
+              id="label"
+              class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
+              placeholder="Новая карточка"
+              required=""
+              value="{% if button.label %}{{ button.label }}{% endif %}"
+            />
+          </div>
+          <div>
+            <label for="content_text" class="block mb-2 text-sm font-medium"
+              >Контент: текст</label
+            >
+            <input
+              type="text"
+              name="content_text"
+              id="content_text"
+              class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
+              placeholder="Текст, который будет виден пользователю"
+              value="{% if button.content_text %}{{ button.content_text }}{% endif %}"
+            />
+          </div>
+          <div>
+            <label for="content_link" class="block mb-2 text-sm font-medium"
+              >Контент: ссылка</label
+            >
+            <input
+              type="url"
+              name="content_link"
+              id="content_link"
+              class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
+              placeholder="https://link.com"
+              value="{% if button.content_link %}{{ button.content_link }}{% endif %}"
+            />
+          </div>
+          <div>
+            <label class="block mb-2 text-sm font-medium"
+              >Контент: изображение (текущий): {{ button.content_image|replace(files_folder, '') }}</label
+            >
+            <img src="{{ url_for(files_folder, path=button.content_image|replace(files_folder, '')) }}" width="128"/>
+          </div>
+          <div>
+            <label for="content_image" class="block mb-2 text-sm font-medium"
+              >Контент: изображение (новый)</label
+            >
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png"
+              name="content_image"
+              id="content_image"
+              class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
+              value="{% if button.content_image %} {{ button.content_image }} {% endif %}"
+            />
+          </div>
+          <div class="flex">
+            <div class="flex items-center h-5">
+              <input
+                id="remove_content_image-checkbox"
+                aria-describedby="remove_content_image-checkbox-text"
+                type="checkbox"
+                name="remove_content_image"
+                class="w-4 h-4 text-contrast accent-contrast bg-background-light border-background-light-secondary-950 rounded focus:ring-contrast dark:focus:ring-contrast dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+            </div>
+            <div class="ms-2 text-sm">
+              <label
+                for="remove_content_image-checkbox"
+                class="font-medium text-gray-900 dark:text-gray-300"
+                >Удалить текущее изображение?</label
+              >
+              <p
+                id="helper-checkbox-text"
+                class="text-xs font-normal text-gray-500 dark:text-gray-300"
+              >
+                Изображение будет удалено и с сервера, в том числе. Даже если Вы
+                укажете новое - оно не будет добавлено.
+              </p>
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
+          >
+            Обновить
+          </button>
+        </form>
+      </div>
+      {% if update %}
+      <div class="flex-1 mt-5">
+        <div class="relative overflow-x-auto sm:rounded-lg">
+          <table
+            class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+          >
+            <caption
+              class="ps-5 text-lg font-semibold text-left rtl:text-right text-text-light dark:text-text-dark"
+            >
+              <div class="grid grid-cols-2 content-start">
+                <span class="me-5">Дочерние карточки</span>
+                <div class="justify-self-end">
+                  <button
+                    class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-text-light-secondary border hover:bg-background-dark hover:text-text-dark border-text-light-secondary focus:ring-4 focus:outline-none focus:ring-text-light-secondary rounded-md text-center dark:border-text-light-900 dark:bg-background-dark-secondary dark:text-text-dark dark:focus:text-text-dark-secondary dark:focus:ring-text-light-secondary dark:hover:bg-background-light dark:hover:text-text-light-secondary"
+                  >
+                    <a
+                      href="{{ url_for('setting_bot_menu_update_button', button_id=1) }}"
+                      class="relative px-5 py-0.5 transition-all ease-in duration-75 rounded-md group-hover:bg-opacity-0"
+                    >
+                      Создать дочернюю карточку
+                    </a>
+                  </button>
+                </div>
+              </div>
+            </caption>
+            <thead
+              class="text-xs text-text-light uppercase bg-background-light-secondary dark:bg-background-dark-secondary dark:text-text-dark"
+            >
+              <tr>
+                <th scope="col" class="px-6 py-3">Наименование карточки</th>
+                <th scope="col" class="px-6 py-3">Текст карточки</th>
+                <th scope="col" class="px-6 py-3">
+                  <span class="sr-only">Редактировать</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for child_button in child_buttons %}
+              <tr
+                class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary"
+              >
+                <th
+                  scope="row"
+                  class="px-6 py-4 font-bold text-text-light-secondary whitespace-nowrap dark:text-text-dark"
+                >
+                  {{ child_button.label }}
+                </th>
+                {% if child_button.content_text %}
+                <td class="px-6 py-4">
+                  {{ child_button.content_text|truncate(50) }}
+                </td>
+                {% else %}
+                <td class="px-6 py-4">-</td>
+                {% endif %}
+                <td class="px-6 py-4 text-right">
+                  <button
+                    class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-text-light-secondary border hover:bg-background-dark hover:text-text-dark border-text-light-secondary focus:ring-4 focus:outline-none focus:ring-text-light-secondary rounded-md text-center dark:border-text-light-900 dark:bg-background-dark-secondary dark:text-text-dark dark:focus:text-text-dark-secondary dark:focus:ring-text-light-secondary dark:hover:bg-background-light dark:hover:text-text-light-secondary"
+                  >
+                    <a
+                      href="{{ url_for('setting_bot_menu_update_button', button_id=child_button.id) }}"
+                      class="relative px-5 py-0.5 transition-all ease-in duration-75 rounded-md group-hover:bg-opacity-0"
+                    >
+                      Редактировать
+                    </a>
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
 
-    <div class="mt-5">
-      <button
-        type="submit"
-        class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-      >
-        Создать кнопку
-      </button>
+          <table
+            class="mt-2 w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+          >
+            <caption
+              class="ps-5 text-lg font-semibold text-left rtl:text-right text-text-light dark:text-text-dark"
+            >
+            <div class="grid grid-cols-2 content-start">
+                <span class="me-5">Прикрепленные файлы</span>
+                <div class="justify-self-end">
+                  <button
+                    class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-text-light-secondary border hover:bg-background-dark hover:text-text-dark border-text-light-secondary focus:ring-4 focus:outline-none focus:ring-text-light-secondary rounded-md text-center dark:border-text-light-900 dark:bg-background-dark-secondary dark:text-text-dark dark:focus:text-text-dark-secondary dark:focus:ring-text-light-secondary dark:hover:bg-background-light dark:hover:text-text-light-secondary"
+                  >
+                    <a
+                      href="{{ url_for('setting_bot_menu_update_button', button_id=1) }}"
+                      class="relative px-5 py-0.5 transition-all ease-in duration-75 rounded-md group-hover:bg-opacity-0"
+                    >
+                      Прикрепить новый файл
+                    </a>
+                  </button>
+                </div>
+              </div>
+            </caption>
+
+            <thead
+              class="text-xs text-text-light uppercase bg-background-light-secondary dark:bg-background-dark-secondary dark:text-text-dark"
+            >
+              <tr>
+                <th scope="col" class="px-6 py-3">Наименование файла</th>
+                <th scope="col" class="px-6 py-3">
+                  <span class="sr-only">Скачать</span>
+                </th>
+                <th scope="col" class="px-6 py-3">
+                  <span class="sr-only">Удалить</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for button_file in button_files %}
+              <tr
+                class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary"
+              >
+                <th
+                  scope="row"
+                  class="px-6 py-4 font-bold text-text-light-secondary whitespace-nowrap dark:text-text-dark"
+                >
+                  <span class="me-5">{{ button_file.file_path }} ({{ button_file.file_type }})</span>
+
+                  <button
+                  class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-text-light-secondary border hover:bg-background-dark hover:text-text-dark border-text-light-secondary focus:ring-4 focus:outline-none focus:ring-text-light-secondary rounded-md text-center dark:border-text-light-900 dark:bg-background-dark-secondary dark:text-text-dark dark:focus:text-text-dark-secondary dark:focus:ring-text-light-secondary dark:hover:bg-background-light dark:hover:text-text-light-secondary"
+                  onClick=download_attach_file("{{ url_for('setting_bot_menu_get_attach_file', file_id=button_file.id) }}")
+                >
+                    <span
+                    class="relative px-5 py-0.5 transition-all ease-in duration-75 rounded-md group-hover:bg-opacity-0"
+                    >
+                        Скачать
+                    </span>
+                </button>
+
+                  <button
+                    class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-text-light-secondary border hover:bg-contrast hover:text-text-dark border-text-light-secondary focus:ring-4 focus:outline-none focus:ring-text-light-secondary rounded-md text-center dark:border-text-light-900 dark:bg-background-dark-secondary dark:text-text-dark dark:focus:text-text-dark-secondary dark:focus:ring-text-light-secondary dark:hover:bg-contrast dark:hover:text-text-light-secondary"
+                    onClick=delete_attach_file("{{ url_for('setting_bot_menu_delete_attach_file', file_id=button_file.id, button_id=button.id) }}")
+                  >
+                    <span
+                      class="relative px-5 py-0.5 transition-all ease-in duration-75 rounded-md group-hover:bg-opacity-0"
+                    >
+                      Удалить
+                    </span>
+                  </button>
+                </th>
+                <td class="px-6 py-4">
+                  
+                </td>
+                <td class="px-6 py-4 text-right">
+                  
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
     </div>
-  </form>
+  </div>
+  {% endblock main_content %}
 </div>
-{% endblock main_content %}

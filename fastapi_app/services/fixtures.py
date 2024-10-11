@@ -1,9 +1,9 @@
 import os
+
 import aiofiles
 import aiofiles.os
 import aiofiles.ospath
 import yaml
-
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,13 +26,8 @@ async def copy_image_files(images_dir: str):
     print('Файлы фикстур скопированы')
 
 
-async def reset_sequences(
-    table_name: str,
-    session: AsyncSession
-):
-    result = await session.execute(
-        text(f'SELECT MAX(id) FROM {table_name}')
-    )
+async def reset_sequences(table_name: str, session: AsyncSession):
+    result = await session.execute(text(f'SELECT MAX(id) FROM {table_name}'))
     max_id = result.scalar() or 0
     await session.execute(
         text(
@@ -63,9 +58,7 @@ async def insert_fixtures_to_db(data: dict, session: AsyncSession):
 
 
 async def load_fixtures(
-    file_path: str,
-    images_dir: str,
-    session: AsyncSession
+    file_path: str, images_dir: str, session: AsyncSession
 ):
     data = await load_yaml(file_path)
     await insert_fixtures_to_db(data, session)

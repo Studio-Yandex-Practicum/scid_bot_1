@@ -18,23 +18,15 @@ class CRUDUser(CRUDBase[User, UserUpdate, UserCreate]):
             'telegram_user_id', user_tg_id, session
         )
 
-    async def get_all_managers(
-        self,
-        session: AsyncSession
-    ) -> User:
+    async def get_all_managers(self, session: AsyncSession) -> User:
         managers = await session.execute(
-            select(User)
-            .where(User.is_manager == True)
+            select(User).where(User.is_manager == True)
         )
         return managers.scalars().all()
 
-    async def delete_user(
-        user: User,
-        session: AsyncSession
-    ) -> User:
+    async def delete_user(user: User, session: AsyncSession) -> User:
         contact_requests = await session.execute(
-            select(ContactRequest)
-            .where(ContactRequest.manager_id == user.id)
+            select(ContactRequest).where(ContactRequest.manager_id == user.id)
         )
         contact_requests = contact_requests.scalars().all()
         for contact_request in contact_requests:

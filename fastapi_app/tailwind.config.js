@@ -171,5 +171,6 @@ module.exports = {
       center: true,
     },
   },
+  plugins: [require("@tailwindcss/forms")],
   darkMode: 'class',
 }

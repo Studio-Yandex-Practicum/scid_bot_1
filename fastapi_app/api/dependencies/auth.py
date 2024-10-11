@@ -1,6 +1,6 @@
 from urllib.parse import quote
 
-from fastapi import Depends, Request, status, HTTPException
+from fastapi import Depends, HTTPException, Request, status
 from pydantic import ValidationError
 
 from core.users import get_jwt_strategy, get_user_manager

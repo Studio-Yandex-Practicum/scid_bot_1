@@ -9,11 +9,11 @@
         class="text-xs text-text-light uppercase bg-background-light-secondary dark:bg-background-dark-secondary dark:text-text-dark"
       >
         <tr>
-          <th scope="col" class="px-6 py-3">Наименование кнопки</th>
-          <th scope="col" class="px-6 py-3">Текст кнопки</th>
+          <th scope="col" class="px-6 py-3">Наименование карточки</th>
+          <th scope="col" class="px-6 py-3">Текст карточки</th>
           <th scope="col" class="px-6 py-3">
             <div class="flex items-center">
-              Родитель кнопки
+              Родитель карточки
               <a href="{{ url_to_sort }}"
                 ><svg
                   class="w-3 h-3 ms-1.5"
@@ -55,7 +55,7 @@
               class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-text-light-secondary border hover:bg-background-dark hover:text-text-dark border-text-light-secondary focus:ring-4 focus:outline-none focus:ring-text-light-secondary rounded-md  text-center dark:border-text-light-900 dark:bg-background-dark-secondary dark:text-text-dark  dark:focus:text-text-dark-secondary dark:focus:ring-text-light-secondary dark:hover:bg-background-light dark:hover:text-text-light-secondary"
             >
               <a
-                href="#"
+                href="{{ url_for('setting_bot_menu_update_button', button_id=button.id) }}"
                 class="relative px-5 py-0.5 transition-all ease-in duration-75 rounded-md group-hover:bg-opacity-0"
               >
               Редактировать

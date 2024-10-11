@@ -42,7 +42,6 @@ class CRUDContactRequests(
         )
         return await self._get_by_attributes(attributes, options, session)
 
-
     async def get_contact_request_with_manager(
         self, contact_request_id: int, session: AsyncSession
     ) -> ContactRequest:
@@ -67,9 +66,7 @@ class CRUDContactRequests(
         )
 
     async def close_request(
-        self,
-        contact_request: ContactRequest,
-        session: AsyncSession
+        self, contact_request: ContactRequest, session: AsyncSession
     ) -> ContactRequest:
         contact_request.is_processed = True
         await self._commit_and_refresh(contact_request, session)

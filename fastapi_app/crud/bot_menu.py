@@ -1,8 +1,8 @@
 from typing import Optional
 
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from crud.base import CRUDBase
 from models.bot_menu import MenuButton, MenuButtonFile

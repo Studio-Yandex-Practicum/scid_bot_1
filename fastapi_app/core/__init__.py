@@ -1,1 +1,1 @@
-import frontend.filters #noqa
+import frontend.filters  # noqa

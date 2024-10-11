@@ -7,12 +7,10 @@ from api.contact_requests_validators import (
     check_contact_request_exist,
     check_contact_request_is_not_to_work,
 )
-from api.users_validators import (
-    check_user_exist_by_tg_id,
-)
 from api.dependencies.users import get_manager_or_superuser
+from api.users_validators import check_user_exist_by_tg_id
 from core.db import get_async_session
-from core.users import current_user, current_superuser
+from core.users import current_superuser, current_user
 from crud.contact_requests import contact_requests_crud
 from models.contact_requests import ContactRequest
 from models.user import User
@@ -51,7 +49,7 @@ async def take_contact_request_to_work(
 @router.post(
     '/close_request',
     response_model=ContactRequestResponse,
-    summary='"Закрывает" заявку. Устанавливает статус выполнена.'
+    summary='"Закрывает" заявку. Устанавливает статус выполнена.',
 )
 async def create_contact_request(
     contact_request_id: int,
@@ -59,10 +57,9 @@ async def create_contact_request(
 ) -> ContactRequest:
     return await contact_requests_crud.close_request(
         contact_request=await check_contact_request_exist(
-            contact_request_id=contact_request_id,
-            session=session
+            contact_request_id=contact_request_id, session=session
         ),
-        session=session
+        session=session,
     )
 
 
@@ -114,7 +111,7 @@ async def get_contact_request_with_is_processed_filter(
         in_progress=in_progress,
         for_current_user=for_current_user,
         user=user,
-        session=session
+        session=session,
     )
 
 

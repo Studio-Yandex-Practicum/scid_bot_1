@@ -21,14 +21,10 @@ conf = ConnectionConfig(
 
 
 async def send_change_password_email(
-    email_to: str,
-    new_password: str,
-    template: str
+    email_to: str, new_password: str, template: str
 ) -> bool:
     try:
-        template_path = os.path.join(
-            conf.TEMPLATE_FOLDER, template
-        )
+        template_path = os.path.join(conf.TEMPLATE_FOLDER, template)
         with open(template_path, 'r', encoding='utf-8') as file:
             html_template = file.read()
         html = html_template.replace('%new_password%', new_password)

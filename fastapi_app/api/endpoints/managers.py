@@ -1,7 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.users_validators import check_user_is_manager, check_email_not_use, check_user_is_not_superuser
+from api.users_validators import (
+    check_email_not_use,
+    check_user_is_manager,
+    check_user_is_not_superuser,
+)
 from core.db import get_async_session
 from core.users import current_superuser
 from crud.user import user_crud
@@ -39,11 +43,9 @@ async def create_review(
     summary='Получает всех менеджеров',
 )
 async def get_contact_request(
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ) -> list[User]:
-    return await user_crud.get_all_managers(
-        session=session
-    )
+    return await user_crud.get_all_managers(session=session)
 
 
 @router.delete(

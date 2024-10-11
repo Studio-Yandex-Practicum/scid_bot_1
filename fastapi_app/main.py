@@ -42,9 +42,7 @@ async def lifespan(app: FastAPI):
         await create_main_menu_button(session)
         if settings.app.load_demo_data_fixtures:
             await load_fixtures(
-                'fixtures/presentation.yaml',
-                'fixtures/images',
-                session
+                'fixtures/presentation.yaml', 'fixtures/images', session
             )
     yield
 
@@ -52,10 +50,10 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.app.app_title,
     description=settings.app.app_description,
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/files", StaticFiles(directory="files"), name="files")
+app.mount('/static', StaticFiles(directory='static'), name='static')
+app.mount('/files', StaticFiles(directory='files'), name='files')
 app.include_router(main_router)
 app.include_router(frontend_router)
