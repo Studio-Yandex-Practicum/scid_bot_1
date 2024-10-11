@@ -69,7 +69,6 @@ async def check_email_not_use(
         value=user_email,
         session=session
     )
-    print(user)
     if user is not None:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,

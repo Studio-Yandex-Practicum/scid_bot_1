@@ -26,7 +26,6 @@ router = APIRouter(tags=['frontend_setting_bot_menu'])
 async def setting_bot_menu(
     request: Request, user: User = Depends(check_user_is_superuser)
 ):
-    print(user.__dict__)
     context = {'request': request, 'user': user}
     return templates.TemplateResponse(
         'setting_bot_menu/bot_menu_list.html', context

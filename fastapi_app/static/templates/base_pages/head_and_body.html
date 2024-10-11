@@ -12,20 +12,17 @@
       href="{{ url_for('static', path='/css/scid_bot_1.css') }}"
       rel="stylesheet"
     />
-    <script
-      defer
-      src="{{ url_for('static', path='js/theme_loader.js') }}"
-    ></script>
-    <script
-      defer
-      src="{{ url_for('static', path='js/flowbite.min.js') }}"
-    ></script>
+    <script>
+      
+    </script>
+    <script src="{{ url_for('static', path='js/theme_loader.js') }}"></script>
+    <script src="{{ url_for('static', path='js/flowbite.min.js') }}"></script>
     {% block script %}{% endblock script %}
+    {% block style %}{% endblock style %}
   </head>
-
   <body
     class="bg-background-content-light dark:bg-background-content-dark text-text-light dark:text-text-dark"
   >
-  {% block body_content %}None content{% endblock body_content %}
-</body>
+    {% block body_content %}None content{% endblock body_content %}
+  </body>
 </html>

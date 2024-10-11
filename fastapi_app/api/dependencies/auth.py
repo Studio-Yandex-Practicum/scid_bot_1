@@ -37,7 +37,6 @@ async def verify_jwt_token(
         try:
             jwt_strategy = get_jwt_strategy()
             user = await jwt_strategy.read_token(token, user_manager)
-            print(user_manager)
             await check_conditions_with_error(
                 conditions=user is not None or user.is_active,
                 location='/login',

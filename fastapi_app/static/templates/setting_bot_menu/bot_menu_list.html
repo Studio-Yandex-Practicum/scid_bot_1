@@ -1,4 +1,221 @@
-{% extends 'base_pages/main_page.html' %}
-{% block main_content %}
-Хоба
+{% extends 'base_pages/main_page.html' %} {% block main_content %}
+
+<style>
+  body {
+    font-family: Calibri, Segoe, "Segoe UI", "Gill Sans", "Gill Sans MT",
+      sans-serif;
+  }
+
+  /* It's supposed to look like a tree diagram */
+  .tree,
+  .tree ul,
+  .tree li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  .tree {
+    margin: 0 0 1em;
+    text-align: center;
+  }
+  .tree,
+  .tree ul {
+    display: table;
+  }
+  .tree ul {
+    width: 100%;
+  }
+  .tree li {
+    display: table-cell;
+    padding: 0.5em 0;
+    vertical-align: top;
+  }
+  /* _________ */
+  .tree li:before {
+    outline: solid 1px #666;
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .tree li:first-child:before {
+    left: 50%;
+  }
+  .tree li:last-child:before {
+    right: 50%;
+  }
+
+  .tree code,
+  .tree span {
+    border: solid 0.1em #666;
+    border-radius: 0.2em;
+    display: inline-block;
+    margin: 0 0.2em 0.5em;
+    padding: 0.2em 0.5em;
+    position: relative;
+  }
+  /* If the tree represents DOM structure */
+  .tree code {
+    font-family: monaco, Consolas, "Lucida Console", monospace;
+  }
+
+  /* | */
+  .tree ul:before,
+  .tree code:before,
+  .tree span:before {
+    outline: solid 1px #666;
+    content: "";
+    height: 0.5em;
+    left: 50%;
+    position: absolute;
+  }
+  .tree ul:before {
+    top: -0.5em;
+  }
+  .tree code:before,
+  .tree span:before {
+    top: -0.55em;
+  }
+
+  /* The root node doesn't connect upwards */
+  .tree > li {
+    margin-top: 0;
+  }
+  .tree > li:before,
+  .tree > li:after,
+  .tree > li > code:before,
+  .tree > li > span:before {
+    outline: none;
+  }
+</style>
+
+<div class="p-5">
+  <figure>
+    <figcaption>Example DOM structure diagram</figcaption>
+    <ul class="tree">
+      <li class="bg-background-light">
+        <code>
+          <div
+            class="max-w-sm w-full lg:max-w-full lg:flex shadow-md max-h-16"
+          >
+            <div
+              class="max-w-16 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden"
+            >
+              <img
+                src="{{ url_for('files', path='photo_2024-09-15_17-51-50.jpg_1728534418.jpg') }}"
+                class="h-auto max-w-full"
+              />
+            </div>
+            <div
+              class="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal"
+            >
+              <div class="mb-8">
+                <p class="text-sm text-gray-600 flex items-center">
+                  Главное меню
+                </p>
+                <div class="text-gray-900 font-bold text-xl mb-2">
+                  Текст главного меню кнопка...
+                </div>
+              </div>
+            </div>
+          </div>
+        </code>
+        <ul>
+          <li>
+            <code><div
+              class="max-w-sm w-full lg:max-w-full lg:flex shadow-md max-h-16"
+            >
+              <div
+                class="max-w-16 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden"
+              >
+                <img
+                  src="{{ url_for('files', path='photo_2024-09-15_17-51-50.jpg_1728534418.jpg') }}"
+                  class="h-auto max-w-full"
+                />
+              </div>
+              <div
+                class="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal"
+              >
+                <div class="mb-8">
+                  <p class="text-sm text-gray-600 flex items-center">
+                    Главное меню
+                  </p>
+                  <div class="text-gray-900 font-bold text-xl mb-2">
+                    Текст главного меню кнопка...
+                  </div>
+                </div>
+              </div>
+            </div></code>
+            <ul>
+              <li><code><div
+                class="max-w-sm w-full lg:max-w-full lg:flex shadow-md max-h-16"
+              >
+                <div
+                  class="max-w-16 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden"
+                >
+                  <img
+                    src="{{ url_for('files', path='photo_2024-09-15_17-51-50.jpg_1728534418.jpg') }}"
+                    class="h-auto max-w-full"
+                  />
+                </div>
+                <div
+                  class="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal"
+                >
+                  <div class="mb-8">
+                    <p class="text-sm text-gray-600 flex items-center">
+                      Главное меню
+                    </p>
+                    <div class="text-gray-900 font-bold text-xl mb-2">
+                      Текст главного меню кнопка...
+                    </div>
+                  </div>
+                </div>
+              </div></code></li>
+              <li><code><div
+                class="max-w-sm w-full lg:max-w-full lg:flex shadow-md max-h-16"
+              >
+                <div
+                  class="max-w-16 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden"
+                >
+                  <img
+                    src="{{ url_for('files', path='photo_2024-09-15_17-51-50.jpg_1728534418.jpg') }}"
+                    class="h-auto max-w-full"
+                  />
+                </div>
+                <div
+                  class="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal"
+                >
+                  <div class="mb-8">
+                    <p class="text-sm text-gray-600 flex items-center">
+                      Главное меню
+                    </p>
+                    <div class="text-gray-900 font-bold text-xl mb-2">
+                      Текст главного меню кнопка...
+                    </div>
+                  </div>
+                </div>
+              </div></code></li>
+            </ul>
+          </li>
+          <li>
+            <code>Узнать о продуктах и услугах</code>
+            <ul>
+              <li>
+                <code>Разработка сайтов</code>
+                <ul>
+                  <li><code>Корпоративные сайты</code></li>
+                  <li><code>Лендинги</code></li>
+                  <li><code>Интернет-магазины</code></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </figure>
+</div>
 {% endblock main_content %}
