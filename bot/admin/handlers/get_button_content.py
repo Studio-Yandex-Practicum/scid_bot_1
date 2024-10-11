@@ -28,16 +28,22 @@ async def name_typed(message: Message, state: FSMContext):
         await cancel_and_return_to_admin_panel(message, state)
         return
     # await state.update_data(typed_id=message.text)
-    button = await get_button_content(message.text)
-    await message.answer(
-        text=(
-            f"контент кнопки:\n"
-            f"Текст на кнпоке: <b>{button['label']}</b>\n"
-            f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
-            f"Текст сообщения над кнопкой: <b>{button['content_text']}</b>\n"
-            f"Линк кнопки: <b>{button['content_link']}</b>\n"
-            # f"Изображение: <b>{button['content_image']}</b>"
-        ),
-        parse_mode=ParseMode.HTML,
-    )
+    response = await get_button_content(message.text)
+    button = response.json()
+    print(button)
+    if response.status_code == 200:
+        await message.answer(
+            text=(
+                f"контент кнопки:\n"
+                f"Текст на кнпоке: <b>{button['label']}</b>\n"
+                f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
+                f"Текст сообщения над кнопкой: <b>{button['content_text']}</b>\n"
+                f"Линк кнопки: <b>{button['content_link']}</b>\n"
+                # f"Изображение: <b>{button['content_image']}</b>"
+            ),
+            parse_mode=ParseMode.HTML,
+        )
+    else:
+        await message.answer(text=(button["detail"]))
+
     await cancel_and_return_to_admin_panel(message, state)
