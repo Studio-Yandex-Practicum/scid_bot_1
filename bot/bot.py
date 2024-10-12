@@ -4,7 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
 
-from handlers import main_button
+from handlers import main_button, tree_commands
 
 load_dotenv()
 
@@ -31,6 +31,7 @@ async def main():
     #)
 
     dp.include_router(main_button.router) # здесь подключаем хендлеры
+    dp.include_router(tree_commands.router) # подключаем роутер с деревом
 
     await dp.start_polling(bot)
 
