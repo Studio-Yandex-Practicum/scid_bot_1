@@ -263,8 +263,8 @@ async def start_setting_bot_menu_update_button(
         button_id=button_id,
         label=label,
         content_image=content_image,
-        content_link=content_link,
-        content_text=content_text,
+        content_link=content_link if content_link else 'null',
+        content_text=content_text if content_text else 'null',
         remove_content_image=remove_content_image,
         session=session,
     )
