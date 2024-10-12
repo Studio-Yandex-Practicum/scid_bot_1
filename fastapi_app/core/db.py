@@ -1,16 +1,9 @@
 from typing import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
-from sqlalchemy.orm import (
-    Mapped,
-    declarative_base,
-    declared_attr,
-    mapped_column,
-)
+from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
+                                    create_async_engine)
+from sqlalchemy.orm import (Mapped, declarative_base, declared_attr,
+                            mapped_column)
 
 from .config import settings
 
@@ -26,10 +19,7 @@ class PreBase:
 
 
 Base = declarative_base(cls=PreBase)
-engine = create_async_engine(
-    settings.db.database_url,
-    echo=settings.db.echo
-)
+engine = create_async_engine(settings.db.database_url, echo=settings.db.echo)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 

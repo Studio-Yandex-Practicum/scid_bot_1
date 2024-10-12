@@ -1,7 +1,7 @@
 from aiogram import Router, types
 from aiogram.filters import Command
 from keyboards.common_keyboards import generate_keyboard
-
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 router = Router()
 
@@ -16,6 +16,7 @@ async def start_command(message: types.Message):
         {"id": 5, "name": "Связаться с менеджером", "url": None},
     ]
     keyboard = await generate_keyboard(buttons)
+
     await message.answer(
         "Здравствуйте! Я ваш виртуальный помощник. Как я могу помочь вам сегодня?",
         reply_markup=keyboard,
