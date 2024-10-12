@@ -1,16 +1,9 @@
 from typing import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
-from sqlalchemy.orm import (
-    Mapped,
-    declarative_base,
-    declared_attr,
-    mapped_column,
-)
+from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
+                                    create_async_engine)
+from sqlalchemy.orm import (Mapped, declarative_base, declared_attr,
+                            mapped_column)
 
 from .config import settings
 

@@ -1,13 +1,12 @@
 from typing import Optional
 
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
-
 from crud.base import CRUDBase
 from models.contact_requests import ContactRequest
 from models.user import User
 from schemas.contact_requests import ContactRequestCreate, ContactRequestUpdate
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 
 class CRUDContactRequests(
@@ -20,7 +19,7 @@ class CRUDContactRequests(
         self, attributes: dict[str, any], for_current_user: bool, user: User
     ) -> tuple[any, any]:
         if for_current_user:
-            attributes.update({'manager_id': user.id})
+            attributes.update({"manager_id": user.id})
         options = [selectinload(ContactRequest.manager)]
         return attributes, options
 
@@ -34,9 +33,9 @@ class CRUDContactRequests(
     ) -> list[ContactRequest]:
         attributes = {}
         if is_processed is not None:
-            attributes.update({'is_processed': is_processed})
+            attributes.update({"is_processed": is_processed})
         if in_progress is not None:
-            attributes.update({'in_progress': in_progress})
+            attributes.update({"in_progress": in_progress})
         attributes, options = await self._add_manager_id_and_options_to_query(
             attributes, for_current_user, user
         )

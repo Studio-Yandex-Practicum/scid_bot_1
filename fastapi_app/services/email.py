@@ -1,9 +1,8 @@
 import os
 
+from core.config import settings
 from fastapi.exceptions import HTTPException
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-
-from core.config import settings
 
 conf = ConnectionConfig(
     MAIL_USERNAME=settings.email.mail_username,
@@ -27,10 +26,10 @@ async def send_change_password_email(
         template_path = os.path.join(conf.TEMPLATE_FOLDER, template)
         with open(template_path, 'r', encoding='utf-8') as file:
             html_template = file.read()
-        html = html_template.replace('%new_password%', new_password)
+        html = html_template.replace("%new_password%", new_password)
 
         message = MessageSchema(
-            subject='Пароль был изменён',
+            subject="Пароль был изменён",
             recipients=[email_to],
             body=html,
             subtype=MessageType.html,
