@@ -1,17 +1,13 @@
-import os
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-from dotenv import load_dotenv
 
-from bot.routers import tree_commands
+# from routers import tree_commands
+from core.config import settings
 from routers import main_menu, navigation
 from handlers import main_button
 
-load_dotenv()
-
-TOKEN = os.getenv('TOKEN')
 
 
 async def main():
@@ -20,10 +16,10 @@ async def main():
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
-
+    
     dp = Dispatcher(storage=MemoryStorage())
 
-    bot = Bot(token=TOKEN)
+    bot = Bot(token=settings.app.token)
 
     # Andrey
     # Создаем бота
@@ -37,7 +33,7 @@ async def main():
     dp.include_router(navigation.router)
 
     # dp.include_router(main_button.router) # здесь подключаем хендлеры
-    dp.include_router(tree_commands.router) # подключаем роутер с деревом
+    # dp.include_router(tree_commands.router) # подключаем роутер с деревом
 
     await dp.start_polling(bot)
 

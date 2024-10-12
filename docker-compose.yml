@@ -40,7 +40,9 @@ services:
   #   depends_on:
   #     - fastapi_app
   #   networks:
-  #     - scid_bot_1    
+  #     - scid_bot_1   
+    # volumes:
+    #   - files:/app/files
 
   nginx:
     image: nginx:alpine

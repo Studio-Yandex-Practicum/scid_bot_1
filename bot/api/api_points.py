@@ -1,4 +1,4 @@
-from bot.api.api_handlers import (
+from api.api_handlers import (
     post_api_data,
     get_api_data,
     patch_api_data,
