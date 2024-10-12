@@ -13,6 +13,7 @@ from core.config import settings
 from core.frontend import templates
 from core.users import get_jwt_strategy, get_user_manager
 from models.user import User
+from services.frontend import redirect_by_httpexeption
 from services.email import send_change_password_email
 
 router = APIRouter(tags=['frontend_base'])
@@ -199,13 +200,10 @@ async def authorization(
         )
     )
     if user is None:
-        raise HTTPException(
-            headers={
-                'location': f'/login?error={
-                    quote("Пользователь не найден")
-                }'
-            },
-            status_code=status.HTTP_302_FOUND,
+        await redirect_by_httpexeption(
+            f'/login?error={
+                quote('Пользователь не найден')
+            }'
         )
     jwt_strategy = get_jwt_strategy()
     access_token = await jwt_strategy.write_token(user)

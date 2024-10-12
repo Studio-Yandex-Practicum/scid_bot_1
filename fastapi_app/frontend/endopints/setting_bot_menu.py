@@ -9,8 +9,7 @@ from fastapi import (
     HTTPException,
     Query,
     Request,
-    UploadFile,
-    status,
+    UploadFile
 )
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,8 +22,15 @@ from core.db import get_async_session
 from core.frontend import templates
 from crud.bot_menu import bot_menu_crud, bot_menu_files_crud
 from models.user import User
+from services.frontend import redirect_by_httpexeption
 
 router = APIRouter(tags=['frontend_setting_bot_menu'])
+
+
+async def button_not_exist_error():
+    await redirect_by_httpexeption(
+        f'/?navbar_error={quote('Такой кнопки не существует')}'
+    )
 
 
 @router.get(
@@ -96,16 +102,7 @@ async def setting_bot_menu_update_button(
     try:
         button = await check_button_exist(button_id=button_id, session=session)
     except HTTPException:
-        raise HTTPException(
-            headers={
-                'location': f'/?navbar_error={
-                    quote(
-                        'Такой кнопки не существует'
-                    )
-                }'
-            },
-            status_code=status.HTTP_302_FOUND,
-        )
+        await button_not_exist_error()
     context = {
         'request': request,
         'user': user,
@@ -139,16 +136,7 @@ async def setting_bot_menu_attach_file(
     try:
         button = await check_button_exist(button_id=button_id, session=session)
     except HTTPException:
-        raise HTTPException(
-            headers={
-                'location': f'/?navbar_error={
-                    quote(
-                        'Такой кнопки не существует'
-                    )
-                }'
-            },
-            status_code=status.HTTP_302_FOUND,
-        )
+        await button_not_exist_error()
     context = {
         'request': request,
         'user': user,
@@ -229,25 +217,20 @@ async def start_setting_bot_menu_attach_file(
     session: AsyncSession = Depends(get_async_session),
 ):
     if not new_file.filename:
-        raise HTTPException(
-            headers={
-                'location': f'/?navbar_error={
-                    quote(
-                        'Необходимо указать файл для прикрепления'
-                    )
-                }'
-            },
-            status_code=status.HTTP_302_FOUND,
+        await redirect_by_httpexeption(
+            f'/?navbar_error={
+                quote(
+                    'Необходимо указать файл для прикрепления'
+                )
+            }'
         )
     await add_files_to_button(
         button_id=button_id,
         files=[new_file],
         session=session,
     )
-    return await setting_bot_menu_update_button(
-        request=request,
-        button_id=button_id,
-        session=session
+    await redirect_by_httpexeption(
+        f'/setting-bot-menu/update-button/{button_id}'
     )
 
 
