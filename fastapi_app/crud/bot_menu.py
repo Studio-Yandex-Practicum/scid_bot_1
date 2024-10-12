@@ -52,11 +52,8 @@ class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):
         menu_button.parent_id = new_parent_id
         return await self._commit_and_refresh(menu_button, session)
 
-
     async def get_parent_label(
-        self,
-        parent_id: int,
-        session: AsyncSession
+        self, parent_id: int, session: AsyncSession
     ) -> MenuButton:
         result = await session.execute(
             select(MenuButton.label).where(MenuButton.id == parent_id)

@@ -1,22 +1,18 @@
 from typing import Optional
 from urllib.parse import quote
 
-from fastapi import (
-    APIRouter,
-    Depends,
-    File,
-    Form,
-    HTTPException,
-    Query,
-    Request,
-    UploadFile
-)
+from fastapi import (APIRouter, Depends, File, Form, HTTPException, Query,
+                     Request, UploadFile)
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.bot_menu_validators import check_button_exist
 from api.dependencies.auth import check_user_is_superuser
-from api.endpoints.bot_menu import create_new_bot_menu_button, delete_bot_menu_button_file, delete_bot_menu_button, update_bot_menu_button, add_files_to_button
+from api.endpoints.bot_menu import (add_files_to_button,
+                                    create_new_bot_menu_button,
+                                    delete_bot_menu_button,
+                                    delete_bot_menu_button_file,
+                                    update_bot_menu_button)
 from core.config import settings
 from core.db import get_async_session
 from core.frontend import templates
