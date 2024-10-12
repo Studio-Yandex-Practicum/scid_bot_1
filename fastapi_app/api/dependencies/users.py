@@ -1,3 +1,4 @@
+from core.users import current_user
 from fastapi import Depends, HTTPException, status
 
 from core.users import current_user

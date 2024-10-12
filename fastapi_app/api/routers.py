@@ -1,5 +1,8 @@
 from fastapi import APIRouter
 
+
+from .endpoints import (bot_menu_router, contact_request_router,
+                        reviews_router, user_router)
 from .endpoints import (
     bot_menu_router,
     contact_request_router,

@@ -1,10 +1,9 @@
 from http import HTTPStatus
 from typing import Optional
 
+from crud.base import CRUDBase, ModelType
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from crud.base import CRUDBase, ModelType
 
 
 async def check_object_exist(

@@ -1,12 +1,11 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import func, select
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from crud.base import CRUDBase
 from models.reviews import Review
 from schemas.reviews import ReviewCreate
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class CRUDReviews(CRUDBase[Review, ReviewCreate, None]):
