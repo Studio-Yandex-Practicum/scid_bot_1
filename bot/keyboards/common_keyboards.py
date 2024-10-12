@@ -5,37 +5,19 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup
 )
-from aiogram.filters.callback_data import CallbackData
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-API_URL = 'https://your-api-endpoint.com'
-
-# Используем вспомогательный класс CallbackData
-# action - какое будет выполняться действие
-# value - что связано с действием
-# extra - доп инфа
-class ButtonCallback(CallbackData, prefix="action"):
-    value: str
-    extra_info: str
+API_URL = ''
 
 
-def get_start_keyboard():
-    button1 = InlineKeyboardButton(
-        text="🔥 Яндекс",
-        callback_data=ButtonCallback(value="btn1",
-                                     extra_info="info1").pack()
+# Функция для добавления кнопки "Назад"
+def add_back_button(keyboard: InlineKeyboardMarkup, previous_id: int):
+    back_button = InlineKeyboardButton(
+        text="Назад",
+        callback_data=f"callback_back_{previous_id}"
     )
-    button2 = InlineKeyboardButton(
-        text="🔥 Google",
-        url="https://google.com/",
-    )
-    # Кнопки в ряд
-    row = [button1, button2]
-    # Ряд кнопок
-    rows = [row]
-    # Инциализируем клавиатуру
-    markup = InlineKeyboardMarkup(inline_keyboard=rows)
-    return markup
+    keyboard.inline_keyboard.append([back_button])
+    return keyboard
 
 
 # Функция для генерации клавиатуры - Кнопки
