@@ -1,7 +1,10 @@
 from typing import Optional
 
 from api.contact_requests_validators import (
-    check_contact_request_exist, check_contact_request_is_not_to_work)
+    check_contact_request_exist,
+    check_contact_request_is_not_to_work,
+)
+
 from api.dependencies.users import get_manager_or_superuser
 from api.users_validators import check_user_exist_by_tg_id
 from core.db import get_async_session
@@ -45,7 +48,7 @@ async def take_contact_request_to_work(
     "/",
     '/close_request',
     response_model=ContactRequestResponse,
-    summary='"Закрывает" заявку. Устанавливает статус выполнена.'
+    summary='"Закрывает" заявку. Устанавливает статус выполнена.',
 )
 async def create_contact_request(
     contact_request_id: int,
@@ -53,10 +56,9 @@ async def create_contact_request(
 ) -> ContactRequest:
     return await contact_requests_crud.close_request(
         contact_request=await check_contact_request_exist(
-            contact_request_id=contact_request_id,
-            session=session
+            contact_request_id=contact_request_id, session=session
         ),
-        session=session
+        session=session,
     )
 
 

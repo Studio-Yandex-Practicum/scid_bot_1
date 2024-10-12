@@ -1,0 +1,66 @@
+{% extends 'base_pages/main_page.html' %} {% block main_content %}
+{% block script %}
+<script>
+    function redirect_to_update() {
+        window.location.replace("{{ url_for('setting_bot_menu_update_button', button_id=button.id) }}")
+    }
+    function attach_file(e) {
+        e.preventDefault();
+        document.getElementById('attach_file_form').submit();
+        redirect_to_update()
+    }
+</script>
+{% endblock script %}
+<div class="p-5">
+  <div
+    class="mx-auto bg-background-light dark:bg-background-dark p-5 rounded-md shadow-md"
+  >
+    <h2 class="text-2xl font-bold text-left mb-5">
+      <span
+        class="font-bold text-xl text-text-light-800 dark:text-text-dark-300"
+        >Прикрепление файла: {{ button.label }}</span
+      >
+    </h2>
+    <hr class="mb-2" />
+    <div class="flex-wrap gap-4">
+      <div class="flex-shrink">
+        <form
+          id="attach_file_form"
+          class="text-text-light dark:text-text-dark"
+          action="{% if update %}{{ url_for('start_setting_bot_menu_attach_file', button_id=button.id) }}{% endif %}"
+          method="post"
+          enctype="multipart/form-data"
+          onSubmit="attach_file()"
+        >
+          <div class="mb-5">
+            <label for="new_file" class="block mb-2 text-sm font-medium"
+              >Загрузите требуемый файл:
+            </label>
+            <input
+              type="file"
+              name="new_file"
+              id="new_file"
+              class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
+              value="{% if button.content_image %} {{ button.content_image }} {% endif %}"
+              required=""
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
+          >
+            Загрузить
+          </button>
+          <button
+            type="button"
+            class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
+            onClick=redirect_to_update()
+          >
+            Отмена
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock main_content %}

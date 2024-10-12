@@ -1,5 +1,9 @@
 from typing import Optional
 
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
+
 from crud.base import CRUDBase
 from models.bot_menu import MenuButton, MenuButtonFile
 from schemas.bot_menu import (MenuButtonCreate, MenuButtonFileCreate,
@@ -45,6 +49,17 @@ class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):
     ) -> MenuButton:
         menu_button.parent_id = new_parent_id
         return await self._commit_and_refresh(menu_button, session)
+
+
+    async def get_parent_label(
+        self,
+        parent_id: int,
+        session: AsyncSession
+    ) -> MenuButton:
+        result = await session.execute(
+            select(MenuButton.label).where(MenuButton.id == parent_id)
+        )
+        return result.scalars().first()
 
 
 class CRUDBotMenuFiles(

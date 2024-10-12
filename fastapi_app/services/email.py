@@ -15,16 +15,16 @@ conf = ConnectionConfig(
     MAIL_SSL_TLS=settings.email.mail_ssl_tls,
     USE_CREDENTIALS=settings.email.use_credentials,
     VALIDATE_CERTS=settings.email.validate_certs,
-    TEMPLATE_FOLDER=os.path.join(os.getcwd(), "templates", "email"),
+    TEMPLATE_FOLDER=os.path.join(os.getcwd(), 'static', 'templates', 'email'),
 )
 
 
-async def send_change_password_email(email_to: str, new_password: str) -> bool:
+async def send_change_password_email(
+    email_to: str, new_password: str, template: str
+) -> bool:
     try:
-        template_path = os.path.join(
-            conf.TEMPLATE_FOLDER, "mail_template.html"
-        )
-        with open(template_path, "r", encoding="utf-8") as file:
+        template_path = os.path.join(conf.TEMPLATE_FOLDER, template)
+        with open(template_path, 'r', encoding='utf-8') as file:
             html_template = file.read()
         html = html_template.replace("%new_password%", new_password)
 

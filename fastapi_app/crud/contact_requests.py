@@ -65,9 +65,7 @@ class CRUDContactRequests(
         )
 
     async def close_request(
-        self,
-        contact_request: ContactRequest,
-        session: AsyncSession
+        self, contact_request: ContactRequest, session: AsyncSession
     ) -> ContactRequest:
         contact_request.is_processed = True
         await self._commit_and_refresh(contact_request, session)

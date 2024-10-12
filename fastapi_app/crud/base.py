@@ -39,8 +39,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         for attribute, value in attributes.items():
             attr = getattr(self.model, attribute)
             query = query.where(attr == value)
-            print(attr)
-            print(value)
         for option in query_options:
             query = query.options(option)
         result = await session.execute(query)
