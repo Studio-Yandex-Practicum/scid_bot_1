@@ -17,7 +17,7 @@ class MenuButton(Base):
         'MenuButton',
         backref='button_parent',
         remote_side='MenuButton.id',
-        viewonly=True
+        viewonly=True,
     )
     is_main_menu_button: Mapped[bool] = mapped_column(Boolean, default=False)
 
@@ -45,6 +45,5 @@ class MenuButtonFile(Base):
 
     def __repr__(self):
         return (
-            f'<MenuButtonFile(button={self.button_id}, '
-            f'{self.file_path})>'
+            f'<MenuButtonFile(button={self.button_id}, ' f'{self.file_path})>'
         )

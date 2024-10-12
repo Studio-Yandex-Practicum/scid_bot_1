@@ -146,7 +146,7 @@ async def change_parent(
     description=(
         "Не обновляет поле родителя, обновляет только поля:"
         "название, контент текст, контент изображение (путь до файла), "
-        "контент ссылка"
+        "контент ссылка. Чтобы установить пустое значение - отправьте null"
     ),
 )
 async def update_bot_menu_button(
@@ -168,15 +168,22 @@ async def update_bot_menu_button(
         image_path = existing_button.content_image
         if remove_content_image:
             image_path = None
-
+    if content_text.lower() == 'null':
+        content_text = None
+    else:
+        content_text = (
+            content_text if content_text else existing_button.content_text
+        )
+    if content_link.lower() == 'null':
+        content_link = None
+    else:
+        content_link = (
+            content_link if content_link else existing_button.content_link
+        )
     update_data = MenuButtonUpdate(
         label=label if label else existing_button.label,
-        content_text=(
-            content_text if content_text else existing_button.content_text
-        ),
-        content_link=(
-            content_link if content_link else existing_button.content_link
-        ),
+        content_text=content_text,
+        content_link=content_link,
         content_image=image_path,
     )
     return await bot_menu_crud.update(
