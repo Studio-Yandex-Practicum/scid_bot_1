@@ -1,79 +1,38 @@
-# Обычные клавиатуры
-import aiohttp
-
-from aiogram import types, Router
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.filters.callback_data import CallbackData
-
-
-from bot.keyboards.common_keyboards import (
-    inline_menu,
-    add_back_button,
-    fetch_buttons_from_api
+from aiogram import Router, types
+from bot.handlers.handlers import (
+    handle_menu_get_content,
+    handle_menu_get_main_menu_button,
+    handle_menu_get_child_buttons
 )
+from bot.keyboards.common_keyboards import inline_menu
 
-API_URL = 'https://your-api-endpoint.com'
-
-# Используем вспомогательный класс CallbackData
-# action - какое будет выполняться действие
-# value - что связано с действием
-# extra - доп инфа
-class ButtonCallback(CallbackData, prefix="action"):
-    value: str
-    extra_info: str
+router = Router()
 
 # Хендлер для обработки нажатий на кнопки
-@router.callback_query(lambda c: c.data.startswith('callback_'))
-async def callback_handler(callback_query: types.CallbackQuery):
-    data_parts = callback_query.data.split('_')
-    action = data_parts[1]
+@router.callback_query()
+async def handle_button_click(callback_query: types.CallbackQuery):
+    # Извлекаем данные из callback_data
+    button_id, parent_id = callback_query.data.split(',')
 
-    # Обработка кнопки "Назад"
-    if action == "back":
-        previous_id = int(data_parts[2])
-
-        # Возвращаемся к предыдущему меню
-        if previous_id == 0:
-            # Если previous_id == 0, то это главное меню
-            buttons = [
-                {"id": 1, "name": "Получить информацию о компании", "url": None},
-                {"id": 2, "name": "Узнать о продуктах и услугах", "url": None},
-                {"id": 3, "name": "Получить техническую поддержку", "url": None},
-                {"id": 4, "name": "Посмотреть портфолио", "url": None},
-                {"id": 5, "name": "Связаться с менеджером", "url": None},
-            ]
-            keyboard = await inline_menu(buttons)
-            await callback_query.message.edit_text(
-                "Здравствуйте! Я ваш виртуальный помощник. Как я могу помочь вам сегодня?",
-                reply_markup=keyboard
-            )
-        else:
-            # Можно добавить логику для возврата в другие подменю, если необходимо
-            await callback_query.message.edit_text(
-                f"Возврат в меню с ID {previous_id}.",
-                reply_markup=types.InlineKeyboardMarkup()  # Замените на нужную клавиатуру для этого ID
-            )
+    # Если это корневая кнопка (переход в начало)
+    if button_id == '1':
+        # Загрузить корневое меню
+        child_buttons = await handle_menu_get_main_menu_button()
     else:
-        try:
-            # Преобразуем button_id в число
-            button_id = int(data_parts[-1])
+        # Получаем дочерние кнопки для текущего ID
+        child_buttons = await handle_menu_get_child_buttons(button_id)
 
-            # Обработка конкретных кнопок меню
-            if button_id == 1:
-                # Используем тестовую функцию для загрузки кнопок для информации о компании
-                buttons = await fetch_buttons_from_api(endpoint_id=1)
-                keyboard = await inline_menu(buttons)
-                # Добавляем кнопку "Назад" с ID главного меню (0)
-                keyboard = add_back_button(keyboard, previous_id=0)
-                await callback_query.message.edit_text(
-                    "Информация о компании:",
-                    reply_markup=keyboard
-                )
-            # Можно добавить другие условия для обработки button_id
+    # Если есть дочерние кнопки, показываем их
+    if child_buttons:
+        # Вызов функции inline_menu для создания клавиатуры
+        keyboard = await inline_menu(child_buttons, start_id=1)
+        await callback_query.message.edit_reply_markup(reply_markup=keyboard)
+    else:
+        # Если дочерних кнопок нет, показываем контент
+        content = await handle_menu_get_content(button_id)
+        if content:
+            await callback_query.message.edit_text(f"Контент: {content.get('text')}")
+        else:
+            await callback_query.message.edit_text("Контент отсутствует.")
 
-        except ValueError:
-            print("Неверный формат callback_data")
-
-    # Закрываем уведомление о нажатии кнопки
     await callback_query.answer()
