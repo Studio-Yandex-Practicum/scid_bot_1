@@ -32,10 +32,10 @@ function delete_attach_file(url) {
               "Content-type": "application/json; charset=UTF-8"
             }
           }).then(res => {
-            location.reload()
+            window.location.replace("{{ url_for('setting_bot_menu_update_button', button_id=button.id) }}")
           })
           .catch(error => {
-            aler(error)
+            alert(error)
           });
       }
 }
@@ -127,12 +127,14 @@ function delete_button(url) {
               value="{% if button.content_link %}{{ button.content_link }}{% endif %}"
             />
           </div>
+          {% if update %}
           <div class="mb-5">
             <label class="block mb-2 text-sm font-medium"
               >Контент: изображение (текущий): {% if button.content_image %}{{ button.content_image|replace(files_folder, '') }}{% else %}-{% endif %}</label
             >
             <img src="{{ url_for(files_folder, path=button.content_image|replace(files_folder, '')) }}" width="128"/>
           </div>
+          {% endif %}
           <div class="mb-5">
             <label for="content_image" class="block mb-2 text-sm font-medium"
               >Контент: изображение (новый)</label
@@ -156,6 +158,7 @@ function delete_button(url) {
                 class="w-4 h-4 text-contrast accent-contrast bg-background-light border-background-light-secondary-950 rounded focus:ring-contrast dark:focus:ring-contrast dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
             </div>
+            {% if update %}
             <div class="ms-2 text-sm">
               <label
                 for="remove_content_image-checkbox"
@@ -170,6 +173,7 @@ function delete_button(url) {
                 укажете новое - оно не будет добавлено.
               </p>
             </div>
+            {% endif %}
           </div>
           <button
             type="submit"
@@ -177,7 +181,7 @@ function delete_button(url) {
           >
             Обновить карточку
           </button>
-          {% if not button.is_main_menu_button %}
+          {% if not button.is_main_menu_button and update %}
             <button
                 type="button"
                 class="mt-2 w-full bg-contrast-700 hover:bg-contrast text-text-dark font-medium rounded-lg text-sm px-5 py-2.5 text-center  border border-background-light dark:border-background-dark"
@@ -272,7 +276,7 @@ function delete_button(url) {
                     class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-text-light-secondary border hover:bg-background-dark hover:text-text-dark border-text-light-secondary focus:ring-4 focus:outline-none focus:ring-text-light-secondary rounded-md text-center dark:border-text-light-900 dark:bg-background-dark-secondary dark:text-text-dark dark:focus:text-text-dark-secondary dark:focus:ring-text-light-secondary dark:hover:bg-background-light dark:hover:text-text-light-secondary"
                   >
                     <a
-                      href="{{ url_for('setting_bot_menu_update_button', button_id=1) }}"
+                      href="{{ url_for('setting_bot_menu_attach_file', button_id=button.id) }}"
                       class="relative px-5 py-0.5 transition-all ease-in duration-75 rounded-md group-hover:bg-opacity-0"
                     >
                       Прикрепить новый файл

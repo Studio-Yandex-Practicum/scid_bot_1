@@ -12,12 +12,12 @@ from fastapi import (
     UploadFile,
     status,
 )
-from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.bot_menu_validators import check_button_exist
 from api.dependencies.auth import check_user_is_superuser
-from api.endpoints.bot_menu import delete_bot_menu_button_file, delete_bot_menu_button, update_bot_menu_button
+from api.endpoints.bot_menu import delete_bot_menu_button_file, delete_bot_menu_button, update_bot_menu_button, add_files_to_button
 from core.config import settings
 from core.db import get_async_session
 from core.frontend import templates
@@ -126,6 +126,41 @@ async def setting_bot_menu_update_button(
 
 
 @router.get(
+    '/setting-bot-menu/attach-file/{button_id}',
+    response_class=HTMLResponse,
+    summary='Страница прикрепления файла к кнопке бота',
+)
+async def setting_bot_menu_attach_file(
+    request: Request,
+    button_id: int,
+    user: User = Depends(check_user_is_superuser),
+    session: AsyncSession = Depends(get_async_session),
+):
+    try:
+        button = await check_button_exist(button_id=button_id, session=session)
+    except HTTPException:
+        raise HTTPException(
+            headers={
+                'location': f'/?navbar_error={
+                    quote(
+                        'Такой кнопки не существует'
+                    )
+                }'
+            },
+            status_code=status.HTTP_302_FOUND,
+        )
+    context = {
+        'request': request,
+        'user': user,
+        'button': button
+    }
+
+    return templates.TemplateResponse(
+        'setting_bot_menu/bot_menu_attach_file.html', context
+    )
+
+
+@router.get(
     '/setting-bot-menu/get-attach-file/{file_id}',
     response_class=HTMLResponse,
     summary='Получить прикрепленный файл',
@@ -178,6 +213,41 @@ async def setting_bot_menu_delete_button(
     )
     return JSONResponse(
         content={ 'url': str(request.url_for('setting_bot_menu')) }
+    )
+
+
+@router.post(
+    '/setting-bot-menu/attach-file/{button_id}',
+    response_class=HTMLResponse,
+    summary='Метод прикрепления файла для кнопки',
+    dependencies=[Depends(check_user_is_superuser)]
+)
+async def start_setting_bot_menu_attach_file(
+    request: Request,
+    button_id: int,
+    new_file: UploadFile = File(...),
+    session: AsyncSession = Depends(get_async_session),
+):
+    if not new_file.filename:
+        raise HTTPException(
+            headers={
+                'location': f'/?navbar_error={
+                    quote(
+                        'Необходимо указать файл для прикрепления'
+                    )
+                }'
+            },
+            status_code=status.HTTP_302_FOUND,
+        )
+    await add_files_to_button(
+        button_id=button_id,
+        files=[new_file],
+        session=session,
+    )
+    return await setting_bot_menu_update_button(
+        request=request,
+        button_id=button_id,
+        session=session
     )
 
 
