@@ -53,6 +53,17 @@ class CRUDBotMenu(CRUDBase[MenuButton, MenuButtonCreate, MenuButtonUpdate]):
         return await self._commit_and_refresh(menu_button, session)
 
 
+    async def get_parent_label(
+        self,
+        parent_id: int,
+        session: AsyncSession
+    ) -> MenuButton:
+        result = await session.execute(
+            select(MenuButton.label).where(MenuButton.id == parent_id)
+        )
+        return result.scalars().first()
+
+
 class CRUDBotMenuFiles(
     CRUDBase[MenuButtonFile, MenuButtonFileCreate, MenuButtonFileUpdate]
 ):

@@ -18,7 +18,7 @@ class MenuButton(Base):
         'MenuButton',
         backref='button_parent',
         remote_side='MenuButton.id',
-        viewonly=True,
+        viewonly=True
     )
     is_main_menu_button: Mapped[bool] = mapped_column(Boolean, default=False)
 

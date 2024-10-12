@@ -1,7 +1,11 @@
 <div
   class="py-2 px-6 bg-background-light-secondary dark:bg-background-dark-secondary text-text-light-secondary dark:text-text-dark-secondary flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30"
 >
+
   <ul class="ml-auto flex items-center">
+    <span class="text-contrast">
+        {{ navbar_error }}
+    </span>
     {% include 'elements/theme_changer.html' %}
     <button
       id="dropdownDefaultButton"
@@ -15,7 +19,6 @@
         <p class="text-xs text-gray-500">{{ user.email }}</p>
       </div>
     </button>
-
     <div
       id="dropdown"
       class="z-60 hidden bg-background-light-secondary divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-background-dark-secondary border-background-light dark:border-background-dark"

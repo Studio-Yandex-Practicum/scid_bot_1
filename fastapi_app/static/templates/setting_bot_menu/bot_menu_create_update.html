@@ -1,5 +1,6 @@
 {% extends 'base_pages/main_page.html' %} {% block main_content %}
 {% block script %}
+{% if button and update %}
 <script>
 
 function download_attach_file(url) {
@@ -61,7 +62,7 @@ function delete_button(url) {
           });
       }
 }
-
+{% endif %}
 </script>
 {% endblock script %}
 <div class="p-5">
@@ -75,15 +76,15 @@ function delete_button(url) {
         >Редактирование карточки:</span
       >
       <br />
-      <span class="font-bold text-lg">"{{ button.label }}"</span> {% else %}
-      Создать новую карточку {% endif %}
+      <span class="font-bold text-lg">"{{ button.label }} (родитель: <a href="{{ url_for('setting_bot_menu_update_button', button_id=button.parent_id) }}" class="hover:underline">{% if parent_label %}{{ parent_label }}{% endif %}</a>)"</span> {% else %}
+      Создание новой карточки (родитель: <a href="{{ url_for('setting_bot_menu_update_button', button_id=button.id) }}" class="hover:underline">{{ button.label }}</a>) {% endif %}
     </h2>
     <hr class="mb-2" />
     <div class="flex-wrap gap-4">
       <div class="flex-shrink">
         <form
           class="text-text-light dark:text-text-dark"
-          action="{% if update %}{{ url_for('start_setting_bot_menu_update_button', button_id=button.id) }}{% endif %}"
+          action="{% if update %}{{ url_for('start_setting_bot_menu_update_button', button_id=button.id) }}{% else %}{{ url_for('start_setting_bot_menu_add_button', button_id=button.id) }}{% endif %}"
           method="post"
           enctype="multipart/form-data"
         >
@@ -98,7 +99,7 @@ function delete_button(url) {
               class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400 "
               placeholder="Новая карточка"
               required=""
-              value="{% if button.label %}{{ button.label }}{% endif %}"
+              value="{% if button.label and update %}{{ button.label }}{% endif %}"
             />
           </div>
           <div class="mb-5">
@@ -111,7 +112,7 @@ function delete_button(url) {
               id="content_text"
               class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
               placeholder="Текст, который будет виден пользователю"
-              value="{% if button.content_text %}{{ button.content_text }}{% endif %}"
+              value="{% if button.content_text and update %}{{ button.content_text }}{% endif %}"
             />
           </div>
           <div class="mb-5">
@@ -124,7 +125,7 @@ function delete_button(url) {
               id="content_link"
               class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
               placeholder="https://link.com"
-              value="{% if button.content_link %}{{ button.content_link }}{% endif %}"
+              value="{% if button.content_link and update %}{{ button.content_link }}{% endif %}"
             />
           </div>
           {% if update %}
@@ -145,9 +146,10 @@ function delete_button(url) {
               name="content_image"
               id="content_image"
               class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
-              value="{% if button.content_image %} {{ button.content_image }} {% endif %}"
+              value="{% if button.content_image and update %} {{ button.content_image }} {% endif %}"
             />
           </div>
+          {% if update %}
           <div class="flex mb-5">
             <div class="flex items-center h-5">
               <input
@@ -158,7 +160,7 @@ function delete_button(url) {
                 class="w-4 h-4 text-contrast accent-contrast bg-background-light border-background-light-secondary-950 rounded focus:ring-contrast dark:focus:ring-contrast dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
             </div>
-            {% if update %}
+            
             <div class="ms-2 text-sm">
               <label
                 for="remove_content_image-checkbox"
@@ -173,13 +175,13 @@ function delete_button(url) {
                 укажете новое - оно не будет добавлено.
               </p>
             </div>
-            {% endif %}
           </div>
+          {% endif %}
           <button
             type="submit"
             class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
           >
-            Обновить карточку
+            {% if update %}Обновить карточку{% else %}Создать карточку{% endif %}
           </button>
           {% if not button.is_main_menu_button and update %}
             <button
@@ -208,7 +210,7 @@ function delete_button(url) {
                     class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-text-light-secondary border hover:bg-background-dark hover:text-text-dark border-text-light-secondary focus:ring-4 focus:outline-none focus:ring-text-light-secondary rounded-md text-center dark:border-text-light-900 dark:bg-background-dark-secondary dark:text-text-dark dark:focus:text-text-dark-secondary dark:focus:ring-text-light-secondary dark:hover:bg-background-light dark:hover:text-text-light-secondary"
                   >
                     <a
-                      href="{{ url_for('setting_bot_menu_update_button', button_id=1) }}"
+                      href="{{ url_for('setting_bot_menu_add_button', parent_id=button.id) }}"
                       class="relative px-5 py-0.5 transition-all ease-in duration-75 rounded-md group-hover:bg-opacity-0"
                     >
                       Создать дочернюю карточку

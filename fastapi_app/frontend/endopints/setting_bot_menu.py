@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.bot_menu_validators import check_button_exist
 from api.dependencies.auth import check_user_is_superuser
-from api.endpoints.bot_menu import delete_bot_menu_button_file, delete_bot_menu_button, update_bot_menu_button, add_files_to_button
+from api.endpoints.bot_menu import create_new_bot_menu_button, delete_bot_menu_button_file, delete_bot_menu_button, update_bot_menu_button, add_files_to_button
 from core.config import settings
 from core.db import get_async_session
 from core.frontend import templates
@@ -76,11 +76,17 @@ async def setting_bot_menu_add_button(
     user: User = Depends(check_user_is_superuser),
     session: AsyncSession = Depends(get_async_session),
 ):
+    try:
+        parent = await check_button_exist(button_id=parent_id, session=session)
+    except HTTPException:
+        await button_not_exist_error()
     context = {
         'request': request,
         'user': user,
-        'buttons': '',
-        'url_to_sort': '',
+        'button': parent,
+        'update': False,
+        'buttons': [],
+        'url_to_sort': 'asc',
     }
 
     return templates.TemplateResponse(
@@ -103,10 +109,15 @@ async def setting_bot_menu_update_button(
         button = await check_button_exist(button_id=button_id, session=session)
     except HTTPException:
         await button_not_exist_error()
+    parent_label = await bot_menu_crud.get_parent_label(
+        parent_id=button.parent_id,
+        session=session
+    )
     context = {
         'request': request,
         'user': user,
         'button': button,
+        'parent_label': parent_label,
         'child_buttons': await bot_menu_crud.get_children_button(
             button_id=button_id, session=session
         ),
@@ -264,5 +275,36 @@ async def start_setting_bot_menu_update_button(
     return await setting_bot_menu_update_button(
         request=request,
         button_id=button.id,
+        user=user,
         session=session
+    )
+
+
+@router.post(
+    '/setting-bot-menu/add-button/{button_id}',
+    response_class=HTMLResponse,
+    summary='Создание кнопки',
+)
+async def start_setting_bot_menu_add_button(
+    request: Request,
+    button_id: int,
+    label: str = Form(None),
+    content_text: Optional[str] = Form(None),
+    content_image: Optional[UploadFile] = File(None),
+    content_link: Optional[str] = Form(None),
+    user: User = Depends(check_user_is_superuser),
+    session: AsyncSession = Depends(get_async_session),
+):
+    if not content_image.filename:
+        content_image = None
+    button = await create_new_bot_menu_button(
+        button_id=button_id,
+        label=label,
+        content_image=content_image,
+        content_link=content_link,
+        content_text=content_text,
+        session=session,
+    )
+    await redirect_by_httpexeption(
+        f'/setting-bot-menu/update-button/{button.id}'
     )
