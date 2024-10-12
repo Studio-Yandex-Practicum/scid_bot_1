@@ -1,4 +1,5 @@
 from typing import Optional
+from urllib.parse import quote
 
 from fastapi import (
     APIRouter,
@@ -11,12 +12,12 @@ from fastapi import (
     UploadFile,
     status,
 )
-from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.bot_menu_validators import check_button_exist
 from api.dependencies.auth import check_user_is_superuser
-from api.endpoints.bot_menu import update_bot_menu_button, delete_bot_menu_button_file
+from api.endpoints.bot_menu import delete_bot_menu_button_file, delete_bot_menu_button, update_bot_menu_button
 from core.config import settings
 from core.db import get_async_session
 from core.frontend import templates
@@ -94,12 +95,16 @@ async def setting_bot_menu_update_button(
 ):
     try:
         button = await check_button_exist(button_id=button_id, session=session)
-    except HTTPException as e:
-        return RedirectResponse(
-            request.url_for(
-                'main_page', navbar_error='Такой кнопки не существует'
-            ),
-            status_code=status.HTTP_303_SEE_OTHER,
+    except HTTPException:
+        raise HTTPException(
+            headers={
+                'location': f'/?navbar_error={
+                    quote(
+                        'Такой кнопки не существует'
+                    )
+                }'
+            },
+            status_code=status.HTTP_302_FOUND,
         )
     context = {
         'request': request,
@@ -156,6 +161,26 @@ async def setting_bot_menu_delete_attach_file(
     )
 
 
+@router.delete(
+    '/setting-bot-menu/delete-button/{button_id}',
+    response_class=HTMLResponse,
+    summary='Удалить прикреплённый файл',
+)
+async def setting_bot_menu_delete_button(
+    request: Request,
+    button_id: int,
+    session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(check_user_is_superuser)
+):
+    await delete_bot_menu_button(
+        button_id=button_id,
+        session=session
+    )
+    return JSONResponse(
+        content={ 'url': str(request.url_for('setting_bot_menu')) }
+    )
+
+
 @router.post(
     '/setting-bot-menu/update-button/{button_id}',
     response_class=HTMLResponse,
@@ -172,7 +197,6 @@ async def start_setting_bot_menu_update_button(
     user: User = Depends(check_user_is_superuser),
     session: AsyncSession = Depends(get_async_session),
 ):
-    print(remove_content_image)
     if not content_image.filename:
         content_image = None
     button = await update_bot_menu_button(
@@ -184,4 +208,8 @@ async def start_setting_bot_menu_update_button(
         remove_content_image=remove_content_image,
         session=session,
     )
-    print(button)
+    return await setting_bot_menu_update_button(
+        request=request,
+        button_id=button.id,
+        session=session
+    )

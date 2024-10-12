@@ -37,10 +37,30 @@ function delete_attach_file(url) {
           .catch(error => {
             aler(error)
           });
-      } else {
       }
 }
 
+
+function delete_button(url) {
+    if (confirm('Точно удалить кнопку? БУДУТ УДАЛЕНЫ ДОЧЕРНИЕ КНОПКИ, СО ВСЕМИ ФАЙЛАМИ И ВЛОЖЕНИЯМИ! ')) {
+        fetch(url, {
+            method: "DELETE",
+            redirect: 'manual',
+            headers: {
+              "Content-type": "application/json; charset=UTF-8"
+            }
+          })
+          .then(response => {
+            response.json().then(data => {
+                window.location.replace(data.url)
+            })
+          })
+          .catch(error => {
+            console.log(error)
+            alert(error)
+          });
+      }
+}
 
 </script>
 {% endblock script %}
@@ -62,12 +82,12 @@ function delete_attach_file(url) {
     <div class="flex-wrap gap-4">
       <div class="flex-shrink">
         <form
-          class="space-y-4 md:space-y-6 text-text-light dark:text-text-dark"
+          class="text-text-light dark:text-text-dark"
           action="{% if update %}{{ url_for('start_setting_bot_menu_update_button', button_id=button.id) }}{% endif %}"
           method="post"
           enctype="multipart/form-data"
         >
-          <div>
+          <div class="mb-5">
             <label for="label" class="block mb-2 text-sm font-medium"
               >Наименование карточки</label
             >
@@ -75,13 +95,13 @@ function delete_attach_file(url) {
               type="text"
               name="label"
               id="label"
-              class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
+              class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400 "
               placeholder="Новая карточка"
               required=""
               value="{% if button.label %}{{ button.label }}{% endif %}"
             />
           </div>
-          <div>
+          <div class="mb-5">
             <label for="content_text" class="block mb-2 text-sm font-medium"
               >Контент: текст</label
             >
@@ -94,7 +114,7 @@ function delete_attach_file(url) {
               value="{% if button.content_text %}{{ button.content_text }}{% endif %}"
             />
           </div>
-          <div>
+          <div class="mb-5">
             <label for="content_link" class="block mb-2 text-sm font-medium"
               >Контент: ссылка</label
             >
@@ -107,13 +127,13 @@ function delete_attach_file(url) {
               value="{% if button.content_link %}{{ button.content_link }}{% endif %}"
             />
           </div>
-          <div>
+          <div class="mb-5">
             <label class="block mb-2 text-sm font-medium"
-              >Контент: изображение (текущий): {{ button.content_image|replace(files_folder, '') }}</label
+              >Контент: изображение (текущий): {% if button.content_image %}{{ button.content_image|replace(files_folder, '') }}{% else %}-{% endif %}</label
             >
             <img src="{{ url_for(files_folder, path=button.content_image|replace(files_folder, '')) }}" width="128"/>
           </div>
-          <div>
+          <div class="mb-5">
             <label for="content_image" class="block mb-2 text-sm font-medium"
               >Контент: изображение (новый)</label
             >
@@ -126,7 +146,7 @@ function delete_attach_file(url) {
               value="{% if button.content_image %} {{ button.content_image }} {% endif %}"
             />
           </div>
-          <div class="flex">
+          <div class="flex mb-5">
             <div class="flex items-center h-5">
               <input
                 id="remove_content_image-checkbox"
@@ -155,8 +175,17 @@ function delete_attach_file(url) {
             type="submit"
             class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
           >
-            Обновить
+            Обновить карточку
           </button>
+          {% if not button.is_main_menu_button %}
+            <button
+                type="button"
+                class="mt-2 w-full bg-contrast-700 hover:bg-contrast text-text-dark font-medium rounded-lg text-sm px-5 py-2.5 text-center  border border-background-light dark:border-background-dark"
+                onClick=delete_button("{{ url_for('setting_bot_menu_delete_button', button_id=button.id) }}")
+                >
+                    Удалить карточку
+                </button>
+            {% endif %}
         </form>
       </div>
       {% if update %}
