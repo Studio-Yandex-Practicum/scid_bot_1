@@ -1,7 +1,7 @@
 from aiogram import F, Router, types
 from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
-from api.api_service import get_button_content, get_child_buttons, get_main_menu_button
+from api.api_service import get_button_content, get_button_image, get_child_buttons, get_main_menu_button
 from utils.state import NavigationState
 from keyboards.inline_keyboards import create_menu_keyboard
 
@@ -14,15 +14,29 @@ async def navigate_to_button(call: types.CallbackQuery, state: FSMContext):
     content = await get_button_content(button_id)  # Запрашиваем контент этой кнопки
     child_buttons = await get_child_buttons(button_id)  # Получаем дочерние кнопки
 
+
+
+    image = await get_button_image(button_id)
+    
+
     # Создаем клавиатуру с кнопками
     keyboard = create_menu_keyboard(child_buttons, back_button=content['parent_id'] is not None)
+    label = content['label']
+    text = content['content_text']
+    url = content['content_link']
+    text_message = (
+            f"<b>{label}</b>\n\n"
+            f"{text}\n\n"
+            f"{url}\n\n"
+        )
 
     # Обновляем сообщение с новым контентом и клавиатурой
-    await call.message.edit_text(
-        text=content['label'],
-        reply_markup=keyboard
+    await call.message.answer(
+        text_message,
+        #text=content['label'],
+        reply_markup=keyboard,
+        parse_mode="HTML"
     )
-
     # Сохраняем текущее состояние в FSM
     await state.update_data(current_button_id=button_id)
 

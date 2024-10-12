@@ -5,8 +5,9 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 
+from bot.routers import tree_commands
 from routers import main_menu, navigation
-from handlers import main_button, tree_commands
+from handlers import main_button
 
 load_dotenv()
 
