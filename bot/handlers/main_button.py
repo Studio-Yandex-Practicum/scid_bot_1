@@ -14,7 +14,8 @@ async def cmd_main_button(message: Message):
     await message.answer(
         text="Выберите команду:",
         reply_markup=make_main_button_keyboard(comm)
-    )    
+    )
+
 
 @router.message(F.text.in_(comm))
 async def handle_command(message: Message):
@@ -32,4 +33,4 @@ async def handle_command(message: Message):
         )
         await message.answer(text_message, parse_mode="HTML")
     elif message.text == "Проверить работу API":
-        await message.answer("Данные получены!")        
+        await message.answer("Данные получены!")

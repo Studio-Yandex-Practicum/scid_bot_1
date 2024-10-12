@@ -1,12 +1,17 @@
 # Обычные клавиатуры
 import aiohttp
 
-from aiogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup
-)
-from aiogram.filters.callback_data import CallbackData
+from aiogram import types, Router
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.filters.callback_data import CallbackData
+
+
+from bot.keyboards.common_keyboards import (
+    inline_menu,
+    add_back_button,
+    fetch_buttons_from_api
+)
 
 API_URL = 'https://your-api-endpoint.com'
 
@@ -18,60 +23,57 @@ class ButtonCallback(CallbackData, prefix="action"):
     value: str
     extra_info: str
 
+# Хендлер для обработки нажатий на кнопки
+@router.callback_query(lambda c: c.data.startswith('callback_'))
+async def callback_handler(callback_query: types.CallbackQuery):
+    data_parts = callback_query.data.split('_')
+    action = data_parts[1]
 
-def get_start_keyboard():
-    button1 = InlineKeyboardButton(
-        text="🔥 Яндекс",
-        callback_data=ButtonCallback(value="btn1",
-                                     extra_info="info1").pack()
-    )
-    button2 = InlineKeyboardButton(
-        text="🔥 Google",
-        url="https://google.com/",
-    )
-    # Кнопки в ряд
-    row = [button1, button2]
-    # Ряд кнопок
-    rows = [row]
-    # Инциализируем клавиатуру
-    markup = InlineKeyboardMarkup(inline_keyboard=rows)
-    return markup
+    # Обработка кнопки "Назад"
+    if action == "back":
+        previous_id = int(data_parts[2])
 
-
-# Функция для генерации клавиатуры - Кнопки
-async def fetch_buttons_from_api(endpoint_id: int):
-    async with aiohttp.ClientSession() as session:
+        # Возвращаемся к предыдущему меню
+        if previous_id == 0:
+            # Если previous_id == 0, то это главное меню
+            buttons = [
+                {"id": 1, "name": "Получить информацию о компании", "url": None},
+                {"id": 2, "name": "Узнать о продуктах и услугах", "url": None},
+                {"id": 3, "name": "Получить техническую поддержку", "url": None},
+                {"id": 4, "name": "Посмотреть портфолио", "url": None},
+                {"id": 5, "name": "Связаться с менеджером", "url": None},
+            ]
+            keyboard = await inline_menu(buttons)
+            await callback_query.message.edit_text(
+                "Здравствуйте! Я ваш виртуальный помощник. Как я могу помочь вам сегодня?",
+                reply_markup=keyboard
+            )
+        else:
+            # Можно добавить логику для возврата в другие подменю, если необходимо
+            await callback_query.message.edit_text(
+                f"Возврат в меню с ID {previous_id}.",
+                reply_markup=types.InlineKeyboardMarkup()  # Замените на нужную клавиатуру для этого ID
+            )
+    else:
         try:
-            async with session.get(f"{API_URL}/buttons/{endpoint_id}") as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return data.get('buttons', [])
-                else:
-                    return []
-        except Exception as e:
-            print(f"Error fetching buttons: {str(e)}")
-            return []
+            # Преобразуем button_id в число
+            button_id = int(data_parts[-1])
 
+            # Обработка конкретных кнопок меню
+            if button_id == 1:
+                # Используем тестовую функцию для загрузки кнопок для информации о компании
+                buttons = await fetch_buttons_from_api(endpoint_id=1)
+                keyboard = await inline_menu(buttons)
+                # Добавляем кнопку "Назад" с ID главного меню (0)
+                keyboard = add_back_button(keyboard, previous_id=0)
+                await callback_query.message.edit_text(
+                    "Информация о компании:",
+                    reply_markup=keyboard
+                )
+            # Можно добавить другие условия для обработки button_id
 
-# Функция для генерации клавиатуры - Меню из кнопок
-async def inline_menu(buttons, columns=2, start_id=1) -> InlineKeyboardMarkup:
-    keyboard = InlineKeyboardBuilder()
+        except ValueError:
+            print("Неверный формат callback_data")
 
-    for button in buttons:
-        keyboard.add(InlineKeyboardButton(
-            text=button["label"],
-            callback_data=f"{button['id']},{button['parent_id']}"
-        ))
-    keyboard.adjust(columns)
-
-    # Добавляем служебные кнопки "Назад" и "В начало"
-    parent_id = buttons[0].get('parent_id', start_id)
-    keyboard.add(InlineKeyboardButton(
-        text="Назад", callback_data=f"{parent_id}"
-    ))
-    keyboard.add(InlineKeyboardButton(
-        text="В начало", callback_data=f"{start_id}"
-    ))
-    keyboard.adjust(1)
-
-    return keyboard.as_markup()
+    # Закрываем уведомление о нажатии кнопки
+    await callback_query.answer()
