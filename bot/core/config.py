@@ -14,7 +14,7 @@ class AppConfig(BaseModel):
 
 
 class APIConfig(BaseModel):
-    ...
+    base_url: str = 'http://127.0.0.1'
 
 
 class Settings(BaseSettings):
