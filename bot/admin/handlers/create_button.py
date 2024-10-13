@@ -211,6 +211,7 @@ async def button_submited(message: Message, state: FSMContext):
     await message.answer(
         text=(
             f"Успешно создал кнопку:\n"
+            f"Айди кнопки: <b>{button['id']}</b>\n"
             f"Текст на кнпоке: <b>{button['label']}</b>\n"
             f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
             f"Текст сообщения над кнопкой: <b>{button['content_text']}</b>\n"

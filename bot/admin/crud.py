@@ -34,6 +34,7 @@ async def add_child_button(
                                      headers=headers,
                                      data=data,
                                      files=files)
+    print(response.json())
     return response.json()
 
 
