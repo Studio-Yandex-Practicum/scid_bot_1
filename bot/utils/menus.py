@@ -7,5 +7,5 @@ async def set_commands(bot: Bot, user_id: int):
         BotCommand(command='start', description='Начать'),
         BotCommand(command='review', description='Оставить отзыв'),
     ]
-    await bot.delete_my_commands()
+    # await bot.delete_my_commands()
     await bot.set_my_commands(commands, BotCommandScopeDefault())
