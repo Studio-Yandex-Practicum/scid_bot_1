@@ -25,6 +25,7 @@ import httpx
 
 import os.path
 
+API_URL = os.getenv('API_URL')
 router = Router()
 
 
@@ -174,7 +175,7 @@ async def content_image_sent(message: Message, state: FSMContext):
             f"Кнопка почти готова, осталось подтвердить:\n"
             f"Текст на кнопке: <b>{user_data['typed_name']}</b>\n"
             f"Айди кнопки-родителя: <b>{user_data['typed_parent_id']}</b>\n"
-            f"Текст сообщения над кнопкой: "
+            f"Текст сообщения над кнопкой:\n"
             # f"<b>{user_data.get('typed_content_text', '')}</b>\n"
             f"{user_data.get('typed_content_text', '')}\n"
             f"Линк кнопки: <b>{user_data.get('typed_content_link', '')}</b>\n"
@@ -213,18 +214,36 @@ async def button_submited(message: Message, state: FSMContext):
         label, parent_id, content_text, content_link, content_image
     )
 
-    await message.answer(
-        text=(
-            f"Успешно создал кнопку:\n"
-            f"Айди кнопки: <b>{button['id']}</b>\n"
-            f"Текст на кнпоке: <b>{button['label']}</b>\n"
-            f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
-            f"Текст сообщения над кнопкой: <b>{button['content_text']}</b>\n"
-            f"Линк кнопки: <b>{button['content_link']}</b>\n"
-            f"Изображение (путь): <b>{button['content_image']}</b>"
-        ),
-        parse_mode=ParseMode.HTML,
+    # await message.answer(
+    #     text=(
+    #         f"Успешно создал кнопку:\n"
+    #         f"Айди кнопки: <b>{button['id']}</b>\n"
+    #         f"Текст на кнопке: <b>{button['label']}</b>\n"
+    #         f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
+    #         f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
+    #         f"Линк кнопки: <b>{button['content_link']}</b>\n"
+    #         # f"Изображение (путь): <b>{button['content_image']}</b>"
+    #         f"Изображение:"
+    #     ),
+    #     parse_mode=ParseMode.HTML,
+    # )
+    # await message.answer_photo(
+    #     URLInputFile(f"{API_URL}{button['content_image']}"))
+
+    text = (
+        f"Успешно создал кнопку:\n"
+        f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
+        f"Айди кнопки: <b>{button['id']}</b>\n"
+        f"Текст на кнопке: <b>{button['label']}</b>\n"
+        f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
+        f"Линк кнопки: <b>{button['content_link']}</b>\n"
     )
+    await message.answer_photo(
+        photo=URLInputFile(f"{API_URL}{button['content_image']}"),
+        caption=text,
+        parse_mode=ParseMode.HTML
+    )
+
     await cancel_and_return_to_admin_panel(message, state)
 
 
@@ -247,9 +266,26 @@ async def photo_msg(message: Message):
     await message.answer("Это точно какое-то изображение!")
     # await message.answer_photo(photo="1.jpg")
     # await response = requests.get('http://127.0.0.1/bot_menu/41/get-image-file')
-    async with httpx.AsyncClient() as client:
-        response = await client.get('http://127.0.0.1/bot_menu/41/get-image-file')
-    image_stream = io.BytesIO(response.content)
-    image_stream.seek(0)
-    await message.answer_photo(photo=image_stream)
+
+    # async with httpx.AsyncClient() as client:
+    #     response = await client.get('http://127.0.0.1/bot_menu/41/get-image-file')
+    # image_stream = io.BytesIO(response.content)
+    # image_stream.seek(0)
+    # await message.answer_photo(photo=image_stream)
+
     # await message.answer_photo(photo="http://127.0.0.1/bot_menu/41/get-image-file")
+    
+    image_from_url = URLInputFile("http://127.0.0.1/files/photo_2024-07-26_02-52-14.jpg_1728851312.jpg")
+    await message.answer_photo(
+        image_from_url,
+        caption="Изображение по ссылке"
+    )
+
+    image_from_url = URLInputFile("http://127.0.0.1/files/upload_1728847314")
+    await message.answer_photo(
+        image_from_url,
+        caption="Изображение без формата по ссылке"
+    )
+
+    # await message.answer_photo(photo="http://127.0.0.1/files/photo_2024-07-26_02-52-14.jpg_1728851312.jpg")
+    # await message.answer_photo(photo="http://127.0.0.1/files/upload_1728847314.jpg")
