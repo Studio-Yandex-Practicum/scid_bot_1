@@ -5,6 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.utils.markdown import hbold, hitalic, hlink
 from aiogram.types import FSInputFile, URLInputFile, BufferedInputFile
+from aiogram.types import InputFile
 
 # import requests
 from io import BytesIO
@@ -139,18 +140,30 @@ async def content_image_sent(message: Message, state: FSMContext):
         photo_path_ = await bot.get_file(photo_id)
         photo_path = photo_path_.file_path
 
-        # Загружаем файл в BytesIO (чтобы сохранить его в памяти)
-        file_stream = BytesIO()
-        await bot.download_file(photo_path, file_stream)
-        file_stream.seek(0)  # Сбрасываем указатель в начало потока, чтобы его можно было прочитать
+        photo_bytes = BytesIO()
+        await bot.download_file(photo_path, photo_bytes)
+        photo_bytes.seek(0)
 
-        await state.update_data(sent_content_image=file_stream)
+        # file_ids = []
+        # with open(file_stream, "rb") as image_from_buffer:
+        #     result = await message.answer_photo(
+        #         BufferedInputFile(
+        #             image_from_buffer.read(),
+        #             filename="image from buffer.jpg"
+        #         ),
+        #         caption="Изображение из буфера"
+        #     )
+        #     file_ids.append(result.photo[-1].file_id)
+        # await message.answer("Отправленные файлы:\n"+"\n".join(file_ids))
+        await state.update_data(sent_content_image=photo_bytes)
+
     user_data = await state.get_data()
     new_reply_markup = ReplyKeyboardMarkup(
         keyboard=[[KeyboardButton(text="✅ Создать кнопку")]]
         + base_reply_markup.keyboard,
         resize_keyboard=True,
     )
+
     await message.answer(
         text=(
             f"Кнопка почти готова, осталось подтвердить:\n"
@@ -167,6 +180,15 @@ async def content_image_sent(message: Message, state: FSMContext):
     )
     if "sent_content_image" in user_data:
         await message.answer_photo(photo=photo_id)
+        # тест, что изображение сохранилось в бинарном формате
+        with open("image.jpg", "wb") as f:
+            f.write(user_data['sent_content_image'].read())
+        # # и что бинарное изображение принимает и отображает телега (не получилось)
+        # photo_bytes = user_data['sent_content_image']
+        # photo_bytes.seek(0)
+        # photo = InputFile(photo_bytes, filename="image.jpg")
+        # await message.answer_photo(photo=photo)
+
     await state.set_state(CreateButton.submiting_button)
 
 
@@ -181,25 +203,11 @@ async def button_submited(message: Message, state: FSMContext):
     content_text = user_data.get("typed_content_text", "")
     content_link = user_data.get("typed_content_link", "")
     content_image = user_data.get("sent_content_image", None)
-    content_image.seek(0)
-    file_ids = []
-    with open(content_image, "rb") as image_from_buffer:
-        result = await message.answer_photo(
-            BufferedInputFile(
-                image_from_buffer.read(),
-                filename="image from buffer.jpg"
-            ),
-            caption="Изображение из буфера"
-        )
-        file_ids.append(result.photo[-1].file_id)
-
-    await message.answer("Отправленные файлы:\n"+"\n".join(file_ids))
-    await message.answer_photo(photo=content_image)
 
     button = await add_child_button(
         label, parent_id, content_text, content_link, content_image
     )
-    print(button)
+
     await message.answer(
         text=(
             f"Успешно создал кнопку:\n"

@@ -25,6 +25,7 @@ async def add_child_button(
         "content_link": content_link,
     }
     if content_image is not None:
+        print(content_image)
         files = {"content_image": content_image}
     else:
         files = {}
