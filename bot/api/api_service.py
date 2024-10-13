@@ -24,7 +24,7 @@ async def get_button_image(button_id):
     url = f"{API_BASE_URL}/bot_menu/{button_id}/get-image-file"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
-            return await response.text()
+            return await response.read()
 
 async def get_child_buttons(button_id):
     """Получить дочерние кнопки по ID родителя."""

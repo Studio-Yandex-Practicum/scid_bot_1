@@ -3,8 +3,8 @@ from aiogram.filters import Command
 from aiogram.types import Message
 
 from api.api_main_button import get_api_data
-from bot.handlers.handlers import handle_menu_get_main_menu_button
-from bot.keyboards.common_keyboards import inline_menu
+from api.api_points import handle_menu_get_main_menu_button
+from keyboards.common_keyboards import inline_menu
 
 # создаем роутер для обработки команд
 router = Router()
