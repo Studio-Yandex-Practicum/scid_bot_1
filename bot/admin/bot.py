@@ -10,20 +10,22 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
+if not API_TOKEN:
+    raise ValueError(
+        "Не найден токен бота. Пожалуйста,"
+        "добавьте TELEGRAM_BOT_TOKEN в .env файл."
+    )
+
+logging.basicConfig(level=logging.INFO)
+storage = MemoryStorage()
+
+bot = Bot(token=API_TOKEN)
+
 
 async def main():
     # API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-    API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
-    if not API_TOKEN:
-        raise ValueError(
-            "Не найден токен бота. Пожалуйста,"
-            "добавьте TELEGRAM_BOT_TOKEN в .env файл."
-        )
-
-    logging.basicConfig(level=logging.INFO)
-    storage = MemoryStorage()
-
-    bot = Bot(token=API_TOKEN)
+    
     dp = Dispatcher(storage=storage)
 
     dp.include_routers(
