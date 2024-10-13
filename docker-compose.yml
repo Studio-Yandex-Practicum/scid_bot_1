@@ -7,8 +7,7 @@ services:
   db:
     restart: always
     image: postgres:13
-    env_file:
-      # - './.env'
+    env_file:      
       - './.env'
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -24,8 +23,7 @@ services:
       - ./fastapi_app:/app
       - fastapi_app_files:/app/files
       - static:/app/static
-    env_file:
-      # - ./fastapi_app/.env
+    env_file:      
       - './.env'
     depends_on:
       - db
@@ -37,15 +35,14 @@ services:
   bot:
     build:
       context: ./bot
-    env_file:
-      # - './.env'
+    env_file:      
       - './.env'
     depends_on:
       - fastapi_app
     networks:
       - scid_bot_1   
     volumes:
-      - fastapi_app_files:/app/files
+      - fastapi_app_files:/usr/src/app/files
 
   nginx:
     image: nginx:alpine
