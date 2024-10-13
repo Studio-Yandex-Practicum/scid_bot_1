@@ -1,8 +1,8 @@
 from aiogram import Bot, Router, types
 from aiogram.fsm.context import FSMContext
+
 from api.api_service import get_main_menu_button
 from utils.state import NavigationState
-
 from utils.user_content import generate_content, return_message
 
 router = Router()
@@ -51,7 +51,6 @@ async def go_to_main_menu(
     """Переход в главное меню."""
     main_button = await get_main_menu_button()
     content = await generate_content(main_button['id'])
-    # Сбрасываем состояние FSM на начальное
     await return_message(content, call)
     await state.set_state(NavigationState.at_menu)
     await bot.delete_message(call.message.chat.id, call.message.message_id)
