@@ -3,7 +3,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-from handlers import base, create_button, get_button_content
+from handlers import base, create_button, get_button_content, get_child_buttons
 import os
 from dotenv import load_dotenv
 
@@ -17,7 +17,7 @@ if not API_TOKEN:
         "добавьте TELEGRAM_BOT_TOKEN в .env файл."
     )
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 storage = MemoryStorage()
 
 bot = Bot(token=API_TOKEN)
@@ -31,7 +31,9 @@ async def main():
     dp.include_routers(
         base.router,
         create_button.router,
-        get_button_content.router)
+        get_button_content.router,
+        get_child_buttons.router,
+        )
 
     # Альтернативный вариант регистрации роутеров по одному на строку
     # dp.include_router(questions.router)

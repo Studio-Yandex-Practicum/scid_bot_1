@@ -30,7 +30,7 @@ admin_start_keyboard_structure = {
             },
             {
                 "text": "Получить все дочерние кнопки",
-                "callback_data": "get_button_subs",
+                "callback_data": "get_child_buttons",
             },
             {
                 "text": "Изменить контент кнопки",

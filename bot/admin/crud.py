@@ -61,3 +61,16 @@ async def get_button_image(button_id):
     # return response.json()
     # print(response)
     return response
+
+
+async def get_child_buttons(button_id):
+    url = f'{API_BOT_MENU_URL}{button_id}/get-child-buttons'
+    headers = {
+        'accept': 'application/json',
+    }
+    # response = requests.get(url, headers=headers)
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers=headers)
+    # return response.json()
+    # print(response)
+    return response
