@@ -9,14 +9,19 @@ from aiogram.types import InputFile
 
 # import requests
 from io import BytesIO
+import io
+
 # from PIL import Image
 from bot import bot
+import requests
 
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, Message, ReplyKeyboardMarkup)
 from .base import cancel_and_return_to_admin_panel, base_reply_markup
-from crud import add_child_button
+from crud import add_child_button, get_button_image
 import os
+import httpx
+
 
 import os.path
 
@@ -180,9 +185,9 @@ async def content_image_sent(message: Message, state: FSMContext):
     )
     if "sent_content_image" in user_data:
         await message.answer_photo(photo=photo_id)
-        # тест, что изображение сохранилось в бинарном формате
-        with open("image.jpg", "wb") as f:
-            f.write(user_data['sent_content_image'].read())
+        # # тест, что изображение сохранилось в бинарном формате (работает)
+        # with open("image.jpg", "wb") as f:
+        #     f.write(user_data['sent_content_image'].read())
         # # и что бинарное изображение принимает и отображает телега (не получилось)
         # photo_bytes = user_data['sent_content_image']
         # photo_bytes.seek(0)
@@ -216,7 +221,7 @@ async def button_submited(message: Message, state: FSMContext):
             f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
             f"Текст сообщения над кнопкой: <b>{button['content_text']}</b>\n"
             f"Линк кнопки: <b>{button['content_link']}</b>\n"
-            f"Изображение: <b>{button['content_image']}</b>"
+            f"Изображение (путь): <b>{button['content_image']}</b>"
         ),
         parse_mode=ParseMode.HTML,
     )
@@ -240,4 +245,11 @@ async def photo_msg(message: Message):
         f.write(file_stream.read())
 
     await message.answer("Это точно какое-то изображение!")
-    await message.answer_photo(photo="2.jpg")
+    # await message.answer_photo(photo="1.jpg")
+    # await response = requests.get('http://127.0.0.1/bot_menu/41/get-image-file')
+    async with httpx.AsyncClient() as client:
+        response = await client.get('http://127.0.0.1/bot_menu/41/get-image-file')
+    image_stream = io.BytesIO(response.content)
+    image_stream.seek(0)
+    await message.answer_photo(photo=image_stream)
+    # await message.answer_photo(photo="http://127.0.0.1/bot_menu/41/get-image-file")

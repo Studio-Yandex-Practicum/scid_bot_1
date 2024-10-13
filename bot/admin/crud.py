@@ -34,7 +34,7 @@ async def add_child_button(
                                      headers=headers,
                                      data=data,
                                      files=files)
-    print(response.json())
+    # print(response.json())
     return response.json()
 
 
@@ -47,4 +47,17 @@ async def get_button_content(button_id):
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers)
     # return response.json()
+    return response
+
+
+async def get_button_image(button_id):
+    url = f'{API_BOT_MENU_URL}{button_id}/get-image-file'
+    headers = {
+        'accept': 'application/json',
+    }
+    # response = requests.get(url, headers=headers)
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers=headers)
+    # return response.json()
+    # print(response)
     return response
