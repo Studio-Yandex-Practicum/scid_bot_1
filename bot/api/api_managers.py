@@ -1,5 +1,6 @@
 from api.api_handlers import get_api_data, post_api_data
 
+
 async def manager_login_with_tg_id(tg_id: int) -> dict[str, str]:
     return await post_api_data(
         endpoint="auth/get_user-jwf-by-tg-id",
