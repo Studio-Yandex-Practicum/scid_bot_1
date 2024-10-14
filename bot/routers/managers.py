@@ -1,4 +1,4 @@
-from aiogram import Bot, F, Router, types
+from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
@@ -9,12 +9,12 @@ from keyboards.manager import (
     MANAGER_MAIN_MENU,
     OrderCallback,
     START_MANAGER_WORK,
-    generate_order_keyboard
+    generate_order_keyboard,
+    generate_order_work_keyboard
 )
 from utils.manager_content import (
     generate_order_text,
     get_all_orders_for_manager,
-    remove_previous_message,
     show_message
 )
 from utils.manager_state import ManagerState
@@ -170,7 +170,10 @@ async def manager_current_orders_show(
             data['orders'][callback_data.current_order],
             preview=False
         ),
-        reply_keyboard=None,
+        reply_keyboard=await generate_order_work_keyboard(
+            callback.message.from_user.id,
+            order_id=data['orders'][callback_data.current_order]['id']
+        ),
         state=state,
         new_state=None,
         message=callback.message
