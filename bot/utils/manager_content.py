@@ -46,7 +46,7 @@ async def generate_order_text(
     preview: bool = True
 ) -> str:
     if order['contact_via_telegram']:
-        contact_via = "телеграм"
+        contact_via = "-"
     if order['contact_via_phone']:
         contact_via = "телефон"
     if order['contact_via_email']:

@@ -3,7 +3,8 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
 from api.api_managers import (
-    manager_login_with_tg_id
+    manager_login_with_tg_id,
+    set_order_to_work
 )
 from keyboards.manager import (
     MANAGER_MAIN_MENU,
@@ -34,7 +35,8 @@ async def manager_start(message: types.Message, state: FSMContext):
     user_info = await manager_login_with_tg_id(message.from_user.id)
     if user_info["is_manager"]:
         await state.update_data(
-            jwt=f"{user_info['token_type']} {user_info['jwt']}"
+            jwt=f"{user_info['token_type']} {user_info['jwt']}",
+            current_user_id=message.from_user.id
         )
         await state.set_state(ManagerState.authorized)
         await bot_message.edit_text(
@@ -165,6 +167,18 @@ async def manager_current_orders_show(
     """Взятие заявки в работу"""
     data = await state.get_data()
     await state.set_state(ManagerState.order_in_progress)
+    response = await set_order_to_work(
+        jwt=data['jwt'],
+        order_id=data['orders'][callback_data.current_order]['id'],
+        manager_tg_id=data['current_user_id']
+    )
+    if 'detail' in response:
+        await state.set_state(ManagerState.authorized)
+        await callback.message.answer(
+            text=response['detail'],
+            reply_markup=MANAGER_MAIN_MENU
+        )
+        return
     await show_message(
         text=await generate_order_text(
             data['orders'][callback_data.current_order],

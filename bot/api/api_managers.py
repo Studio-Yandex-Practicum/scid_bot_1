@@ -26,3 +26,22 @@ async def get_all_orders_for_manager(
             params=params,
             headers=headers
         )
+
+
+async def set_order_to_work(
+    jwt: str,
+    order_id: int,
+    manager_tg_id: int
+):
+    headers = {
+        "accept": "application/json",
+        "Authorization": jwt
+    }
+    data = {
+        'managet_telegram_id': str(manager_tg_id)
+    }
+    return await post_api_data(
+            endpoint=f"contact_requests/{order_id}/take-to-work",
+            headers=headers,
+            data=data
+        )

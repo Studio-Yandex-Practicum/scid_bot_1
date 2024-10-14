@@ -10,10 +10,6 @@ class OrderCallback(CallbackData, prefix="order"):
     order_id: int 
 
 
-class UserContactCallback(CallbackData, prefix="order"):
-    tg_id: int
-
-
 def generate_keyboard_from_structure(
     structure: list[dict]
 ) -> InlineKeyboardMarkup:
@@ -92,14 +88,6 @@ async def generate_order_work_keyboard(
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
         InlineKeyboardButton(
-            text="📧 Написать пользователю",
-            callback_data=UserContactCallback(
-                tg_id=user_tg_id,
-            ).pack()
-        )
-    )
-    keyboard.row(
-        InlineKeyboardButton(
             text="✅ Заявка выполнена",
             callback_data=OrderCallback(
                 to_work=True,
@@ -116,6 +104,7 @@ async def generate_order_work_keyboard(
 
 async def generate_order_keyboard(
     page: int = 0,
+    order_id: int = -1,
     orders_len: int = 0
 ) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
@@ -127,7 +116,7 @@ async def generate_order_keyboard(
                 to_work=False,
                 done=False,
                 current_order=(page - 1) if page >= 1 else page,
-                order_id=-1
+                order_id=order_id
             ).pack()
         ),
         InlineKeyboardButton(
@@ -136,7 +125,7 @@ async def generate_order_keyboard(
                 to_work=False,
                 done=False,
                 current_order = page,
-                order_id=-1
+                order_id=order_id
             ).pack()
         ),
         InlineKeyboardButton(
@@ -145,7 +134,7 @@ async def generate_order_keyboard(
                 to_work=False,
                 done=False,
                 current_order=(page + 1) if has_next_page else page,
-                order_id=-1
+                order_id=order_id
             ).pack()
         )
     ]
@@ -157,7 +146,7 @@ async def generate_order_keyboard(
                 to_work=True,
                 current_order=page,
                 done=False,
-                order_id=-1
+                order_id=order_id
             ).pack()
         ),
         width=1
