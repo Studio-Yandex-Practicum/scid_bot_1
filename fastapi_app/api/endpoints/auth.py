@@ -1,6 +1,6 @@
 import json
 
-from fastapi import Depends
+from fastapi import Depends, Form
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRouter
 from fastapi_users import FastAPIUsers
@@ -47,7 +47,7 @@ router.include_router(users_routers)
     )
 )
 async def get_user_jwf_by_tg_id(
-    tg_id: str,
+    tg_id: str = Form(...),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[User]:
     user = await check_user_exist_by_tg_id(
