@@ -129,7 +129,8 @@ async def manager_new_orders_show(
 
 @router.callback_query(
     ManagerState.new_orders,
-    OrderCallback.filter()
+    OrderCallback.filter(F.current_order >= 0),
+    OrderCallback.filter(F.to_work == False)
 )
 async def manager_current_orders_show(
     callback: types.CallbackQuery,
@@ -146,6 +147,30 @@ async def manager_current_orders_show(
             page=callback_data.current_order,
             orders_len=len(data['orders'])
         ),
+        state=state,
+        new_state=None,
+        message=callback.message
+    )
+
+
+@router.callback_query(
+    ManagerState.new_orders,
+    OrderCallback.filter(F.to_work == True)
+)
+async def manager_current_orders_show(
+    callback: types.CallbackQuery,
+    state: FSMContext,
+    callback_data: OrderCallback
+):
+    """Взятие заявки в работу"""
+    data = await state.get_data()
+    await state.set_state(ManagerState.order_in_progress)
+    await show_message(
+        text=await generate_order_text(
+            data['orders'][callback_data.current_order],
+            preview=False
+        ),
+        reply_keyboard=None,
         state=state,
         new_state=None,
         message=callback.message

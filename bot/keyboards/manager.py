@@ -10,15 +10,15 @@ class OrderCallback(CallbackData, prefix="order"):
 
 MANAGER_MAIN_MENU_STRUCTURE = [
     {
-        "text": "Новые заявки",
+        "text": "🗒️ Новые заявки",
         "callback_data": "new_order"
     },
     {
-        "text": "Заявки в работе",
+        "text": "📓 Заявки в работе",
         "callback_data": "managers_order",
     },
         {
-        "text": "ЗАВЕРШИТЬ РАБОТУ",
+        "text": "🔻 ЗАВЕРШИТЬ РАБОТУ",
         "callback_data": "managers_end_work",
     }
 ]
@@ -28,7 +28,7 @@ START_MANAGER_WORK = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
-                text="Начать работу",
+                text="🔹 Начать работу 🔹",
                 callback_data="manager_start_work"
             )
         ]
@@ -56,7 +56,7 @@ async def generate_order_keyboard(
     has_next_page = orders_len >= page + 1
     navigate_buttons = [
         InlineKeyboardButton(
-            text="< Предыдущая",
+            text="⬅️ Предыдущая",
             callback_data=OrderCallback(
                 to_work=False,
                 current_order=(page - 1) if page >= 1 else page
@@ -70,7 +70,7 @@ async def generate_order_keyboard(
             ).pack()
         ),
         InlineKeyboardButton(
-            text="Следующая >",
+            text="Следующая ➡️",
             callback_data=OrderCallback(
                 to_work=False,
                 current_order=(page + 1) if has_next_page else page
@@ -80,7 +80,7 @@ async def generate_order_keyboard(
     keyboard.row(*navigate_buttons, width=3)
     keyboard.row(
         InlineKeyboardButton(
-            text="Взять в работу",
+            text="📑 Взять в работу",
             callback_data=OrderCallback(
                 to_work=True,
                 current_order=page
@@ -90,7 +90,7 @@ async def generate_order_keyboard(
     )
     keyboard.row(
         InlineKeyboardButton(
-            text="В главное меню",
+            text="⬆️ В главное меню",
             callback_data="go_to_start"
         ),
         width=1
