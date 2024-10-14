@@ -7,7 +7,9 @@ from handlers import (base,
                       create_button,
                       get_button_content,
                       get_child_buttons,
-                      del_button_with_children)
+                      del_button_with_children,
+                      putch_button_parent
+                      )
 import os
 from dotenv import load_dotenv
 
@@ -37,7 +39,8 @@ async def main():
         create_button.router,
         get_button_content.router,
         get_child_buttons.router,
-        del_button_with_children.router
+        del_button_with_children.router,
+        putch_button_parent.router
         )
 
     # Альтернативный вариант регистрации роутеров по одному на строку
