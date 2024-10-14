@@ -8,7 +8,8 @@ from handlers import (base,
                       get_button_content,
                       get_child_buttons,
                       del_button_with_children,
-                      putch_button_parent
+                      putch_button_parent,
+                      putch_button_content
                       )
 import os
 from dotenv import load_dotenv
@@ -31,7 +32,7 @@ bot = Bot(token=API_TOKEN)
 
 async def main():
     # API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-    
+
     dp = Dispatcher(storage=storage)
 
     dp.include_routers(
@@ -40,7 +41,8 @@ async def main():
         get_button_content.router,
         get_child_buttons.router,
         del_button_with_children.router,
-        putch_button_parent.router
+        putch_button_parent.router,
+        putch_button_content.router
         )
 
     # Альтернативный вариант регистрации роутеров по одному на строку
@@ -49,7 +51,7 @@ async def main():
 
     # Запускаем бота и пропускаем все накопленные входящие
     # Да, этот метод можно вызвать даже если у вас поллинг
-    await bot.delete_webhook(drop_pending_updates=True)
+    # await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
 

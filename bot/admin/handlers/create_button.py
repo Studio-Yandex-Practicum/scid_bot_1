@@ -12,7 +12,7 @@ from io import BytesIO
 import io
 
 # from PIL import Image
-from bot import bot
+from admin_bot import bot
 import requests
 
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
@@ -88,23 +88,23 @@ async def parent_id_typed(message: Message, state: FSMContext):
     await state.set_state(CreateButton.typing_content_text)
 
 
-def parse_entities(message: Message) -> str:
-    text = message.text
-    if not text:
-        return ""
+# def parse_entities(message: Message) -> str:
+#     text = message.text
+#     if not text:
+#         return ""
     
-    formatted_text = text
-    for entity in message.entities:
-        entity_text = text[entity.offset:entity.offset + entity.length]
-        if entity.type == 'bold':
-            formatted_text = formatted_text.replace(entity_text, hbold(entity_text))
-        elif entity.type == 'italic':
-            formatted_text = formatted_text.replace(entity_text, hitalic(entity_text))
-        elif entity.type == 'text_link':
-            formatted_text = formatted_text.replace(entity_text, hlink(entity_text, entity.url))
-        # Можно добавить другие типы форматирования по необходимости
+#     formatted_text = text
+#     for entity in message.entities:
+#         entity_text = text[entity.offset:entity.offset + entity.length]
+#         if entity.type == 'bold':
+#             formatted_text = formatted_text.replace(entity_text, hbold(entity_text))
+#         elif entity.type == 'italic':
+#             formatted_text = formatted_text.replace(entity_text, hitalic(entity_text))
+#         elif entity.type == 'text_link':
+#             formatted_text = formatted_text.replace(entity_text, hlink(entity_text, entity.url))
+#         # Можно добавить другие типы форматирования по необходимости
 
-    return formatted_text
+#     return formatted_text
 
 
 @router.message(CreateButton.typing_content_text)
@@ -238,12 +238,18 @@ async def button_submited(message: Message, state: FSMContext):
         f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
         f"Линк кнопки: <b>{button['content_link']}</b>\n"
     )
-    # сломается, если нет изображения
-    await message.answer_photo(
-        photo=URLInputFile(f"{API_URL}{button['content_image']}"),
-        caption=text,
+    await message.answer(
+        text=text,
         parse_mode=ParseMode.HTML
-    )
+        )
+    # сломается, если нет изображения
+    print(button)
+    if button['content_image'] is not None:
+        await message.answer_photo(
+            photo=URLInputFile(f"{API_URL}{button['content_image']}"),
+            caption=text,
+            parse_mode=ParseMode.HTML
+        )
 
     await cancel_and_return_to_admin_panel(message, state)
 

@@ -98,3 +98,18 @@ async def putch_button_parent(button_id, new_parent_id):
                                       headers=headers,
                                       params=params)
     return response
+
+
+async def putch_button_content(button_id, data, files):
+    url = f"{API_BOT_MENU_URL}{int(button_id)}"
+    headers = {
+        "accept": "application/json",
+        "Authorization": AUTH_TOKEN
+        # 'Content-Type': 'multipart/form-data'
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.patch(url,
+                                      headers=headers,
+                                      data=data,
+                                      files=files)
+    return response.json()

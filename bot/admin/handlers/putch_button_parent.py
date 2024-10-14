@@ -33,7 +33,6 @@ router = Router()
 class PutchButtonParent(StatesGroup):
     typing_button_id = State()
     typed_new_parent_id = State()
-    submiting_button = State()
     submiting_update_parent = State()
 
 
