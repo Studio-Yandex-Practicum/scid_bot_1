@@ -16,7 +16,8 @@ async def start_command(message: types.Message, state: FSMContext, bot: Bot):
     await set_commands(bot, message.from_user.id)
     await return_message(
         await generate_content(main_button['id']),
-        message
+        message,
+        state
     )
     await state.set_state(NavigationState.at_menu)
 

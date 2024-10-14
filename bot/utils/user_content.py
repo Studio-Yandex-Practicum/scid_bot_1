@@ -1,6 +1,7 @@
 import os
 from typing import Any
 
+from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, FSInputFile, Message
 
 from api.api_service import get_button_content, get_child_buttons
@@ -26,6 +27,7 @@ async def generate_content(
         os.path.join(settings.app.root_dir, content['content_image'])
     ) if content['content_image'] else None
     return {
+        'id': content['id'],
         'keyboard': keyboard,
         'text': text_message,
         'image_path': image_path,
@@ -35,9 +37,15 @@ async def generate_content(
 
 async def return_message(
     content: dict[str, Any],
-    call: CallbackQuery | Message
+    call: CallbackQuery | Message,
+    state: FSMContext
 ) -> Any:
     message = call.message if isinstance(call, CallbackQuery) else call
+    await state.update_data(
+        current_button_id=content['id'],
+        parent_id=content['parent_id'],
+        message_id=message.from_user.id
+    )
     if (
         content['image_path'] is None or
         not os.path.exists(content['image_path'])

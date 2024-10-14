@@ -14,12 +14,7 @@ async def navigate_to_button(
     """Обработка нажатия на кнопки с id."""
     button_id = int(call.data)
     content = await generate_content(button_id)
-    await return_message(content, call)
-    await state.update_data(
-        current_button_id=button_id,
-        parent_id=content['parent_id'],
-        message_id=call.message.from_user.id
-    )
+    await return_message(content, call, state)
     await bot.delete_message(call.message.chat.id, call.message.message_id)
 
 @router.callback_query(lambda c: c.data == "back")
@@ -39,8 +34,7 @@ async def go_back(call: types.CallbackQuery, state: FSMContext, bot: Bot):
             "Вы уже находитесь в корневом меню.", show_alert=True
         )
         return
-    await return_message(content, call)
-    await state.update_data(current_button_id=parent_id)
+    await return_message(content, call, state)
     await bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
@@ -51,7 +45,7 @@ async def go_to_main_menu(
     """Переход в главное меню."""
     main_button = await get_main_menu_button()
     content = await generate_content(main_button['id'])
-    await return_message(content, call)
+    await return_message(content, call, state)
     await state.set_state(NavigationState.at_menu)
     await bot.delete_message(call.message.chat.id, call.message.message_id)
 
