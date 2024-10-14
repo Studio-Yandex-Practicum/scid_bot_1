@@ -3,7 +3,11 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-from handlers import base, create_button, get_button_content, get_child_buttons
+from handlers import (base,
+                      create_button,
+                      get_button_content,
+                      get_child_buttons,
+                      del_button_with_children)
 import os
 from dotenv import load_dotenv
 
@@ -17,7 +21,7 @@ if not API_TOKEN:
         "добавьте TELEGRAM_BOT_TOKEN в .env файл."
     )
 
-# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 storage = MemoryStorage()
 
 bot = Bot(token=API_TOKEN)
@@ -33,6 +37,7 @@ async def main():
         create_button.router,
         get_button_content.router,
         get_child_buttons.router,
+        del_button_with_children.router
         )
 
     # Альтернативный вариант регистрации роутеров по одному на строку
@@ -41,7 +46,7 @@ async def main():
 
     # Запускаем бота и пропускаем все накопленные входящие
     # Да, этот метод можно вызвать даже если у вас поллинг
-    # await bot.delete_webhook(drop_pending_updates=True)
+    await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
 

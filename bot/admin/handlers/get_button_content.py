@@ -10,7 +10,7 @@ from .base import cancel_and_return_to_admin_panel, base_reply_markup
 router = Router()
 
 
-class CreateButton(StatesGroup):
+class GetButtonContent(StatesGroup):
     typing_button_id = State()
 
 @router.callback_query(F.data == "get_button_content")
@@ -19,10 +19,10 @@ async def handle_get_button(callback: types.CallbackQuery, state: FSMContext):
         text="Введите айди кнопки", reply_markup=base_reply_markup
     )
     await callback.answer()
-    await state.set_state(CreateButton.typing_button_id)
+    await state.set_state(GetButtonContent.typing_button_id)
 
 
-@router.message(CreateButton.typing_button_id)
+@router.message(GetButtonContent.typing_button_id)
 async def name_typed(message: Message, state: FSMContext):
     if message.text == "Отмена":
         await cancel_and_return_to_admin_panel(message, state)
@@ -45,5 +45,5 @@ async def name_typed(message: Message, state: FSMContext):
         )
     else:
         await message.answer(text=(button["detail"]))
-
+    
     await cancel_and_return_to_admin_panel(message, state)

@@ -40,7 +40,7 @@ admin_start_keyboard_structure = {
                 "text": "Изменить родителя кнопки",
                 "callback_data": "putch_button_parent",
             },
-            {"text": "Удалить кнопку", "callback_data": "delete_button"},
+            {"text": "Удалить кнопку", "callback_data": "del_button_with_children"},
         ]
     },
 }
