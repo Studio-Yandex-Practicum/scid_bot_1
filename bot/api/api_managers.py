@@ -1,29 +1,28 @@
 from api.api_handlers import get_api_data, post_api_data
 
-async def login_with_tg_id(tg_id: int) -> bool:
-    await post_api_data(
-        endpoint="auth/"
+
+async def manager_login_with_tg_id(tg_id: int) -> dict[str, str]:
+    return await post_api_data(
+        endpoint="auth/get_user-jwf-by-tg-id",
+        data={ 'tg_id': tg_id }
     )
 
 
-async def add_child_button(
-    label, parent_id, content_text, content_link, content_image
+async def get_all_orders_for_manager(
+    jwt: str,
+    in_progress: bool,
 ):
     headers = {
         "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiYXVkIjpbImZhc3RhcGktdXNlcnM6YXV0aCJdLCJleHAiOjE3Mjg4ODA4Mjl9.raauyROylbUOBVOUL3f-kcQTusbqXP3Icwiljcs7Tlw",
+        "Authorization": jwt
     }
-    data = {
-        "label": label,
-        "content_text": content_text,
-        "content_link": content_link,
+    params = {
+        "for_current_user": 'True',
+        "is_processed": 'False',
+        "in_progress": str(in_progress),
     }
-    if content_image is not None:
-        files = {"content_image": content_image}
-    else:
-        files = {}
-    return await post_api_data(
-            endpoint=f"bot_menu/{int(parent_id)}/add-child-button",
-            data=data,
+    return await get_api_data(
+            endpoint=f"contact_requests/all",
+            params=params,
             headers=headers
         )

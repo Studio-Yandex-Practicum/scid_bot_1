@@ -4,8 +4,8 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from core.config import settings
-from routers import admin, main_menu, navigation, tree_commands
-
+from routers import admin, main_menu, managers, navigation, tree_commands
+from utils.menus import set_commands
 
 async def main():
     logging.basicConfig(
@@ -19,13 +19,14 @@ async def main():
         )
     dp = Dispatcher(storage=MemoryStorage())
     bot = Bot(
-        token=settings.app.token,
-        
+        token=settings.app.token
     )
+    await set_commands(bot)
     dp.include_router(main_menu.router)
     dp.include_router(navigation.router)
     dp.include_router(tree_commands.router)
     dp.include_router(admin.router)
+    dp.include_router(managers.router)
     await dp.start_polling(bot)
 
 
