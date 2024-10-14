@@ -8,7 +8,7 @@ class OrderCallback(CallbackData, prefix="order"):
     done: bool
     current_order: int
     order_id: int
-    in_processed: bool
+    in_progress: bool
 
 
 def generate_keyboard_from_structure(
@@ -76,7 +76,7 @@ async def generate_order_work_keyboard(
                 done=True,
                 current_order=-1,
                 order_id=order_id,
-                in_processed=True
+                in_progress=True
             ).pack()
         )
     )
@@ -88,7 +88,7 @@ async def generate_order_work_keyboard(
 async def generate_order_keyboard(
     page: int = 0,
     orders_len: int = 0,
-    in_processed: bool = False
+    in_progress: bool = False
 ) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     has_next_page = orders_len >= page + 1
@@ -100,7 +100,7 @@ async def generate_order_keyboard(
                 done=False,
                 current_order=(page - 1) if page >= 1 else page,
                 order_id=-1,
-                in_processed=in_processed
+                in_progress=in_progress
             ).pack()
         ),
         InlineKeyboardButton(
@@ -110,7 +110,7 @@ async def generate_order_keyboard(
                 done=False,
                 current_order = page,
                 order_id=-1,
-                in_processed=in_processed
+                in_progress=in_progress
             ).pack()
         ),
         InlineKeyboardButton(
@@ -120,20 +120,20 @@ async def generate_order_keyboard(
                 done=False,
                 current_order=(page + 1) if has_next_page else page,
                 order_id=-1,
-                in_processed=in_processed
+                in_progress=in_progress
             ).pack()
         )
     ]
     keyboard.row(*navigate_buttons, width=3)
     keyboard.row(
         InlineKeyboardButton(
-            text="📑 Взять в работу",
+            text="📑 Подробнее" if in_progress else "📑 Взять в работу",
             callback_data=OrderCallback(
                 to_work=True,
                 current_order=page,
                 done=False,
                 order_id=-1,
-                in_processed=False
+                in_progress=in_progress
             ).pack()
         ),
         width=1

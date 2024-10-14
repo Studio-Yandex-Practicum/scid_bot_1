@@ -151,7 +151,7 @@ async def manager_in_progress_orders_show(
             text=text,
             reply_keyboard=await generate_order_keyboard(
                 orders_len=order_len,
-                in_processed=True
+                in_progress=True
             ),
             state=state,
             new_state=ManagerState.order_in_progress,
@@ -164,7 +164,7 @@ async def manager_in_progress_orders_show(
     ManagerState.new_orders,
     OrderCallback.filter(F.current_order >= 0),
     OrderCallback.filter(F.to_work == False),
-    OrderCallback.filter(F.in_processed == False)
+    OrderCallback.filter(F.in_progress == False)
 )
 async def manager_current_orders_show(
     callback: types.CallbackQuery,
@@ -191,9 +191,9 @@ async def manager_current_orders_show(
     ManagerState.order_in_progress,
     OrderCallback.filter(F.current_order >= 0),
     OrderCallback.filter(F.to_work == False),
-    OrderCallback.filter(F.in_processed == True)
+    OrderCallback.filter(F.in_progress == True)
 )
-async def manager_current_orders_in_processed_show(
+async def manager_current_orders_in_progress_show(
     callback: types.CallbackQuery,
     state: FSMContext,
     callback_data: OrderCallback
@@ -207,7 +207,7 @@ async def manager_current_orders_in_processed_show(
         reply_keyboard=await generate_order_keyboard(
             page=callback_data.current_order,
             orders_len=len(data['orders']),
-            in_processed=True
+            in_progress=True
         ),
         state=state,
         new_state=None,
@@ -216,8 +216,8 @@ async def manager_current_orders_in_processed_show(
 
 
 @router.callback_query(
-    ManagerState.new_orders,
-    OrderCallback.filter(F.to_work == True)
+    # ManagerState.new_orders or ManagerState.order_in_progress,
+    OrderCallback.filter(F.to_work == True),
 )
 async def manager_add_order_to_work(
     callback: types.CallbackQuery,
@@ -227,17 +227,18 @@ async def manager_add_order_to_work(
     """Взятие заявки в работу"""
     data = await state.get_data()
     await state.set_state(ManagerState.order_in_progress)
-    response = await set_order_to_work(
-        jwt=data['jwt'],
-        order_id=data['orders'][callback_data.current_order]['id'],
-        manager_tg_id=data['current_user_id']
-    )
-    if 'detail' in response:
-        return await show_error(
-            detail=response['detail'],
-            message=callback.message,
-            state=state
+    if not callback_data.in_progress:
+        response = await set_order_to_work(
+            jwt=data['jwt'],
+            order_id=data['orders'][callback_data.current_order]['id'],
+            manager_tg_id=data['current_user_id']
         )
+        if 'detail' in response:
+            return await show_error(
+                detail=response['detail'],
+                message=callback.message,
+                state=state
+            )
     await show_message(
         text=await generate_order_text(
             order=data['orders'][callback_data.current_order],

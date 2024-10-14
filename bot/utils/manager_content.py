@@ -106,7 +106,7 @@ async def get_orders(
     await state.update_data({ 'orders': orders })
     orders_len = len(orders)
     if orders_len == 0:
-        text = "Заявок в работе нет"
+        text = "Новых заявок нет" if in_progress else "Заявок в работе нет"
     else:
         text = await generate_order_text(orders[0])
     return orders_len, text, orders
