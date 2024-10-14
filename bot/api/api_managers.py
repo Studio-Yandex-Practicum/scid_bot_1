@@ -11,13 +11,14 @@ async def manager_login_with_tg_id(tg_id: int) -> dict[str, str]:
 async def get_all_orders_for_manager(
     jwt: str,
     in_progress: bool,
+    for_user: bool
 ):
     headers = {
         "accept": "application/json",
         "Authorization": jwt
     }
     params = {
-        "for_current_user": 'True',
+        "for_current_user": str(for_user),
         "is_processed": 'False',
         "in_progress": str(in_progress),
     }

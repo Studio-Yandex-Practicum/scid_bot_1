@@ -7,7 +7,8 @@ class OrderCallback(CallbackData, prefix="order"):
     to_work: bool
     done: bool
     current_order: int
-    order_id: int 
+    order_id: int
+    in_processed: bool
 
 
 def generate_keyboard_from_structure(
@@ -38,22 +39,7 @@ MANAGER_MAIN_MENU_STRUCTURE = [
     },
     {
         "text": "📓 Заявки в работе",
-        "callback_data": "managers_order",
-    },
-        {
-        "text": "🔻 ЗАВЕРШИТЬ РАБОТУ",
-        "callback_data": "managers_end_work",
-    }
-]
-
-MANAGER_ORDER_WORK_STRUCTURE = [
-    {
-        "text": "🗒️ Новые заявки",
-        "callback_data": "new_order"
-    },
-    {
-        "text": "📓 Заявки в работе",
-        "callback_data": "managers_order",
+        "callback_data": "in_process_orders",
     },
         {
         "text": "🔻 ЗАВЕРШИТЬ РАБОТУ",
@@ -76,13 +62,9 @@ START_MANAGER_WORK = generate_keyboard_from_structure(
 MANAGER_MAIN_MENU = generate_keyboard_from_structure(
     MANAGER_MAIN_MENU_STRUCTURE
 )
-MANAGER_ORDER_WORK = generate_keyboard_from_structure(
-    MANAGER_ORDER_WORK_STRUCTURE
-)
 
 
 async def generate_order_work_keyboard(
-    user_tg_id: int,
     order_id: int
 ) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
@@ -93,7 +75,8 @@ async def generate_order_work_keyboard(
                 to_work=True,
                 done=True,
                 current_order=-1,
-                order_id=order_id
+                order_id=order_id,
+                in_processed=True
             ).pack()
         )
     )
@@ -104,8 +87,8 @@ async def generate_order_work_keyboard(
 
 async def generate_order_keyboard(
     page: int = 0,
-    order_id: int = -1,
-    orders_len: int = 0
+    orders_len: int = 0,
+    in_processed: bool = False
 ) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     has_next_page = orders_len >= page + 1
@@ -116,7 +99,8 @@ async def generate_order_keyboard(
                 to_work=False,
                 done=False,
                 current_order=(page - 1) if page >= 1 else page,
-                order_id=order_id
+                order_id=-1,
+                in_processed=in_processed
             ).pack()
         ),
         InlineKeyboardButton(
@@ -125,7 +109,8 @@ async def generate_order_keyboard(
                 to_work=False,
                 done=False,
                 current_order = page,
-                order_id=order_id
+                order_id=-1,
+                in_processed=in_processed
             ).pack()
         ),
         InlineKeyboardButton(
@@ -134,7 +119,8 @@ async def generate_order_keyboard(
                 to_work=False,
                 done=False,
                 current_order=(page + 1) if has_next_page else page,
-                order_id=order_id
+                order_id=-1,
+                in_processed=in_processed
             ).pack()
         )
     ]
@@ -146,7 +132,8 @@ async def generate_order_keyboard(
                 to_work=True,
                 current_order=page,
                 done=False,
-                order_id=order_id
+                order_id=-1,
+                in_processed=False
             ).pack()
         ),
         width=1
