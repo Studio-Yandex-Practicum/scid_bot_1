@@ -18,7 +18,7 @@ import requests
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, Message, ReplyKeyboardMarkup)
 from .base import cancel_and_return_to_admin_panel, base_reply_markup
-from crud import putch_button_parent
+from crud import putch_button_parent, get_button_content
 import os
 import httpx
 
@@ -78,10 +78,12 @@ async def parent_id_typed(message: Message, state: FSMContext):
         + base_reply_markup.keyboard,
         resize_keyboard=True,
     )
+    response = await get_button_content(user_data["typed_button_id"])
+    button = response.json()
     await message.answer(
         text=(
             f"Обновляю?\n"
-            # f"Айди кнопки-родителя: <b>{user_data['typed_parent_id']}</b>\n"
+            f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
             f"Айди новой кнопки-родителя: <b>{user_data['typed_new_parent_id']}</b>\n"
         ),
         reply_markup=new_reply_markup,

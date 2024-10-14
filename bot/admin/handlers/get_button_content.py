@@ -30,7 +30,7 @@ async def name_typed(message: Message, state: FSMContext):
     # await state.update_data(typed_id=message.text)
     response = await get_button_content(message.text)
     button = response.json()
-    print(button)
+    # print(button)
     if response.status_code == 200:
         await message.answer(
             text=(

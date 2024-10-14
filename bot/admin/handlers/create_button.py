@@ -238,6 +238,7 @@ async def button_submited(message: Message, state: FSMContext):
         f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
         f"Линк кнопки: <b>{button['content_link']}</b>\n"
     )
+    # сломается, если нет изображения
     await message.answer_photo(
         photo=URLInputFile(f"{API_URL}{button['content_image']}"),
         caption=text,
