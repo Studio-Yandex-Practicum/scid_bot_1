@@ -13,5 +13,8 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     )
     telegram_user_id: Mapped[str] = mapped_column(String, nullable=True)
     manager_contact_requests: Mapped['ContactRequest'] = relationship(
-        'ContactRequest', back_populates='manager', lazy='joined'
+        'ContactRequest',
+        back_populates='manager',
+        lazy='joined',
+        uselist=True
     )

@@ -41,7 +41,7 @@ function delete_manager(url) {
     <div class="flex-wrap gap-4">
         <form
           class="text-text-light dark:text-text-dark"
-          action="{% if update %}{{ url_for('start_manager_update', manager_id=manager.id) }}{% else %}{% endif %}"
+          action="{% if update %}{{ url_for('start_manager_update', manager_id=manager.id) }}{% else %}{{ url_for('start_manager_add') }}{% endif %}"
           method="post"
           enctype="multipart/form-data"
         >
@@ -54,12 +54,29 @@ function delete_manager(url) {
                 name="email"
                 id="email"
                 class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400 disabled:bg-background-light-200 dark:disabled:bg-background-dark-800"
-                placeholder="Новая карточка"
+                placeholder="user@domen.zone"
                 required=""
                 {% if update %}disabled{% endif %}
                 value="{% if manager.email and update %}{{ manager.email }}{% endif %}"
                 />
             </div>
+
+            {% if not update %}
+            <div class="mb-5">
+                <label for="content_text" class="block mb-2 text-sm font-medium"
+                >Пароль:</label
+                >
+                <input
+                type="password"
+                name="password"
+                id="password"
+                class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400 disabled:bg-background-light-200 dark:disabled:bg-background-dark-800"
+                placeholder="password"
+                required=""
+                />
+            </div>
+            {% endif %}
+
 
             <div class="mb-5">
                 <label for="label" class="block mb-2 text-sm font-medium"
@@ -70,7 +87,7 @@ function delete_manager(url) {
                 name="name"
                 id="name"
                 class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400 "
-                placeholder="Новая карточка"
+                placeholder="Manager"
                 required=""
                 value="{% if manager.name and update %}{{ manager.name }}{% endif %}"
                 />
@@ -84,7 +101,7 @@ function delete_manager(url) {
                 name="telegram_user_id"
                 id="telegram_user_id"
                 class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
-                placeholder="https://link.com"
+                placeholder="123456789"
                 value="{% if manager.telegram_user_id and update %}{{ manager.telegram_user_id }}{% endif %}"
                 />
             </div>

@@ -6,12 +6,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.dependencies.auth import check_user_is_superuser
 from api.users_validators import check_user_exist
-from api.endpoints.managers import delete_manager, update_manager
+from api.endpoints.managers import (
+    create_manager,
+    delete_manager,
+    update_manager
+)
 from core.db import get_async_session
 from core.frontend import templates
 from crud.user import user_crud
 from models.user import User
-from schemas.users import ManagerUpdate
+from schemas.users import ManagerCreate, ManagerUpdate
 from services.frontend import redirect_by_httpexeption
 
 router = APIRouter(tags=['frontend_managers'], prefix='/fr_managers')
@@ -34,6 +38,28 @@ async def managers_main(
         'managers': managers,
     }
     return templates.TemplateResponse('managers/managers_list.html', context)
+
+
+@router.get(
+    '/add',
+    response_class=HTMLResponse,
+    summary='Страница добавления менеджера',
+)
+async def managers_add(
+    request: Request,
+    user: User = Depends(check_user_is_superuser),
+    session: AsyncSession = Depends(get_async_session),
+):
+    context = {
+        'request': request,
+        'user': user,
+        'update': False,
+        'manager': None
+    }
+
+    return templates.TemplateResponse(
+        'managers/manager_create_update.html', context
+    )
 
 
 @router.get(
@@ -61,6 +87,34 @@ async def managers_update(
     return templates.TemplateResponse(
         'managers/manager_create_update.html', context
     )
+
+
+
+
+@router.post(
+    '/add',
+    response_class=HTMLResponse,
+    summary='Метод добавления менеджера',
+    dependencies=[Depends(check_user_is_superuser)]
+)
+async def start_manager_add(
+    request: Request,
+    email: str = Form(...),
+    name: str = Form(...),
+    password: str = Form(...),
+    telegram_user_id: str  = Form(...),
+    session: AsyncSession = Depends(get_async_session),
+):
+    manager = await create_manager(
+        new_user=ManagerCreate(
+            name=name,
+            email=email,
+            password=password,
+            telegram_user_id=telegram_user_id
+        ),
+        session=session
+    )
+    await redirect_by_httpexeption(f'{router.prefix}/{manager.id}')
 
 
 @router.post(

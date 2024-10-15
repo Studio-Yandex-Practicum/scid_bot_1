@@ -45,7 +45,16 @@
     </li>
     {% if user.is_superuser %}
     <span class="text-text-light-600 dark:text-text-dark-400 font-bold">Менеджеры</span>
-    <li class="mb-1 group {% if '/managers' in request.path %}active{% endif %}">
+    <li class="mb-1 group {% if '/fr_managers/add' in request.path %}active{% endif %}">
+      <a 
+        href="{{ url_for('managers_add') }}"
+        class="flex font-semibold items-center py-2 px-4 text-text-light hover:bg-background-dark hover:text-text-dark rounded-md group-[.active]:bg-background-dark group-[.active]:text-text-dark dark:text-text-dark dark:hover:bg-background-dark-950 dark:hover:text-text-dark dark:group-[.active]:bg-background-dark-950 dark:group-[.active]:text-text-dark"
+      >
+        <i class="ri-home-2-line mr-3 text-lg"></i>
+        <span class="text-sm">Добавить менеджера</span>
+      </a>
+    </li>
+    <li class="mb-1 group {% if '/fr_managers/list' in request.path %}active{% endif %}">
       <a 
         href="{{ url_for('managers_main') }}"
         class="flex font-semibold items-center py-2 px-4 text-text-light hover:bg-background-dark hover:text-text-dark rounded-md group-[.active]:bg-background-dark group-[.active]:text-text-dark dark:text-text-dark dark:hover:bg-background-dark-950 dark:hover:text-text-dark dark:group-[.active]:bg-background-dark-950 dark:group-[.active]:text-text-dark"
