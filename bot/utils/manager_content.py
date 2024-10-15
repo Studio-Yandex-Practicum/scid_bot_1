@@ -79,8 +79,8 @@ async def generate_order_text(
         text += "\n\n"
         text += (
             f"Телеграм: @{order['name']}\n"
-            f"Телефон: {order['phone']}\n"
-            f"email: {order['email']}\n"
+            f"Телефон: <a href='tel:{order['phone']}'>{order['phone']}</a>\n"
+            f"email: <a href='mailto:{order['email']}'>{order['email']}</a>\n"
         )
     return text
 
