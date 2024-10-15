@@ -1,10 +1,7 @@
 from typing import Optional
 
 from api.contact_requests_validators import (
-    check_contact_request_exist,
-    check_contact_request_is_not_to_work,
-)
-
+    check_contact_request_exist, check_contact_request_is_not_to_work)
 from api.dependencies.users import get_manager_or_superuser
 from api.users_validators import check_user_exist_by_tg_id
 from core.db import get_async_session
@@ -45,7 +42,11 @@ async def take_contact_request_to_work(
 
 
 @router.post(
+<<<<<<< HEAD
+    "/close_request",
+=======
     '/{contact_request_id}/close-request',
+>>>>>>> dev
     response_model=ContactRequestResponse,
     summary='"Закрывает" заявку. Устанавливает статус выполнена.',
 )
@@ -62,7 +63,7 @@ async def close_contact_request(
 
 
 @router.post(
-    '/',
+    "/",
     response_model=ContactRequestResponse,
     summary="Создаёт заявку на обратную связь",
     description=('Заявка будет иметь статус "Не выполнена". Время UTC.'),

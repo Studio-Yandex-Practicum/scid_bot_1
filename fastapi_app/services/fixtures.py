@@ -3,12 +3,11 @@ import os
 import aiofiles
 import aiofiles.os
 import aiofiles.ospath
+import core.base
 import yaml
+from core.config import settings
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
-
-import core.base
-from core.config import settings
 
 
 async def copy_image_files(images_dir: str):
@@ -16,18 +15,18 @@ async def copy_image_files(images_dir: str):
         old_file_path = os.path.join(images_dir, file)
         new_file_path = os.path.join(settings.app.base_dir_for_files, file)
         if not await aiofiles.ospath.exists(new_file_path):
-            async with aiofiles.open(old_file_path, 'rb') as fd_src:
-                async with aiofiles.open(new_file_path, 'wb') as fd_dst:
+            async with aiofiles.open(old_file_path, "rb") as fd_src:
+                async with aiofiles.open(new_file_path, "wb") as fd_dst:
                     while True:
                         chunk = await fd_src.read(1024)
                         if not chunk:
                             break
                         await fd_dst.write(chunk)
-    print('Файлы фикстур скопированы')
+    print("Файлы фикстур скопированы")
 
 
 async def reset_sequences(table_name: str, session: AsyncSession):
-    result = await session.execute(text(f'SELECT MAX(id) FROM {table_name}'))
+    result = await session.execute(text(f"SELECT MAX(id) FROM {table_name}"))
     max_id = result.scalar() or 0
     await session.execute(
         text(
