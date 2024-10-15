@@ -45,7 +45,7 @@ async def take_contact_request_to_work(
 
 
 @router.post(
-    '/close_request',
+    '/{contact_request_id}/close-request',
     response_model=ContactRequestResponse,
     summary='"Закрывает" заявку. Устанавливает статус выполнена.',
 )

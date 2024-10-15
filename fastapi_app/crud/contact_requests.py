@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from crud.base import CRUDBase
@@ -68,6 +69,7 @@ class CRUDContactRequests(
         self, contact_request: ContactRequest, session: AsyncSession
     ) -> ContactRequest:
         contact_request.is_processed = True
+        contact_request.closed_at = datetime.now()
         await self._commit_and_refresh(contact_request, session)
         return await self.get_contact_request_with_manager(
             contact_request.id, session

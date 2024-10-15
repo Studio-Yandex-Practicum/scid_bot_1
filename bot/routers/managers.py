@@ -3,6 +3,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
 from api.api_managers import (
+    close_order,
     manager_login_with_tg_id,
     set_order_to_work
 )
@@ -216,7 +217,6 @@ async def manager_current_orders_in_progress_show(
 
 
 @router.callback_query(
-    # ManagerState.new_orders or ManagerState.order_in_progress,
     OrderCallback.filter(F.to_work == True),
 )
 async def manager_add_order_to_work(
@@ -224,7 +224,7 @@ async def manager_add_order_to_work(
     state: FSMContext,
     callback_data: OrderCallback
 ):
-    """Взятие заявки в работу"""
+    """Взятие заявки в работу или завершение заявки"""
     data = await state.get_data()
     await state.set_state(ManagerState.order_in_progress)
     if not callback_data.in_progress:
@@ -251,3 +251,26 @@ async def manager_add_order_to_work(
         new_state=None,
         message=callback.message
     )
+
+
+@router.callback_query(
+    OrderCallback.filter(F.done == True),
+)
+async def manager_add_order_to_work(
+    callback: types.CallbackQuery,
+    state: FSMContext,
+    callback_data: OrderCallback
+):
+    """Закрытие заявки"""
+    data = await state.get_data()
+    response = await close_order(
+        jwt=data['jwt'],
+        order_id=callback_data.order_id
+    )
+    if 'detail' in response:
+        return await show_error(
+            detail=response['detail'],
+            message=callback.message,
+            state=state
+        )
+    await manager_go_to_main_menu(callback=callback, state=state)

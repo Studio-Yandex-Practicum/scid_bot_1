@@ -46,3 +46,17 @@ async def set_order_to_work(
             headers=headers,
             data=data
         )
+
+
+async def close_order(
+    jwt: str,
+    order_id: int
+):
+    headers = {
+        "accept": "application/json",
+        "Authorization": jwt
+    }
+    return await post_api_data(
+            endpoint=f"contact_requests/{order_id}/close-request",
+            headers=headers
+        )

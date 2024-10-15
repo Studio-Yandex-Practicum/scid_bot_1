@@ -72,11 +72,11 @@ async def generate_order_work_keyboard(
         InlineKeyboardButton(
             text="✅ Заявка выполнена",
             callback_data=OrderCallback(
-                to_work=True,
+                to_work=False,
                 done=True,
-                current_order=-1,
+                current_order=-999,
                 order_id=order_id,
-                in_progress=True
+                in_progress=False
             ).pack()
         )
     )
