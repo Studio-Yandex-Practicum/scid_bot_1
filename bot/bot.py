@@ -4,7 +4,14 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from core.config import settings
-from routers import admin, main_menu, managers, navigation, tree_commands
+from routers import (
+    admin,
+    main_menu,
+    managers,
+    navigation,
+    tree_commands,
+    reviews
+)
 from utils.menus import set_commands
 
 async def main():
@@ -27,6 +34,7 @@ async def main():
     dp.include_router(tree_commands.router)
     dp.include_router(admin.router)
     dp.include_router(managers.router)
+    dp.include_router(reviews.router)  # роутер review
     await dp.start_polling(bot)
 
 
