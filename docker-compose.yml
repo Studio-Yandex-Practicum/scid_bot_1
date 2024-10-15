@@ -32,17 +32,17 @@ services:
     networks:
       - scid_bot_1
 
-  bot:
-    build:
-      context: ./bot
-    env_file:      
-      - './.env'
-    depends_on:
-      - fastapi_app
-    networks:
-      - scid_bot_1   
-    volumes:
-      - fastapi_app_files:/usr/src/app/files
+  # bot:
+  #   build:
+  #     context: ./bot
+  #   env_file:      
+  #     - './.env'
+  #   depends_on:
+  #     - fastapi_app
+  #   networks:
+  #     - scid_bot_1   
+  #   volumes:
+  #     - fastapi_app_files:/usr/src/app/files
 
   nginx:
     image: nginx:alpine

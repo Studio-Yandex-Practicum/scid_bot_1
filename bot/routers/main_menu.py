@@ -12,6 +12,13 @@ router = Router()
 async def start_command(message: types.Message, state: FSMContext, bot: Bot):
     """Обработка команды /start."""
     main_button = await get_main_menu_button()
+    await message.answer(
+        text=(
+            'Продолжая использование бота, Вы соглашаетесь на '
+            'обработку и хранение персональных данных в соответствии '
+            'с нашей политикой.\n\n https://scid.ru/personal_data_policy'
+        )
+    )
     await return_message(
         await generate_content(main_button['id']),
         message,
