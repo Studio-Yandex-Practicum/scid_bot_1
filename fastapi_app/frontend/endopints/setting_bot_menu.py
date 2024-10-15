@@ -17,12 +17,8 @@ from core.config import settings
 from core.db import get_async_session
 from core.frontend import templates
 from crud.bot_menu import bot_menu_crud, bot_menu_files_crud
-from fastapi import (APIRouter, Depends, File, Form, HTTPException, Query,
-                     Request, UploadFile)
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from models.user import User
 from services.frontend import redirect_by_httpexeption
-from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(
     tags=['frontend_setting_bot_menu'],

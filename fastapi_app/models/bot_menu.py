@@ -13,10 +13,6 @@ class MenuButton(Base):
     parent_id: Mapped[int] = mapped_column(
         ForeignKey("menubutton.id"), nullable=True
     )
-<<<<<<< HEAD
-=======
-
->>>>>>> dev
     parent: Mapped["MenuButton"] = relationship(
         "MenuButton",
         backref="button_parent",
