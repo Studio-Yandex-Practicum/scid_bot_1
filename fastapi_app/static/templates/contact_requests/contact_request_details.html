@@ -75,11 +75,13 @@ function post_contact_request(url) {
                     <p class="text-base font-normal">Email: <a target="_blank" href="mailto:{{ contact_request.email }}" class="underline hover:font-medium">{{ contact_request.email }}</a></p>
                 </h5>
                 <label class="block mb-2 text-base font-medium">Вопрос пользователя:</label>
-                <p class="mb-3 p-3 font-normal border border-text-light bg-background-light-secondary-200 text-text-light dark:text-text-dark ">
-                    <code>
-                    {{ contact_request.text }}
-                    </code>
-                </p>
+                <div class="bg-background-light-secondary-200 dark:bg-background-dark-secondary">
+                    <p class="mb-3 p-3 font-normal border border-text-light  text-text-light dark:text-text-dark ">
+                        <code>
+                        {{ contact_request.text }}
+                        </code>
+                    </p>
+                </div>
             </div>
             {% if contact_request_type == 'new' %}
                 <button
