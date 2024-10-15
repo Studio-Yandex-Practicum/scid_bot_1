@@ -17,7 +17,7 @@ import requests
 
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, Message, ReplyKeyboardMarkup)
-from .base import cancel_and_return_to_admin_panel, base_reply_markup
+from .base import cancel_and_return_to_admin_panel, base_reply_markup, not_required_reply_markup
 from crud import add_child_button, get_button_image
 import os
 import httpx
@@ -39,11 +39,11 @@ class CreateButton(StatesGroup):
     submiting_button = State()
 
 
-not_required_reply_markup = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text="Пропустить")]]
-    + base_reply_markup.keyboard,
-    resize_keyboard=True,
-)
+# not_required_reply_markup = ReplyKeyboardMarkup(
+#     keyboard=[[KeyboardButton(text="Пропустить")]]
+#     + base_reply_markup.keyboard,
+#     resize_keyboard=True,
+# )
 
 
 @router.callback_query(F.data == "post_button")

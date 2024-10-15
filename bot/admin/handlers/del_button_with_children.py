@@ -12,13 +12,6 @@ from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
 router = Router()
 
 
-confirmation_markup = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text="Да")]]
-    + base_reply_markup.keyboard,
-    resize_keyboard=True,
-)
-
-
 class DelButton(StatesGroup):
     typing_button_id = State()
     confirming_del = State()
@@ -49,6 +42,11 @@ async def ask_for_confirmation(message: Message, state: FSMContext):
             buttons_text += button_info + "\n"
         if buttons_text == "":
             buttons_text = "Нет дочерних кнопок"
+    confirmation_markup = ReplyKeyboardMarkup(
+        keyboard=[[KeyboardButton(text="Да")]]
+        + base_reply_markup.keyboard,
+        resize_keyboard=True,
+    )
     await message.answer(
         text=(f"Вы уверены, что хотите удалить кнопку и все дочерние?\nДочерние кнопки:\n"
               f"{buttons_text}"),

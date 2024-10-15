@@ -7,17 +7,6 @@ from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
 
 router = Router()
 
-
-base_reply_markup = ReplyKeyboardMarkup(
-    keyboard=[
-        # [KeyboardButton(text="Назад")],
-        [KeyboardButton(text="Отмена")],
-    ],
-    resize_keyboard=True,  # Опционально: делает клавиатуру компактной
-    # one_time_keyboard=True  # Опционально: убирает клавиатуру после нажатия
-)
-
-
 # корневое инлайн меню админки
 admin_start_keyboard_structure = {
     "admin_block_start_message": "Разделы админки:",
@@ -44,6 +33,25 @@ admin_start_keyboard_structure = {
         ]
     },
 }
+
+
+# обыная кнопка Отмена
+base_reply_markup = ReplyKeyboardMarkup(
+    keyboard=[
+        # [KeyboardButton(text="Назад")],
+        [KeyboardButton(text="Отмена")],
+    ],
+    resize_keyboard=True,  # Опционально: делает клавиатуру компактной
+    # one_time_keyboard=True  # Опционально: убирает клавиатуру после нажатия
+)
+
+
+# обыная кнопка Отмена + Пропустить
+not_required_reply_markup = ReplyKeyboardMarkup(
+    keyboard=[[KeyboardButton(text="Пропустить")]]
+    + base_reply_markup.keyboard,
+    resize_keyboard=True,
+)
 
 
 def generate_main_menu(buttons_structure):

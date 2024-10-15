@@ -17,7 +17,7 @@ import requests
 
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, Message, ReplyKeyboardMarkup)
-from .base import cancel_and_return_to_admin_panel, base_reply_markup
+from .base import cancel_and_return_to_admin_panel, base_reply_markup, not_required_reply_markup
 from crud import putch_button_parent, get_button_content
 import os
 import httpx
@@ -36,11 +36,11 @@ class PutchButtonParent(StatesGroup):
     submiting_update_parent = State()
 
 
-not_required_reply_markup = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text="Пропустить")]]
-    + base_reply_markup.keyboard,
-    resize_keyboard=True,
-)
+# not_required_reply_markup = ReplyKeyboardMarkup(
+#     keyboard=[[KeyboardButton(text="Пропустить")]]
+#     + base_reply_markup.keyboard,
+#     resize_keyboard=True,
+# )
 
 
 @router.callback_query(F.data == "putch_button_parent")
