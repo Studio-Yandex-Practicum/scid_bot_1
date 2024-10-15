@@ -21,7 +21,7 @@
           class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary cursor-pointer"
           onClick=window.location.replace("{{ url_for('managers_update', manager_id=manager.id) }}")
         >
-          <th scope="row" class="px-6 py-4 font-bold text-text-light-secondary whitespace-nowrap">
+          <th scope="row" class="px-6 py-4 font-bold text-text-light-secondary dark:text-text-dark-secondary whitespace-nowrap">
             {{ manager.name }}
           </th>
           <td class="px-6 py-4 text-text-light-secondary whitespace-nowrap dark:text-text-dark">{{ manager.email }}</td>

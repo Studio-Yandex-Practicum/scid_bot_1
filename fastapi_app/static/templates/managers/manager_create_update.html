@@ -71,7 +71,7 @@ function delete_manager(url) {
                 name="password"
                 id="password"
                 class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400 disabled:bg-background-light-200 dark:disabled:bg-background-dark-800"
-                placeholder="password"
+                placeholder="Пароль"
                 required=""
                 />
             </div>
@@ -87,7 +87,7 @@ function delete_manager(url) {
                 name="name"
                 id="name"
                 class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400 "
-                placeholder="Manager"
+                placeholder="Новый менеджер"
                 required=""
                 value="{% if manager.name and update %}{{ manager.name }}{% endif %}"
                 />
