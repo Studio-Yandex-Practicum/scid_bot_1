@@ -41,10 +41,7 @@ async def handle_command(message: Message):
     if message.text == "Получить данные кнопки":
         label = data.get("label")
         button_id = data.get("id")
-        text_message = (
-            f"<b>Кнопка: {label}</b>\n\n"
-            f"ID: {button_id}\n\n"
-        )
+        text_message = f"<b>Кнопка: {label}</b>\n\n" f"ID: {button_id}\n\n"
         await message.answer(text_message, parse_mode="HTML")
     elif message.text == "Проверить работу API":
         await message.answer("Данные получены!")

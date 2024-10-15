@@ -1,10 +1,9 @@
 from urllib.parse import quote
 
-from fastapi import Depends, HTTPException, Request, status
-from pydantic import ValidationError
-
 from core.users import get_jwt_strategy, get_user_manager
+from fastapi import Depends, HTTPException, Request, status
 from models.user import User
+from pydantic import ValidationError
 
 
 async def get_user_token(request: Request) -> str | None:
