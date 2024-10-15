@@ -36,7 +36,7 @@ async def manager_start(message: types.Message, state: FSMContext):
             reply_markup=None
         )
     user_info = await manager_login_with_tg_id(message.from_user.id)
-    if 'detail' in user_info:
+    if 'detail' not in user_info:
         if user_info["is_manager"]:
             await state.update_data(
                 jwt=f"{user_info['token_type']} {user_info['jwt']}",
@@ -52,6 +52,9 @@ async def manager_start(message: types.Message, state: FSMContext):
     else:
         await bot_message.edit_text(
             text="Вход недоступен, так как Вы не являетесь менеджером"
+        )
+        await bot_message.edit_text(
+            text=user_info["detail"]
         )
 
 
