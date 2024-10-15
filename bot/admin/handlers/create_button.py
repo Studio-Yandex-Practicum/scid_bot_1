@@ -7,12 +7,14 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import (KeyboardButton, Message,
-                           ReplyKeyboardMarkup, URLInputFile)
+                           ReplyKeyboardMarkup)
 from crud import add_child_button
 
 from .base import (cancel_and_return_to_admin_panel,
                    base_reply_markup,
-                   not_required_reply_markup)
+                   not_required_reply_markup,
+                   show_button
+                   )
 
 API_URL = os.getenv("API_URL")
 router = Router()
@@ -145,23 +147,13 @@ async def button_submited(message: Message, state: FSMContext):
     content_link = user_data.get("typed_content_link", "")
     content_image = user_data.get("sent_content_image", None)
 
-    button = await add_child_button(
+    response = await add_child_button(
         label, parent_id, content_text, content_link, content_image
     )
-    text = (
-        f"Успешно создал кнопку:\n"
-        f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
-        f"Айди кнопки: <b>{button['id']}</b>\n"
-        f"Текст на кнопке: <b>{button['label']}</b>\n"
-        f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
-        f"Линк кнопки: <b>{button['content_link']}</b>\n"
-    )
-    await message.answer(text=text, parse_mode=ParseMode.HTML)
-    if button["content_image"] is not None:
-        await message.answer_photo(
-            photo=URLInputFile(f"{API_URL}{button['content_image']}"),
-            caption=text,
-            parse_mode=ParseMode.HTML,
-        )
-
+    button = response.json()
+    if response.status_code == 200:
+        button = response.json()
+        await show_button(button, message)
+    else:
+        await message.answer(text=(button["detail"]))
     await cancel_and_return_to_admin_panel(message, state)

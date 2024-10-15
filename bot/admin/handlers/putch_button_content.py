@@ -1,42 +1,28 @@
-import io
 import os
-import os.path
-# import requests
+import os.path  # убрать протестить
 from io import BytesIO
 
-import httpx
-import requests
 from aiogram import Bot, F, Router, types
 from aiogram.enums import ParseMode
-from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import (BufferedInputFile, FSInputFile,
-                           InlineKeyboardButton, InlineKeyboardMarkup,
-                           InputFile, KeyboardButton, Message,
+from aiogram.types import (KeyboardButton, Message,
                            ReplyKeyboardMarkup, URLInputFile)
-from aiogram.utils.markdown import hbold, hitalic, hlink
-from crud import get_button_content, putch_button_content
+from crud import putch_button_content
 
-from .base import (base_reply_markup, cancel_and_return_to_admin_panel,
+from .base import (cancel_and_return_to_admin_panel,
+                   base_reply_markup,
                    not_required_reply_markup)
-
-# from PIL import Image
-# from admin_bot import bot
-
-
-
 
 
 API_URL = os.getenv("API_URL")
 API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
 
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=API_TOKEN)  # почему-то не подтягивается из основного файла, поправить
 
 router = Router()
 
 
-# FSM создать кнопку
 class PutchButtonContent(StatesGroup):
     typing_button_id = State()
     typing_button_name = State()
@@ -45,13 +31,6 @@ class PutchButtonContent(StatesGroup):
     typing_content_link = State()
     adding_content_image = State()
     submiting_update_button_content = State()
-
-
-# not_required_reply_markup = ReplyKeyboardMarkup(
-#     keyboard=[[KeyboardButton(text="Пропустить")]]
-#     + base_reply_markup.keyboard,
-#     resize_keyboard=True,
-# )
 
 
 @router.callback_query(F.data == "putch_button_content")
@@ -188,7 +167,6 @@ async def button_submited(message: Message, state: FSMContext):
         files = {"content_image": content_image}
 
     button = await putch_button_content(button_id, data, files)
-    print(button)
     text = (
         f"Успешно обновил кнопку:\n"
         f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
@@ -199,7 +177,6 @@ async def button_submited(message: Message, state: FSMContext):
     )
     await message.answer(text=text, parse_mode=ParseMode.HTML)
 
-    # сломается, если нет изображения
     if button["content_image"] is not None:
         await message.answer_photo(
             photo=URLInputFile(f"{API_URL}{button['content_image']}"),

@@ -9,6 +9,7 @@ AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 API_BOT_MENU_URL = os.getenv("API_BOT_MENU_URL")
 
 
+# может собрать все снаружи в headers?
 async def add_child_button(
     label, parent_id, content_text, content_link, content_image
 ):
@@ -23,7 +24,6 @@ async def add_child_button(
         "content_link": content_link,
     }
     if content_image is not None:
-        print(content_image)
         files = {"content_image": content_image}
     else:
         files = {}
@@ -31,7 +31,7 @@ async def add_child_button(
         response = await client.post(
             url, headers=headers, data=data, files=files
         )
-    return response.json()
+    return response
 
 
 async def get_button_content(button_id):
@@ -75,6 +75,7 @@ async def del_button_with_children(button_id):
     return response
 
 
+# может передать сразу params?
 async def putch_button_parent(button_id, new_parent_id):
     url = f"{API_BOT_MENU_URL}{button_id}/change_parent"
     params = {
@@ -89,6 +90,8 @@ async def putch_button_parent(button_id, new_parent_id):
     return response
 
 
+# может лучше передать переменные со значениями, как в функции выше
+# а внутри уже собрать в headers?
 async def putch_button_content(button_id, data, files):
     url = f"{API_BOT_MENU_URL}{int(button_id)}"
     headers = {

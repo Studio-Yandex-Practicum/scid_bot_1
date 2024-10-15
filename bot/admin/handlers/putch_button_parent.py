@@ -4,11 +4,12 @@ from aiogram import F, Router, types
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import (KeyboardButton, Message,
+from aiogram.types import (KeyboardButton,
+                           Message,
                            ReplyKeyboardMarkup)
 from crud import get_button_content, putch_button_parent
 
-from .base import (base_reply_markup, cancel_and_return_to_admin_panel)
+from .base import base_reply_markup, cancel_and_return_to_admin_panel
 
 API_URL = os.getenv("API_URL")
 router = Router()
@@ -79,9 +80,7 @@ async def button_submited(message: Message, state: FSMContext):
     new_parent_id = user_data["typed_new_parent_id"]
 
     response = await putch_button_parent(button_id, new_parent_id)
-    print(response)
     button = response.json()
-    print(button)
     await message.answer(
         text=(
             f"Успешно обновил родителя кнопки:\n"

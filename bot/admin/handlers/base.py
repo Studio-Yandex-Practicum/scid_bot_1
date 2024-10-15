@@ -1,9 +1,14 @@
-from aiogram import F, Router, types
+import os
+import os.path
+from aiogram import Router, types
 from aiogram.filters import Command
+from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
-                           KeyboardButton, Message, ReplyKeyboardMarkup)
+                           KeyboardButton, Message, ReplyKeyboardMarkup,
+                           URLInputFile)
 
+API_URL = os.getenv("API_URL")
 router = Router()
 
 # корневое инлайн меню админки
@@ -84,3 +89,21 @@ async def cancel_and_return_to_admin_panel(
         "Возвращаюсь в основное меню", reply_markup=types.ReplyKeyboardRemove()
     )
     await show_base_admin_panel(message)
+
+
+async def show_button(button, message):
+    text = (
+        f"Успешно создал кнопку:\n"
+        f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
+        f"Айди кнопки: <b>{button['id']}</b>\n"
+        f"Текст на кнопке: <b>{button['label']}</b>\n"
+        f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
+        f"Линк кнопки: <b>{button['content_link']}</b>\n"
+    )
+    await message.answer(text=text, parse_mode=ParseMode.HTML)
+    if button["content_image"] is not None:
+        await message.answer_photo(
+            photo=URLInputFile(f"{API_URL}{button['content_image']}"),
+            caption=text,
+            parse_mode=ParseMode.HTML,
+        )
