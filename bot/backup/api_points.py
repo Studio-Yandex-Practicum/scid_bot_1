@@ -126,7 +126,7 @@ async def handle_reviews_create(user_id: int,
     data = {
         "user_id": user_id,
         "review_text": review_text,
-        "rating": rating  # Добавляем поле оценки
+        "rating": rating
     }
     return await post_api_data(f'{REVIEWS_COMMON_URL}/', data)
 

@@ -10,7 +10,7 @@ from routers import (
     managers,
     navigation,
     tree_commands,
-    review
+    reviews
 )
 from utils.menus import set_commands
 
@@ -34,7 +34,7 @@ async def main():
     dp.include_router(tree_commands.router)
     dp.include_router(admin.router)
     dp.include_router(managers.router)
-    dp.include_router(review.router)  # роутер review
+    dp.include_router(reviews.router)  # роутер review
     await dp.start_polling(bot)
 
 
