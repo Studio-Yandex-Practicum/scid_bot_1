@@ -49,7 +49,7 @@ async def take_contact_request_to_work(
     response_model=ContactRequestResponse,
     summary='"Закрывает" заявку. Устанавливает статус выполнена.',
 )
-async def create_contact_request(
+async def close_contact_request(
     contact_request_id: int,
     session: AsyncSession = Depends(get_async_session),
 ) -> ContactRequest:

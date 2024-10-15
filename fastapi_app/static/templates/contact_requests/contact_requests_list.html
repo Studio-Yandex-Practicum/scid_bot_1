@@ -23,7 +23,7 @@
           class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary"
         >
           <th scope="row" class="px-6 py-4 font-bold text-text-light-secondary dark:text-text-dark-secondary whitespace-nowrap cursor-pointer underline" onClick=window.location.replace("{{ url_for('contact_request_details', contact_request_id=contact_request.id, contact_request_type=contact_request_type) }}")>
-            {{ contact_request.text|truncate(70) }}
+            {{ contact_request.text|truncate(60) }}
           </th>
           <td class="px-6 py-4 text-text-light-secondary whitespace-nowrap dark:text-text-dark">{{ contact_request.created_at.strftime('%d.%m.%Y %H:%M:%S') }}</td>
           {% if contact_request.contact_via_telegram %}

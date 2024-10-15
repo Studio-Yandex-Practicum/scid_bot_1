@@ -32,7 +32,7 @@ class ContactRequest(Base):
         ForeignKey("user.id"), nullable=True
     )
     manager: Mapped[Optional["User"]] = relationship(
-        "User", back_populates="manager_contact_requests"
+        "User", back_populates="manager_contact_requests", lazy='joined'
     )
     text: Mapped[str] = mapped_column(String, nullable=True)
 

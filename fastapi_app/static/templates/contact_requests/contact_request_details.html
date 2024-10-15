@@ -1,9 +1,10 @@
 {% extends 'base_pages/main_page.html' %} {% block main_content %}
 {% block script %}
-{% if manager and update %}
 <script>
-function delete_manager(url) {
-    if (confirm('Точно удалить менеджера? Все его заявки, в работе, перейдут в статус - не начата! ')) {
+// Я знаю, что очень много дублирующегося кода, но... Кто же знал, что так сложится с готовностью продукта... )
+
+function delete_contact_request(url) {
+    if (confirm('Точно удалить заявку на обратную связь?')) {
         fetch(url, {
             method: "DELETE",
             redirect: 'manual',
@@ -21,7 +22,24 @@ function delete_manager(url) {
           });
       }
 }
-{% endif %}
+
+function post_contact_request(url) {
+    fetch(url, {
+        method: "POST",
+        redirect: 'manual',
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+        })
+        .then(response => {
+        response.json().then(data => {
+            window.location.replace(data.url)
+        })
+        })
+        .catch(error => {
+        console.log(error)
+        });
+}
 </script>
 {% endblock script %}
 <div class="p-5">
@@ -31,6 +49,9 @@ function delete_manager(url) {
     <h2 class="text-2xl font-bold text-left mb-5">
       <span class="font-bold text-xl text-text-light-800 dark:text-text-dark-300">Информация о заявке, от {{ contact_request.created_at.strftime('%d.%m.%Y %H:%M:%S') }} ({% if contact_request_type == 'new' %}Новая{% endif %}{% if contact_request_type == 'work' %}В работе{% endif %}{% if contact_request_type == 'processed' %}Завершена{% endif %}) </span>
     </h2>
+    {% if user.is_superuser and contact_request_type != 'new' %}
+        <label class="block mb-2 text-base font-medium">Менеджер: {{ contact_request.manager.name }}</label>                   
+    {% endif %}
     <hr class="mb-2" />
     <div class="flex-wrap gap-4">
         <form
@@ -64,7 +85,7 @@ function delete_manager(url) {
                 <button
                 type="button"
                 class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
-                onClick=delete_manager("{{ url_for('contact_request_delete', contact_request_id=contact_request.id) }}")
+                onClick=post_contact_request("{{ url_for('contact_request_to_work', contact_request_id=contact_request.id, contact_request_type=contact_request_type) }}")
                 >
                     Взять заявку в работу
                 </button>
@@ -73,7 +94,7 @@ function delete_manager(url) {
                 <button
                 type="button"
                 class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
-                onClick=delete_manager("{{ url_for('contact_request_delete', contact_request_id=contact_request.id) }}")
+                onClick=post_contact_request("{{ url_for('contact_request_close', contact_request_id=contact_request.id, contact_request_type=contact_request_type) }}")
                 >
                     Завершить заявку
                 </button>
@@ -82,7 +103,7 @@ function delete_manager(url) {
                 <button
                 type="button"
                 class="mt-2 w-full bg-contrast-700 hover:bg-contrast text-text-dark font-medium rounded-lg text-sm px-5 py-2.5 text-center  border border-background-light dark:border-background-dark"
-                onClick=delete_manager("{{ url_for('contact_request_delete', contact_request_id=contact_request.id) }}")
+                onClick=delete_contact_request("{{ url_for('contact_request_delete', contact_request_id=contact_request.id, contact_request_type=contact_request_type) }}")
                 >
                     Удалить заявку
                 </button>
