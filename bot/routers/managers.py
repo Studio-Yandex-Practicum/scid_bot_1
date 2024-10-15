@@ -8,6 +8,7 @@ from api.api_managers import (
     set_order_to_work
 )
 from keyboards.manager import (
+    MAIN_MENU_BASE_TEXT,
     MANAGER_MAIN_MENU,
     OrderCallback,
     START_MANAGER_WORK,
@@ -81,11 +82,7 @@ async def manager_authorized(
     state: FSMContext
 ):
     """Начало работы менеджера"""
-    text = (
-        "<b>Что Вы хотите увидеть?</b>\n\n"
-        "<b>Новые заявки</b> - заявки, которые еще не приняты в работу\n"
-        "<b>Заявки в работе</b> - заявки, которые Вы взяли в работу"
-    )
+    text = MAIN_MENU_BASE_TEXT
     await show_message(
         text=text,
         reply_keyboard=MANAGER_MAIN_MENU,
@@ -129,6 +126,15 @@ async def manager_new_orders_show(
             message=callback.message,
             state_update_data={'orders': orders}
         )
+    else:
+        await show_message(
+            text=text,
+            reply_keyboard=MANAGER_MAIN_MENU,
+            state=state,
+            new_state=ManagerState.authorized,
+            message=callback.message,
+            state_update_data=None
+        )
 
 
 @router.callback_query(
@@ -159,7 +165,15 @@ async def manager_in_progress_orders_show(
             message=callback.message,
             state_update_data={'orders': orders}
         )
-
+    else:
+        await show_message(
+            text=text,
+            reply_keyboard=MANAGER_MAIN_MENU,
+            state=state,
+            new_state=ManagerState.authorized,
+            message=callback.message,
+            state_update_data=None
+        )
 
 @router.callback_query(
     ManagerState.new_orders,

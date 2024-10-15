@@ -26,6 +26,13 @@ def generate_keyboard_from_structure(
     )
 
 
+MAIN_MENU_BASE_TEXT = (
+    "<b>Что Вы хотите увидеть?</b>\n\n"
+    "<b>Новые заявки</b> - заявки, которые еще не приняты в работу\n"
+    "<b>Заявки в работе</b> - заявки, которые Вы взяли в работу"
+)
+
+
 MAIN_MENU_BUTTON = InlineKeyboardButton(
     text="⬆️ В главное меню",
     callback_data="go_to_start"

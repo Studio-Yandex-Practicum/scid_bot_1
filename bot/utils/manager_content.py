@@ -7,7 +7,7 @@ from aiogram.types import InlineKeyboardMarkup, Message
 from aiogram.fsm.context import FSMContext
 
 from api.api_managers import get_all_orders_for_manager
-from keyboards.manager import MANAGER_MAIN_MENU
+from keyboards.manager import MAIN_MENU_BASE_TEXT, MANAGER_MAIN_MENU
 from utils.manager_state import ManagerState
 
 
@@ -105,8 +105,12 @@ async def get_orders(
         return None, None, None
     await state.update_data({ 'orders': orders })
     orders_len = len(orders)
+    print(f'!!!!!!!!!!!!!!!!!!!!!! {orders_len}')
+    print(orders)
     if orders_len == 0:
-        text = "Новых заявок нет" if in_progress else "Заявок в работе нет"
+        text = "Заявок в работе нет" if in_progress else "Новых заявок нет"
+        text += "\n\n"
+        text += MAIN_MENU_BASE_TEXT
     else:
         text = await generate_order_text(orders[0])
     return orders_len, text, orders
