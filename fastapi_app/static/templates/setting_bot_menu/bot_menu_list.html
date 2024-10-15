@@ -9,8 +9,6 @@
         class="text-xs text-text-light uppercase bg-background-light-secondary dark:bg-background-dark-secondary dark:text-text-dark"
       >
         <tr>
-          <th scope="col" class="px-6 py-3">Наименование карточки</th>
-          <th scope="col" class="px-6 py-3">Текст карточки</th>
           <th scope="col" class="px-6 py-3">
             <div class="flex items-center">
               Родитель карточки
@@ -28,40 +26,28 @@
               ></a>
             </div>
           </th>
+          <th scope="col" class="px-6 py-3">Карточка</th>
           <th scope="col" class="px-6 py-3">
-            <span class="sr-only">Редактировать</span>
+            Содержимое
           </th>
         </tr>
       </thead>
       <tbody>
         {% for button in buttons %}
+        
         <tr
-          class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary"
+          class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary cursor-pointer"
+          onClick=window.location.replace("{{ url_for('setting_bot_menu_update_button', button_id=button.id) }}")
         >
-          <th
-            scope="row"
-            class="px-6 py-4 font-bold text-text-light-secondary whitespace-nowrap dark:text-text-dark"
-          >
+          <td class="px-6 py-4 text-text-light-secondary whitespace-nowrap dark:text-text-dark">{{ button.parent.label }}</td>
+          <th scope="row" class=" font-bold text-text-light-secondary dark:text-text-dark-secondary whitespace-nowrap">
             {{ button.label }}
           </th>
           {% if button.content_text %}
-          <td class="px-6 py-4">{{ button.content_text|truncate(50) }}</td>
+          <td class="px-6 py-4">{{ button.content_text|truncate(150) }}</td>
           {% else %}
           <td class="px-6 py-4">-</td>
           {% endif %}
-          <td>{{ button.parent.label }}</td>
-          <td class="px-6 py-4 text-right">
-            <button
-              class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-text-light-secondary border hover:bg-background-dark hover:text-text-dark border-text-light-secondary focus:ring-4 focus:outline-none focus:ring-text-light-secondary rounded-md  text-center dark:border-text-light-900 dark:bg-background-dark-secondary dark:text-text-dark  dark:focus:text-text-dark-secondary dark:focus:ring-text-light-secondary dark:hover:bg-background-light dark:hover:text-text-light-secondary"
-            >
-              <a
-                href="{{ url_for('setting_bot_menu_update_button', button_id=button.id) }}"
-                class="relative px-5 py-0.5 transition-all ease-in duration-75 rounded-md group-hover:bg-opacity-0"
-              >
-              Редактировать
-            </a>
-            </button>
-          </td>
         </tr>
         {% endfor %}
       </tbody>

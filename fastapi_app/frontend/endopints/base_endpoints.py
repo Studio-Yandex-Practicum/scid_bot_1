@@ -128,15 +128,12 @@ async def start_change_password(
     user_manager = Depends(get_user_manager)
 ):
     if new_password1 != new_password2:
-        raise HTTPException(
-            headers={
-                'location': f'/change-password?error={
-                    quote(
-                        "Новые пароли не совпадают"
-                    )
-                }'
-            },
-            status_code=status.HTTP_302_FOUND,
+        await redirect_by_httpexeption(
+            f'/change-password?error={
+                quote(
+                    "Новые пароли не совпадают"
+                )
+            }'
         )
     password_helper = PasswordHelper()
     verify_password, m = password_helper.verify_and_update(
@@ -144,15 +141,12 @@ async def start_change_password(
         hashed_password=user.hashed_password
     )
     if not verify_password:
-        raise HTTPException(
-            headers={
-                'location': f'/change-password?error={
-                    quote(
-                        "Старый пароль указан неверно"
-                    )
-                }'
-            },
-            status_code=status.HTTP_302_FOUND,
+        await redirect_by_httpexeption(
+            f'/change-password?error={
+                quote(
+                    "Старый пароль указан неверно"
+                )
+            }'
         )
     await change_user_password(
         request,

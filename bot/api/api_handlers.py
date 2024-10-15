@@ -1,45 +1,66 @@
-import os
-
 from aiohttp import ClientSession
-from dotenv import load_dotenv
 
-load_dotenv()
+from core.config import settings
 
-
-API_URL = os.getenv("API_URL")
-
-
-async def post_api_data(endpoint: str, data: dict):
+async def post_api_data(
+    endpoint: str,
+    data: dict = None,
+    headers: dict = {},
+    params: dict = {},
+    json: dict = None
+):
     async with ClientSession() as session:
         async with session.post(
-            API_URL, json={"endpoint": endpoint, "data": data}
+            f"{settings.api.base_url}/{endpoint}",
+            data=data,
+            headers=headers,
+            params=params,
+            json=json
         ) as response:
-            response_data = await response.json()
-            return response_data["data"]
+            return await response.json()
 
 
-async def get_api_data(endpoint: str, params: dict = None):
+async def get_api_data(
+    endpoint: str,
+    params: dict = {},
+    headers: dict = {}
+):
     async with ClientSession() as session:
         async with session.get(
-            f"{API_URL}/{endpoint}", params=params
+            f'{settings.api.base_url}/{endpoint}',
+            headers=headers,
+            params=params
         ) as response:
-            response_data = await response.json()
-            return response_data["data"]
+            return await response.json()
 
 
-async def patch_api_data(endpoint: str, data: dict):
+async def patch_api_data(
+    endpoint: str,
+    data: dict = {},
+    headers: dict = {},
+    params: dict = {}
+):
     async with ClientSession() as session:
         async with session.patch(
-            f"{API_URL}/{endpoint}", json=data
+            f'{settings.api.base_url}/{endpoint}',
+            data=data,
+            headers=headers,
+            params=params
         ) as response:
-            response_data = await response.json()
-            return response_data["data"]
+            return await response.json()
 
 
-async def delete_api_data(endpoint: str, data: dict = None):
+async def delete_api_data(
+    endpoint: str,
+    data: dict = {},
+    headers: dict = {},
+    params: dict = {}
+):
     async with ClientSession() as session:
         async with session.delete(
-            f"{API_URL}/{endpoint}", json=data
+            f'{settings.api.base_url}/{endpoint}',
+            data=data,
+            headers=headers,
+            params=params
         ) as response:
-            response_data = await response.json()
-            return response_data["data"]
+            return await response.json()

@@ -75,3 +75,4 @@ async def inline_menu(buttons, columns=2, start_id=1) -> InlineKeyboardMarkup:
     keyboard.adjust(1)
 
     return keyboard.as_markup()
+

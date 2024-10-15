@@ -3,35 +3,40 @@ import logging
 import os
 
 from aiogram import Bot, Dispatcher
-from dotenv import load_dotenv
-from handlers import main_button
+from aiogram.fsm.storage.memory import MemoryStorage
 
-load_dotenv()
-
-TOKEN = os.getenv("TOKEN")
-
+from core.config import settings
+from routers import (
+    admin,
+    main_menu,
+    managers,
+    navigation,
+    tree_commands,
+    reviews
+)
+from utils.menus import set_commands
 
 async def main():
-
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
-
-    dp = Dispatcher()
-
-    bot = Bot(token=TOKEN)
-
-    # Andrey
-    # Создаем бота
-    # bot = Bot(
-    #    token=TOKEN,
-    #    session=AiohttpSession(),
-    #    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
-    # )
-
-    dp.include_router(main_button.router)  # здесь подключаем хендлеры
-
+    if not settings.app.token:
+        raise ValueError(
+            "Не найден токен бота. Пожалуйста,"
+            "добавьте BOT_CONFIG__APP__TOKEN в .env файл."
+        )
+    dp = Dispatcher(storage=MemoryStorage())
+    bot = Bot(
+        token=settings.app.token
+    )
+    await set_commands(bot)
+    dp.include_router(main_menu.router)
+    dp.include_router(navigation.router)
+    dp.include_router(tree_commands.router)
+    dp.include_router(admin.router)
+    dp.include_router(managers.router)
+    dp.include_router(reviews.router)  # роутер review
     await dp.start_polling(bot)
 
 

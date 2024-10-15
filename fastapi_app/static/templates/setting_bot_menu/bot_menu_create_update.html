@@ -76,7 +76,7 @@ function delete_button(url) {
         >Редактирование карточки:</span
       >
       <br />
-      <span class="font-bold text-lg">"{{ button.label }} (родитель: <a href="{{ url_for('setting_bot_menu_update_button', button_id=button.parent_id) }}" class="hover:underline">{% if parent_label %}{{ parent_label }}{% endif %}</a>)"</span> {% else %}
+      <span class="font-bold text-lg">"{{ button.label }}" (родитель: <a href="{{ url_for('setting_bot_menu_update_button', button_id=button.parent_id) }}" class="hover:underline">{% if parent_label %}{{ parent_label }}{% endif %}</a>)</span> {% else %}
       Создание новой карточки (родитель: <a href="{{ url_for('setting_bot_menu_update_button', button_id=button.id) }}" class="hover:underline">{{ button.label }}</a>) {% endif %}
     </h2>
     <hr class="mb-2" />
@@ -106,14 +106,14 @@ function delete_button(url) {
             <label for="content_text" class="block mb-2 text-sm font-medium"
               >Контент: текст</label
             >
-            <input
+            <textarea 
               type="text"
               name="content_text"
               id="content_text"
               class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
               placeholder="Текст, который будет виден пользователю"
-              value="{% if button.content_text and update %}{{ button.content_text }}{% endif %}"
-            />
+              
+            >{% if button.content_text and update %}{{ button.content_text }}{% endif %}</textarea>
           </div>
           <div class="mb-5">
             <label for="content_link" class="block mb-2 text-sm font-medium"
@@ -225,15 +225,13 @@ function delete_button(url) {
               <tr>
                 <th scope="col" class="px-6 py-3">Наименование карточки</th>
                 <th scope="col" class="px-6 py-3">Текст карточки</th>
-                <th scope="col" class="px-6 py-3">
-                  <span class="sr-only">Редактировать</span>
-                </th>
               </tr>
             </thead>
             <tbody>
               {% for child_button in child_buttons %}
               <tr
-                class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary"
+                class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary cursor-pointer"
+                onClick=window.location.replace("{{ url_for('setting_bot_menu_update_button', button_id=child_button.id) }}")
               >
                 <th
                   scope="row"
@@ -248,18 +246,6 @@ function delete_button(url) {
                 {% else %}
                 <td class="px-6 py-4">-</td>
                 {% endif %}
-                <td class="px-6 py-4 text-right">
-                  <button
-                    class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-text-light-secondary border hover:bg-background-dark hover:text-text-dark border-text-light-secondary focus:ring-4 focus:outline-none focus:ring-text-light-secondary rounded-md text-center dark:border-text-light-900 dark:bg-background-dark-secondary dark:text-text-dark dark:focus:text-text-dark-secondary dark:focus:ring-text-light-secondary dark:hover:bg-background-light dark:hover:text-text-light-secondary"
-                  >
-                    <a
-                      href="{{ url_for('setting_bot_menu_update_button', button_id=child_button.id) }}"
-                      class="relative px-5 py-0.5 transition-all ease-in duration-75 rounded-md group-hover:bg-opacity-0"
-                    >
-                      Редактировать
-                    </a>
-                  </button>
-                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -349,5 +335,5 @@ function delete_button(url) {
       {% endif %}
     </div>
   </div>
-  {% endblock main_content %}
 </div>
+{% endblock main_content %}

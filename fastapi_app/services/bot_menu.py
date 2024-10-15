@@ -20,7 +20,10 @@ async def create_main_menu_button(session: AsyncSession):
             parent_id=None,
             obj_in=MenuButtonCreateMainButton(
                 label="Главное меню",
-                content_text=None,
+                content_text=(
+                    'Здравствуйте! Я ваш виртуальный помощник. '
+                    'Как я могу помочь вам сегодня?'
+                ),
                 content_image=None,
                 content_link=None,
                 parent_id=None,
