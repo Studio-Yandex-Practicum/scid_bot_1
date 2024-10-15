@@ -93,6 +93,15 @@ async def cancel_and_return_to_admin_panel(
     await show_base_admin_panel(message)
 
 
+# async def update_field_or_cancel_or_skip(message: Message, state: FSMContext, update_field: str = None):
+#     if message.text == "Отмена":
+#         await cancel_and_return_to_admin_panel(message, state)
+#         return True  # Возвращаем True, чтобы выйти из основной функции
+#     if message.text != "Пропустить" and update_field:
+#         await state.update_data({update_field: message.text})
+#     return False
+
+
 async def show_button(button, message):
     text = (
         f"Успешно создал кнопку:\n"

@@ -12,7 +12,7 @@ from .base import (cancel_and_return_to_admin_panel,
                    base_reply_markup,
                    not_required_reply_markup,
                    show_button,
-                   handle_photo_upload
+                   handle_photo_upload,
                    )
 
 API_URL = os.getenv("API_URL")
