@@ -17,9 +17,11 @@ class GetButtonContent(StatesGroup):
 
 @router.callback_query(F.data == "get_button_content")
 async def handle_get_button(callback: types.CallbackQuery, state: FSMContext):
+    # print("dddddddddddddddddddddddddddddddddddddddddddd")
     await callback.message.answer(
         text="Введите айди кнопки", reply_markup=base_reply_markup
     )
+    # await callback.message.answer(text="ааааааааааааааааааааа")
     await callback.answer()
     await state.set_state(GetButtonContent.typing_button_id)
 
@@ -29,6 +31,7 @@ async def name_typed(message: Message, state: FSMContext):
     if message.text == "Отмена":
         await cancel_and_return_to_admin_panel(message, state)
         return
+    # print("dddddddddddddddddddddddddddddddddddddddddddd")
     response = await get_button_content(message.text)
     await message_button_response(response, message, state)
     await cancel_and_return_to_admin_panel(message, state)

@@ -29,6 +29,7 @@ services:
       - db
     ports:
       - "8000:8000"  
+      # - "80:80"
     networks:
       - scid_bot_1
 

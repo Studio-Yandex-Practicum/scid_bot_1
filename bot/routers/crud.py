@@ -1,5 +1,7 @@
 import os
 import httpx
+import aiohttp
+from aiohttp import ClientError
 from dotenv import load_dotenv
 import functools
 from core.config import settings
@@ -7,12 +9,15 @@ from core.config import settings
 
 load_dotenv()
 
-# AUTH_TOKEN = os.getenv("AUTH_TOKEN")
+AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 # API_BOT_MENU_URL = os.getenv("API_BOT_MENU_URL")
 API_TOKEN = settings.app.token
 
 API_URL = settings.api.base_url
-API_BOT_MENU_URL = 'http://127.0.0.1/bot_menu/'
+# API_BOT_MENU_URL = 'http://127.0.0.1/bot_menu/'
+# API_BOT_MENU_URL = 'http://localhost/bot_menu/'
+# API_BOT_MENU_URL = 'http://fastapi_app:8000/bot_menu/'  # тоже работает
+API_BOT_MENU_URL = 'http://nginx/bot_menu/'
 
 
 def handle_http_errors(func):
@@ -55,16 +60,37 @@ async def add_child_button(
 
 @handle_http_errors
 async def get_button_content(button_id):
-    print("dddddddddddddddddddddddddddddddddddddddddddd")
+    # print("dddddddddddddddddddddddddddddddddddddddddddd")
     url = f"{API_BOT_MENU_URL}{button_id}/get-content"
     headers = {
         "accept": "application/json",
     }
     async with httpx.AsyncClient() as client:
+        print(url)
         response = await client.get(url, headers=headers)
-        print("dddddddddddddddddddddddddddddddddddddddddddd")
-        print(response)
-        return response
+        # print("dddddddddddddddddddddddddddddddddddddddddddd")
+    print(response)
+    return response
+
+
+# @handle_http_errors
+# async def get_button_content(button_id):
+#     url = f"{API_BOT_MENU_URL}{button_id}/get-content"
+#     headers = {
+#         "accept": "application/json",
+#     }
+
+#     async with aiohttp.ClientSession() as session:
+#         try:
+#             print(url)
+#             async with session.get(url, headers=headers) as response:
+#                 print("dddddddddddddddddddddddddddddddddddddddddddd")
+#                 response_data = await response.text()
+#                 print(response_data)
+#                 return response_data
+#         except ClientError as e:
+#             print(f"Request failed: {e}")
+#             raise
 
 
 @handle_http_errors
