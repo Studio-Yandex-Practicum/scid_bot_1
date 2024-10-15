@@ -53,6 +53,7 @@
         </a>
       </li>
     {% endif %}
+    {% if user.is_superuser %}
     <span class="text-text-light-600 dark:text-text-dark-400 font-bold">Отзывы</span>
     <li class="mb-1 group">
       <a
@@ -63,7 +64,7 @@
         <span class="text-sm">Список отзывов</span>
       </a>
     </li>
-    {% if user.is_superuser %}
+
     <span class="text-text-light-600 dark:text-text-dark-400 font-bold">Менеджеры</span>
     <li class="mb-1 group {% if '/fr_managers/add' in request.path %}active{% endif %}">
       <a 

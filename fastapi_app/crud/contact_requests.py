@@ -59,7 +59,7 @@ class CRUDContactRequests(
         session: AsyncSession,
     ) -> ContactRequest:
         contact_request.in_progress = True
-        contact_request.manager = manager
+        contact_request.manager_id = manager.id
         await self._commit_and_refresh(contact_request, session)
         return await self.get_contact_request_with_manager(
             contact_request.id, session

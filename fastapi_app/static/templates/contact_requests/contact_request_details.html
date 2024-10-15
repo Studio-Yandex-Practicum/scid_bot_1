@@ -85,7 +85,7 @@ function post_contact_request(url) {
                 <button
                 type="button"
                 class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
-                onClick=post_contact_request("{{ url_for('contact_request_to_work', contact_request_id=contact_request.id, contact_request_type=contact_request_type) }}")
+                onClick=post_contact_request("{{ url_for('contact_request_to_work', contact_request_id=contact_request.id) }}")
                 >
                     Взять заявку в работу
                 </button>
@@ -94,7 +94,7 @@ function post_contact_request(url) {
                 <button
                 type="button"
                 class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
-                onClick=post_contact_request("{{ url_for('contact_request_close', contact_request_id=contact_request.id, contact_request_type=contact_request_type) }}")
+                onClick=post_contact_request("{{ url_for('contact_request_close', contact_request_id=contact_request.id) }}")
                 >
                     Завершить заявку
                 </button>

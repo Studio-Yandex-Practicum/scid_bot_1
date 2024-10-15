@@ -89,6 +89,7 @@ async def contact_request_details(
                 'Заявки на обратную связь не существует'
             )}'
         )
+    print(contact_request.id)
     context = {
         'request': request,
         'user': user,
@@ -101,7 +102,7 @@ async def contact_request_details(
 
 
 @router.post(
-    '/close/{contact_request_id}/{contact_request_type}',
+    '/close/{contact_request_id}',
     response_class=HTMLResponse,
     summary='Метод принятия заявки в работу',
     dependencies=[Depends(check_user_is_manager_or_superuser)]
@@ -109,9 +110,9 @@ async def contact_request_details(
 async def contact_request_close(
     request: Request,
     contact_request_id: int,
-    contact_request_type: str,
     session: AsyncSession = Depends(get_async_session),
 ):
+    print(contact_request_id)
     await close_contact_request(
         contact_request_id=contact_request_id,
         session=session
@@ -128,7 +129,7 @@ async def contact_request_close(
 
 
 @router.post(
-    '/to-work/{contact_request_id}/{contact_request_type}',
+    '/to-work/{contact_request_id}',
     response_class=HTMLResponse,
     summary='Метод принятия заявки в работу',
     dependencies=[Depends(check_user_is_manager_or_superuser)]
@@ -136,10 +137,10 @@ async def contact_request_close(
 async def contact_request_to_work(
     request: Request,
     contact_request_id: int,
-    contact_request_type: str,
     user: User = Depends(check_user_is_manager_or_superuser),
     session: AsyncSession = Depends(get_async_session),
 ):
+    print(contact_request_id)
     await take_contact_request_to_work(
         contact_request_id=contact_request_id,
         managet_telegram_id=user.telegram_user_id,
