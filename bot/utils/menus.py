@@ -9,5 +9,4 @@ async def set_commands(bot: Bot):
         BotCommand(command='manager', description='Я менеджер'),
         BotCommand(command='admin', description='Я администратор'),
     ]
-    await bot.delete_my_commands()
     await bot.set_my_commands(commands, BotCommandScopeDefault())

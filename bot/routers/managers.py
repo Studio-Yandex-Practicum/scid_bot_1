@@ -36,18 +36,19 @@ async def manager_start(message: types.Message, state: FSMContext):
             reply_markup=None
         )
     user_info = await manager_login_with_tg_id(message.from_user.id)
-    if user_info["is_manager"]:
-        await state.update_data(
-            jwt=f"{user_info['token_type']} {user_info['jwt']}",
-            current_user_id=message.from_user.id
-        )
-        await state.set_state(ManagerState.authorized)
-        await bot_message.edit_text(
-            text="Авторизация успешна"
-        )
-        await bot_message.edit_reply_markup(
-            reply_markup=START_MANAGER_WORK
-        )
+    if 'detail' in user_info:
+        if user_info["is_manager"]:
+            await state.update_data(
+                jwt=f"{user_info['token_type']} {user_info['jwt']}",
+                current_user_id=message.from_user.id
+            )
+            await state.set_state(ManagerState.authorized)
+            await bot_message.edit_text(
+                text="Авторизация успешна"
+            )
+            await bot_message.edit_reply_markup(
+                reply_markup=START_MANAGER_WORK
+            )
     else:
         await bot_message.edit_text(
             text="Вход недоступен, так как Вы не являетесь менеджером"

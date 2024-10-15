@@ -45,3 +45,4 @@ async def handle_command(message: Message):
         await message.answer(text_message, parse_mode="HTML")
     elif message.text == "Проверить работу API":
         await message.answer("Данные получены!")
+
