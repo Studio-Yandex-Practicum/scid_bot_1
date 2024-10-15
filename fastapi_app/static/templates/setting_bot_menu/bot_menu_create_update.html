@@ -106,14 +106,14 @@ function delete_button(url) {
             <label for="content_text" class="block mb-2 text-sm font-medium"
               >Контент: текст</label
             >
-            <input
+            <textarea 
               type="text"
               name="content_text"
               id="content_text"
               class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
               placeholder="Текст, который будет виден пользователю"
-              value="{% if button.content_text and update %}{{ button.content_text }}{% endif %}"
-            />
+              
+            >{% if button.content_text and update %}{{ button.content_text }}{% endif %}</textarea>
           </div>
           <div class="mb-5">
             <label for="content_link" class="block mb-2 text-sm font-medium"
@@ -335,5 +335,5 @@ function delete_button(url) {
       {% endif %}
     </div>
   </div>
-  {% endblock main_content %}
 </div>
+{% endblock main_content %}

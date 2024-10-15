@@ -21,11 +21,14 @@ class CRUDUser(CRUDBase[User, UserUpdate, UserCreate]):
 
     async def get_all_managers(self, session: AsyncSession) -> User:
         managers = await session.execute(
-            select(User).where(User.is_manager == True)
+            select(User).where(
+                User.is_manager == True,
+                User.is_superuser == False
+            )
         )
         return managers.scalars().all()
 
-    async def delete_user(user: User, session: AsyncSession) -> User:
+    async def delete_user(self, user: User, session: AsyncSession) -> User:
         contact_requests = await session.execute(
             select(ContactRequest).where(ContactRequest.manager_id == user.id)
         )

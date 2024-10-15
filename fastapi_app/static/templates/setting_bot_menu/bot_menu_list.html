@@ -40,7 +40,7 @@
           onClick=window.location.replace("{{ url_for('setting_bot_menu_update_button', button_id=button.id) }}")
         >
           <td class="px-6 py-4 text-text-light-secondary whitespace-nowrap dark:text-text-dark">{{ button.parent.label }}</td>
-          <th scope="row" class=" font-bold text-text-light-secondary whitespace-nowrap">
+          <th scope="row" class=" font-bold text-text-light-secondary dark:text-text-dark-secondary whitespace-nowrap">
             {{ button.label }}
           </th>
           {% if button.content_text %}

@@ -43,7 +43,7 @@ async def get_reviews_count(
     summary="Получает средний рейтинг на основе отзывов",
     description="Без диапазона дат вернёт средний рейтинг за все отзывы",
 )
-async def get_reviews_count(
+async def get_average_rating(
     start_date: Optional[datetime] = Query(None),
     end_date: Optional[datetime] = Query(None),
     session: AsyncSession = Depends(get_async_session),
