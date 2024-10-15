@@ -20,7 +20,10 @@ from crud.bot_menu import bot_menu_crud, bot_menu_files_crud
 from models.user import User
 from services.frontend import redirect_by_httpexeption
 
-router = APIRouter(tags=['frontend_setting_bot_menu'])
+router = APIRouter(
+    tags=['frontend_setting_bot_menu'],
+    prefix='/setting-bot-menu'
+)
 
 
 async def button_not_exist_error():
@@ -30,7 +33,7 @@ async def button_not_exist_error():
 
 
 @router.get(
-    '/setting-bot-menu/list',
+    '/list',
     response_class=HTMLResponse,
     summary='Список кнопок бота',
 )
@@ -62,7 +65,7 @@ async def setting_bot_menu(
 
 
 @router.get(
-    '/setting-bot-menu/add-button/{parent_id}',
+    '/add-button/{parent_id}',
     response_class=HTMLResponse,
     summary='Создание кнопки бота',
 )
@@ -91,7 +94,7 @@ async def setting_bot_menu_add_button(
 
 
 @router.get(
-    '/setting-bot-menu/update-button/{button_id}',
+    '/update-button/{button_id}',
     response_class=HTMLResponse,
     summary='Страница обновления кнопки бота',
 )
@@ -130,7 +133,7 @@ async def setting_bot_menu_update_button(
 
 
 @router.get(
-    '/setting-bot-menu/attach-file/{button_id}',
+    '/attach-file/{button_id}',
     response_class=HTMLResponse,
     summary='Страница прикрепления файла к кнопке бота',
 )
@@ -156,7 +159,7 @@ async def setting_bot_menu_attach_file(
 
 
 @router.get(
-    '/setting-bot-menu/get-attach-file/{file_id}',
+    '/get-attach-file/{file_id}',
     response_class=HTMLResponse,
     summary='Получить прикрепленный файл',
     dependencies=[Depends(check_user_is_superuser)]
@@ -174,7 +177,7 @@ async def setting_bot_menu_get_attach_file(
 
 
 @router.delete(
-    '/setting-bot-menu/delete-attach-file/{button_id}/{file_id}',
+    '/delete-attach-file/{button_id}/{file_id}',
     response_class=HTMLResponse,
     summary='Удалить прикреплённый файл',
     dependencies=[Depends(check_user_is_superuser)]
@@ -192,7 +195,7 @@ async def setting_bot_menu_delete_attach_file(
 
 
 @router.delete(
-    '/setting-bot-menu/delete-button/{button_id}',
+    '/delete-button/{button_id}',
     response_class=HTMLResponse,
     summary='Удалить прикреплённый файл',
 )
@@ -212,7 +215,7 @@ async def setting_bot_menu_delete_button(
 
 
 @router.post(
-    '/setting-bot-menu/attach-file/{button_id}',
+    '/attach-file/{button_id}',
     response_class=HTMLResponse,
     summary='Метод прикрепления файла для кнопки',
     dependencies=[Depends(check_user_is_superuser)]
@@ -237,12 +240,12 @@ async def start_setting_bot_menu_attach_file(
         session=session,
     )
     await redirect_by_httpexeption(
-        f'/setting-bot-menu/update-button/{button_id}'
+        f'{router.prefix}/update-button/{button_id}'
     )
 
 
 @router.post(
-    '/setting-bot-menu/update-button/{button_id}',
+    '/update-button/{button_id}',
     response_class=HTMLResponse,
     summary='Обновление кнопки',
 )
@@ -277,7 +280,7 @@ async def start_setting_bot_menu_update_button(
 
 
 @router.post(
-    '/setting-bot-menu/add-button/{button_id}',
+    '/add-button/{button_id}',
     response_class=HTMLResponse,
     summary='Создание кнопки',
 )
@@ -302,5 +305,5 @@ async def start_setting_bot_menu_add_button(
         session=session,
     )
     await redirect_by_httpexeption(
-        f'/setting-bot-menu/update-button/{button.id}'
+        f'{router.prefix}/update-button/{button.id}'
     )

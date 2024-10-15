@@ -43,6 +43,11 @@ class ManagerCreate(BaseModel):
     telegram_user_id: str
 
 
+class ManagerUpdate(BaseModel):
+    name: str
+    telegram_user_id: str
+
+
 class UserJwtAndRoleRequest(BaseModel):
     jwt: str
     token_type: str

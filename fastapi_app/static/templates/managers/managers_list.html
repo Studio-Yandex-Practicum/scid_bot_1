@@ -1,0 +1,35 @@
+{% extends 'base_pages/main_page.html' %} {% block main_content %}
+
+<div class="p-5">
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table
+      class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+    >
+      <thead
+        class="text-xs text-text-light uppercase bg-background-light-secondary dark:bg-background-dark-secondary dark:text-text-dark"
+      >
+        <tr>
+          <th scope="col" class="px-6 py-3">Имя</th>
+          <th scope="col" class="px-6 py-3">Email</th>
+          <th scope="col" class="px-6 py-3">Telegram id</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for manager in managers %}
+        
+        <tr
+          class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary cursor-pointer"
+          onClick=window.location.replace("{{ url_for('managers_update', manager_id=manager.id) }}")
+        >
+          <th scope="row" class="px-6 py-4 font-bold text-text-light-secondary whitespace-nowrap">
+            {{ manager.name }}
+          </th>
+          <td class="px-6 py-4 text-text-light-secondary whitespace-nowrap dark:text-text-dark">{{ manager.email }}</td>
+          <td class="px-6 py-4">{{ manager.telegram_user_id }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock main_content %}

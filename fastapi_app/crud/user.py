@@ -21,7 +21,10 @@ class CRUDUser(CRUDBase[User, UserUpdate, UserCreate]):
 
     async def get_all_managers(self, session: AsyncSession) -> User:
         managers = await session.execute(
-            select(User).where(User.is_manager == True)
+            select(User).where(
+                User.is_manager == True,
+                User.is_superuser == False
+            )
         )
         return managers.scalars().all()
 
