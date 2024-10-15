@@ -105,7 +105,7 @@ async def delete_manager(
         session=session,
     )
     await check_user_is_not_superuser(user)
-    return await user_crud.delete(
-        db_obj=user,
+    return await user_crud.delete_user(
+        user=user,
         session=session,
     )

@@ -1,8 +1,7 @@
 {% extends 'base_pages/main_page.html' %} {% block main_content %}
 {% block script %}
-{% if button and update %}
+{% if manager and update %}
 <script>
-
 function delete_manager(url) {
     if (confirm('Точно удалить менеджера? Все его заявки, в работе, перейдут в статус - не начата! ')) {
         fetch(url, {

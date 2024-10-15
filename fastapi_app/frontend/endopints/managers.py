@@ -1,12 +1,12 @@
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.dependencies.auth import check_user_is_superuser
 from api.users_validators import check_user_exist
-from api.endpoints.managers import update_manager
+from api.endpoints.managers import delete_manager, update_manager
 from core.db import get_async_session
 from core.frontend import templates
 from crud.user import user_crud
@@ -94,8 +94,14 @@ async def start_manager_update(
     dependencies=[Depends(check_user_is_superuser)]
 )
 async def manager_delete(
-    file_id: int,
+    request: Request,
     manager_id: int,
     session: AsyncSession = Depends(get_async_session),
 ):
-    ...
+    await delete_manager(
+        user_id=manager_id,
+        session=session
+    )
+    return JSONResponse(
+        content={ 'url': str(request.url_for('managers_main')) }
+    )

@@ -28,7 +28,7 @@ class CRUDUser(CRUDBase[User, UserUpdate, UserCreate]):
         )
         return managers.scalars().all()
 
-    async def delete_user(user: User, session: AsyncSession) -> User:
+    async def delete_user(self, user: User, session: AsyncSession) -> User:
         contact_requests = await session.execute(
             select(ContactRequest).where(ContactRequest.manager_id == user.id)
         )
