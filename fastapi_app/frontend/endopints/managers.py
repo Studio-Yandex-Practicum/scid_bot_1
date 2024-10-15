@@ -1,4 +1,5 @@
 from typing import Optional
+from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -76,7 +77,11 @@ async def managers_update(
     try:
         manager = await check_user_exist(user_id=manager_id, session=session)
     except HTTPException:
-        ...
+        await redirect_by_httpexeption(
+            location=f'/?navbar_error={quote(
+                'Менеджера не существует'
+            )}'
+        )
     context = {
         'request': request,
         'user': user,

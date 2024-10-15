@@ -1,0 +1,94 @@
+{% extends 'base_pages/main_page.html' %} {% block main_content %}
+{% block script %}
+{% if manager and update %}
+<script>
+function delete_manager(url) {
+    if (confirm('Точно удалить менеджера? Все его заявки, в работе, перейдут в статус - не начата! ')) {
+        fetch(url, {
+            method: "DELETE",
+            redirect: 'manual',
+            headers: {
+              "Content-type": "application/json; charset=UTF-8"
+            }
+          })
+          .then(response => {
+            response.json().then(data => {
+                window.location.replace(data.url)
+            })
+          })
+          .catch(error => {
+            console.log(error)
+          });
+      }
+}
+{% endif %}
+</script>
+{% endblock script %}
+<div class="p-5">
+  <div
+    class="max-w-2xl mx-auto bg-background-light dark:bg-background-dark p-5 rounded-md shadow-md"
+  >
+    <h2 class="text-2xl font-bold text-left mb-5">
+      <span class="font-bold text-xl text-text-light-800 dark:text-text-dark-300">Информация о заявке, от {{ contact_request.created_at.strftime('%d.%m.%Y %H:%M:%S') }} ({% if contact_request_type == 'new' %}Новая{% endif %}{% if contact_request_type == 'work' %}В работе{% endif %}{% if contact_request_type == 'processed' %}Завершена{% endif %}) </span>
+    </h2>
+    <hr class="mb-2" />
+    <div class="flex-wrap gap-4">
+        <form
+          class="text-text-light dark:text-text-dark"
+        >
+            <div class="mb-5">
+                <h5 class="mb-5 text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+                    <label class="block mb-2 text-base font-medium">Способ связи:</label>
+                    {% if contact_request.contact_via_telegram %}
+                        <td class="px-6 py-4">Телеграм: <a target="_blank" href="https://t.me/{{ contact_request.name }}" class="underline hover:font-medium">{{ contact_request.name }}</a></td>
+                    {% elif contact_request.contact_via_phone%}
+                        <td class="px-6 py-4">Телефон: <a target="_blank" href="tel:{{ contact_request.phone }}" class="underline hover:font-medium">{{ contact_request.phone }}</a></td>
+                    {% elif contact_request.contact_via_phone %}
+                        <td class="px-6 py-4">Email: <a target="_blank" href="mailto:{{ contact_request.email }}" class="underline hover:font-medium">{{ contact_request.email }}</a></td>
+                    {% else %}
+                        <td class="px-6 py-4">-</td>
+                    {% endif %}
+                    <label class="block mt-3 text-base font-medium">Доступные контакты:</label>
+                    <p class="text-base font-normal">Телеграм: <a target="_blank" href="https://t.me/{{ contact_request.name }}" class="underline hover:font-medium">{{ contact_request.name }}</a></p>
+                    <p class="text-base font-normal">Телефон: <a target="_blank" href="tel:{{ contact_request.phone }}" class="underline hover:font-medium">{{ contact_request.phone }}</a></p>
+                    <p class="text-base font-normal">Email: <a target="_blank" href="mailto:{{ contact_request.email }}" class="underline hover:font-medium">{{ contact_request.email }}</a></p>
+                </h5>
+                <label class="block mb-2 text-base font-medium">Вопрос пользователя:</label>
+                <p class="mb-3 p-3 font-normal border border-text-light bg-background-light-secondary-200 text-text-light dark:text-text-dark ">
+                    <code>
+                    {{ contact_request.text }}
+                    </code>
+                </p>
+            </div>
+            {% if contact_request_type == 'new' %}
+                <button
+                type="button"
+                class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
+                onClick=delete_manager("{{ url_for('contact_request_delete', contact_request_id=contact_request.id) }}")
+                >
+                    Взять заявку в работу
+                </button>
+            {% endif %}
+            {% if contact_request_type == 'work' %}
+                <button
+                type="button"
+                class="w-full bg-background-light-secondary-200 hover:bg-background-light-secondary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-background-dark-secondary dark:hover:bg-background-dark-secondary-900 border border-background-light dark:border-background-dark"
+                onClick=delete_manager("{{ url_for('contact_request_delete', contact_request_id=contact_request.id) }}")
+                >
+                    Завершить заявку
+                </button>
+            {% endif %}
+            {% if user.is_superuser %}
+                <button
+                type="button"
+                class="mt-2 w-full bg-contrast-700 hover:bg-contrast text-text-dark font-medium rounded-lg text-sm px-5 py-2.5 text-center  border border-background-light dark:border-background-dark"
+                onClick=delete_manager("{{ url_for('contact_request_delete', contact_request_id=contact_request.id) }}")
+                >
+                    Удалить заявку
+                </button>
+            {% endif %}
+        </form>
+    </div>
+  </div>
+</div>
+{% endblock main_content %}

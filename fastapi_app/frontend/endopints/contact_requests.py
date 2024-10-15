@@ -1,4 +1,4 @@
-from typing import Optional
+from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -51,6 +51,7 @@ async def contact_requests_main(
         'request': request,
         'user': user,
         'contact_requests': managers,
+        'contact_request_type': contact_request_type
     }
     return templates.TemplateResponse(
         'contact_requests/contact_requests_list.html',
@@ -58,52 +59,36 @@ async def contact_requests_main(
     )
 
 
-# @router.get(
-#     '/add',
-#     response_class=HTMLResponse,
-#     summary='Страница добавления менеджера',
-# )
-# async def managers_add(
-#     request: Request,
-#     user: User = Depends(check_user_is_manager_or_superuser),
-#     session: AsyncSession = Depends(get_async_session),
-# ):
-#     context = {
-#         'request': request,
-#         'user': user,
-#         'update': False,
-#         'manager': None
-#     }
-
-#     return templates.TemplateResponse(
-#         'managers/manager_create_update.html', context
-#     )
-
-
 @router.get(
-    '/{contact_request_id}',
+    '/{contact_request_id}/{contact_request_type}',
     response_class=HTMLResponse,
     summary='Страница информации о заявке',
 )
 async def contact_request_details(
     request: Request,
     contact_request_id: int,
+    contact_request_type: str,
     user: User = Depends(check_user_is_manager_or_superuser),
     session: AsyncSession = Depends(get_async_session),
 ):
-    # try:
-    #     manager = await check_user_exist(user_id=manager_id, session=session)
-    # except HTTPException:
-    #     ...
-    # context = {
-    #     'request': request,
-    #     'user': user,
-    #     'manager': manager,
-    #     'update': True,
-    # }
-
+    try:
+        contact_request = await check_contact_request_exist(
+            contact_request_id=contact_request_id, session=session
+        )
+    except HTTPException:
+        await redirect_by_httpexeption(
+            location=f'/?navbar_error={quote(
+                'Заявки на обратную связь не существует'
+            )}'
+        )
+    context = {
+        'request': request,
+        'user': user,
+        'contact_request': contact_request,
+        'contact_request_type': contact_request_type
+    }
     return templates.TemplateResponse(
-        'managers/manager_create_update.html', context
+        'contact_requests/contact_request_details.html', context
     )
 
 
@@ -159,21 +144,21 @@ async def contact_request_details(
 #     await redirect_by_httpexeption(f'{router.prefix}/{manager_id}/')
 
 
-# @router.delete(
-#     '/{manager_id}',
-#     response_class=HTMLResponse,
-#     summary='Удалить менеджера',
-#     dependencies=[Depends(check_user_is_manager_or_superuser)]
-# )
-# async def manager_delete(
-#     request: Request,
-#     manager_id: int,
-#     session: AsyncSession = Depends(get_async_session),
-# ):
-#     await delete_manager(
-#         user_id=manager_id,
-#         session=session
-#     )
-#     return JSONResponse(
-#         content={ 'url': str(request.url_for('managers_main')) }
-#     )
+@router.delete(
+    '/{contact_request_id}',
+    response_class=HTMLResponse,
+    summary='Удалить менеджера',
+    dependencies=[Depends(check_user_is_manager_or_superuser)]
+)
+async def contact_request_delete(
+    request: Request,
+    contact_request_id: int,
+    session: AsyncSession = Depends(get_async_session),
+):
+    # await delete_manager(
+    #     user_id=manager_id,
+    #     session=session
+    # )
+    return JSONResponse(
+        content={ 'url': str(request.url_for('managers_main')) }
+    )
