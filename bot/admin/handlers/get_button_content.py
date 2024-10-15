@@ -1,17 +1,18 @@
-from aiogram import Router, F, types
+from aiogram import F, Router, types
 from aiogram.enums import ParseMode
-from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import Message
 from crud import get_button_content
-from .base import cancel_and_return_to_admin_panel, base_reply_markup
 
+from .base import base_reply_markup, cancel_and_return_to_admin_panel
 
 router = Router()
 
 
 class GetButtonContent(StatesGroup):
     typing_button_id = State()
+
 
 @router.callback_query(F.data == "get_button_content")
 async def handle_get_button(callback: types.CallbackQuery, state: FSMContext):
@@ -27,10 +28,8 @@ async def name_typed(message: Message, state: FSMContext):
     if message.text == "Отмена":
         await cancel_and_return_to_admin_panel(message, state)
         return
-    # await state.update_data(typed_id=message.text)
     response = await get_button_content(message.text)
     button = response.json()
-    # print(button)
     if response.status_code == 200:
         await message.answer(
             text=(
@@ -43,7 +42,13 @@ async def name_typed(message: Message, state: FSMContext):
             ),
             parse_mode=ParseMode.HTML,
         )
+        if button["content_image"] is not None:
+            await message.answer_photo(
+                photo=URLInputFile(f"{API_URL}{button['content_image']}"),
+                caption=text,
+                parse_mode=ParseMode.HTML,
+            )
     else:
         await message.answer(text=(button["detail"]))
-    
+
     await cancel_and_return_to_admin_panel(message, state)

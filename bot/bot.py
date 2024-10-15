@@ -1,14 +1,14 @@
-import os
 import asyncio
 import logging
+import os
+
 from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
-
 from handlers import main_button
 
 load_dotenv()
 
-TOKEN = os.getenv('TOKEN')
+TOKEN = os.getenv("TOKEN")
 
 
 async def main():
@@ -24,16 +24,16 @@ async def main():
 
     # Andrey
     # Создаем бота
-    #bot = Bot(
+    # bot = Bot(
     #    token=TOKEN,
     #    session=AiohttpSession(),
     #    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
-    #)
+    # )
 
-    dp.include_router(main_button.router) # здесь подключаем хендлеры
+    dp.include_router(main_button.router)  # здесь подключаем хендлеры
 
     await dp.start_polling(bot)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main())

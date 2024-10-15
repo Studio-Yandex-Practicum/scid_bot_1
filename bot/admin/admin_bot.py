@@ -1,19 +1,13 @@
 import asyncio
 import logging
+import os
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-from handlers import (base,
-                      create_button,
-                      get_button_content,
-                      get_child_buttons,
-                      del_button_with_children,
-                      putch_button_parent,
-                      putch_button_content
-                      )
-import os
 from dotenv import load_dotenv
-
+from handlers import (base, create_button, del_button_with_children,
+                      get_button_content, get_child_buttons,
+                      putch_button_content, putch_button_parent)
 
 load_dotenv()
 
@@ -42,12 +36,8 @@ async def main():
         get_child_buttons.router,
         del_button_with_children.router,
         putch_button_parent.router,
-        putch_button_content.router
-        )
-
-    # Альтернативный вариант регистрации роутеров по одному на строку
-    # dp.include_router(questions.router)
-    # dp.include_router(different_types.router)
+        putch_button_content.router,
+    )
 
     # Запускаем бота и пропускаем все накопленные входящие
     # Да, этот метод можно вызвать даже если у вас поллинг

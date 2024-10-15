@@ -1,46 +1,23 @@
-from aiogram import Router, F, types
+import os
+import os.path
+from aiogram import F, Router, types
 from aiogram.enums import ParseMode
-from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.utils.markdown import hbold, hitalic, hlink
-from aiogram.types import FSInputFile, URLInputFile, BufferedInputFile
-from aiogram.types import InputFile
+from aiogram.types import (KeyboardButton, Message,
+                           ReplyKeyboardMarkup)
+from crud import get_button_content, putch_button_parent
 
-# import requests
-from io import BytesIO
-import io
+from .base import (base_reply_markup, cancel_and_return_to_admin_panel)
 
-# from PIL import Image
-# from bot import bot
-import requests
-
-from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
-                           KeyboardButton, Message, ReplyKeyboardMarkup)
-from .base import cancel_and_return_to_admin_panel, base_reply_markup, not_required_reply_markup
-from crud import putch_button_parent, get_button_content
-import os
-import httpx
-
-
-import os.path
-
-API_URL = os.getenv('API_URL')
+API_URL = os.getenv("API_URL")
 router = Router()
 
 
-# FSM создать кнопку
 class PutchButtonParent(StatesGroup):
     typing_button_id = State()
     typed_new_parent_id = State()
     submiting_update_parent = State()
-
-
-# not_required_reply_markup = ReplyKeyboardMarkup(
-#     keyboard=[[KeyboardButton(text="Пропустить")]]
-#     + base_reply_markup.keyboard,
-#     resize_keyboard=True,
-# )
 
 
 @router.callback_query(F.data == "putch_button_parent")
@@ -83,7 +60,8 @@ async def parent_id_typed(message: Message, state: FSMContext):
         text=(
             f"Обновляю?\n"
             f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
-            f"Айди новой кнопки-родителя: <b>{user_data['typed_new_parent_id']}</b>\n"
+            f"Айди новой кнопки-родителя:"
+            f"<b>{user_data['typed_new_parent_id']}</b>\n"
         ),
         reply_markup=new_reply_markup,
         parse_mode=ParseMode.HTML,
@@ -115,18 +93,5 @@ async def button_submited(message: Message, state: FSMContext):
         ),
         parse_mode=ParseMode.HTML,
     )
-    # text = (
-    #     f"Успешно обновил родителя кнопки:\n"
-    #     f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
-    #     f"Айди кнопки: <b>{button['id']}</b>\n"
-    #     f"Текст на кнопке: <b>{button['label']}</b>\n"
-    #     f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
-    #     f"Линк кнопки: <b>{button['content_link']}</b>\n"
-    # )
-    # await message.answer_photo(
-    #     photo=URLInputFile(f"{API_URL}{button['content_image']}"),
-    #     caption=text,
-    #     parse_mode=ParseMode.HTML
-    # )
 
     await cancel_and_return_to_admin_panel(message, state)

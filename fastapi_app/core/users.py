@@ -52,7 +52,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         new_password = secrets.token_urlsafe(PASSWORD_LENGTH)
         await self.reset_password(token, new_password, request)
         await send_change_password_email(
-            user.email, new_password, 'mail_forgot_password.html'
+            user.email, new_password, "mail_forgot_password.html"
         )
 
 

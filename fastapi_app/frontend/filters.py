@@ -1,7 +1,6 @@
-from fastapi import Depends, Request
-
 from core.frontend import templates
 from core.users import current_user
+from fastapi import Depends, Request
 from models.user import User
 
 # def role_is_manager_or_superuser(

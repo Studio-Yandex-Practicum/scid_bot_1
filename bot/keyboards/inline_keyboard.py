@@ -23,20 +23,24 @@ async def inline_menu(button: dict, start_id: int) -> InlineKeyboardMarkup:
 
     keyboard = InlineKeyboardBuilder()
 
-    keyboard.add(InlineKeyboardButton(text=button["label"],
-                                      callback_data=(
-                                          f"{button['id']},"
-                                          f"{button['parent_id']}")))
-   # Service keyboard ("Back" and "to start").
+    keyboard.add(
+        InlineKeyboardButton(
+            text=button["label"],
+            callback_data=(f"{button['id']}," f"{button['parent_id']}"),
+        )
+    )
+    # Service keyboard ("Back" and "to start").
     # One Button at row
 
     service_keyboard = InlineKeyboardBuilder()
-    service_keyboard.add(InlineKeyboardButton(text="Назад",
-                                              callback_data=(
-                                                  f"{button['parent_id']}")))
-    service_keyboard.add(InlineKeyboardButton(text="В начало",
-                                              callback_data=(
-                                                  f"{start_id}")))
+    service_keyboard.add(
+        InlineKeyboardButton(
+            text="Назад", callback_data=(f"{button['parent_id']}")
+        )
+    )
+    service_keyboard.add(
+        InlineKeyboardButton(text="В начало", callback_data=(f"{start_id}"))
+    )
     service_keyboard.adjust(1)
 
     keyboard.attach(service_keyboard)

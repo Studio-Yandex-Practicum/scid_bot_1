@@ -1,33 +1,34 @@
-from aiogram import Router, F, types
+import io
+import os
+import os.path
+# import requests
+from io import BytesIO
+
+import httpx
+import requests
+from aiogram import Bot, F, Router, types
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import (BufferedInputFile, FSInputFile,
+                           InlineKeyboardButton, InlineKeyboardMarkup,
+                           InputFile, KeyboardButton, Message,
+                           ReplyKeyboardMarkup, URLInputFile)
 from aiogram.utils.markdown import hbold, hitalic, hlink
-from aiogram.types import FSInputFile, URLInputFile, BufferedInputFile
-from aiogram.types import InputFile
-from aiogram import Bot
+from crud import get_button_content, putch_button_content
 
-# import requests
-from io import BytesIO
-import io
+from .base import (base_reply_markup, cancel_and_return_to_admin_panel,
+                   not_required_reply_markup)
 
 # from PIL import Image
 # from admin_bot import bot
 
-import requests
-
-from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
-                           KeyboardButton, Message, ReplyKeyboardMarkup)
-from .base import cancel_and_return_to_admin_panel, base_reply_markup, not_required_reply_markup
-from crud import putch_button_content, get_button_content
-import os
-import httpx
 
 
-import os.path
 
-API_URL = os.getenv('API_URL')
+
+API_URL = os.getenv("API_URL")
 API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
 
 bot = Bot(token=API_TOKEN)
@@ -69,7 +70,8 @@ async def save_button_id(message: Message, state: FSMContext):
         return
     await state.update_data(typed_button_id=message.text)
     await message.answer(
-        text="Введите название кнопки (можно пропустить)", reply_markup=not_required_reply_markup
+        text="Введите название кнопки (можно пропустить)",
+        reply_markup=not_required_reply_markup,
     )
     await state.set_state(PutchButtonContent.typing_button_name)
 
@@ -128,7 +130,7 @@ async def save_button_image(message: Message, state: FSMContext):
         await cancel_and_return_to_admin_panel(message, state)
         return
     if message.text != "Убрать изображение":
-        await state.update_data(remove_content_image='true')
+        await state.update_data(remove_content_image="true")
     if message.text != "Пропустить":
         photo_id = message.photo[-1].file_id
         photo_path_ = await bot.get_file(photo_id)
@@ -178,7 +180,7 @@ async def button_submited(message: Message, state: FSMContext):
         "label": user_data.get("typed_name", ""),
         "content_text": user_data.get("typed_content_text", ""),
         "content_link": user_data.get("typed_content_link", ""),
-        'remove_content_image': user_data.get("remove_content_image", "")
+        "remove_content_image": user_data.get("remove_content_image", ""),
     }
     files = {}
     content_image = user_data.get("sent_content_image", None)
@@ -195,17 +197,14 @@ async def button_submited(message: Message, state: FSMContext):
         f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
         f"Линк кнопки: <b>{button['content_link']}</b>\n"
     )
-    await message.answer(
-        text=text,
-        parse_mode=ParseMode.HTML
-        )
+    await message.answer(text=text, parse_mode=ParseMode.HTML)
 
     # сломается, если нет изображения
-    if button['content_image'] is not None:
+    if button["content_image"] is not None:
         await message.answer_photo(
             photo=URLInputFile(f"{API_URL}{button['content_image']}"),
             caption=text,
-            parse_mode=ParseMode.HTML
+            parse_mode=ParseMode.HTML,
         )
 
     await cancel_and_return_to_admin_panel(message, state)

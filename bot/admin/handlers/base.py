@@ -1,5 +1,4 @@
-from aiogram import Router, F, types
-from aiogram.types import Message
+from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
@@ -29,24 +28,25 @@ admin_start_keyboard_structure = {
                 "text": "Изменить родителя кнопки",
                 "callback_data": "putch_button_parent",
             },
-            {"text": "Удалить кнопку", "callback_data": "del_button_with_children"},
+            {
+                "text": "Удалить кнопку",
+                "callback_data": "del_button_with_children",
+            },
         ]
     },
 }
 
 
-# обыная кнопка Отмена
+# нижняя кнопка Отмена
 base_reply_markup = ReplyKeyboardMarkup(
     keyboard=[
-        # [KeyboardButton(text="Назад")],
         [KeyboardButton(text="Отмена")],
     ],
-    resize_keyboard=True,  # Опционально: делает клавиатуру компактной
-    # one_time_keyboard=True  # Опционально: убирает клавиатуру после нажатия
+    resize_keyboard=True,
 )
 
 
-# обыная кнопка Отмена + Пропустить
+# нижние кнопки Отмена + Пропустить
 not_required_reply_markup = ReplyKeyboardMarkup(
     keyboard=[[KeyboardButton(text="Пропустить")]]
     + base_reply_markup.keyboard,

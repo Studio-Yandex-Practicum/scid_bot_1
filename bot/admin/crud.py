@@ -1,14 +1,12 @@
 import os
 
-import requests
-from dotenv import load_dotenv
 import httpx
-
+from dotenv import load_dotenv
 
 load_dotenv()
 
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
-API_BOT_MENU_URL = os.getenv('API_BOT_MENU_URL')  # проставить
+API_BOT_MENU_URL = os.getenv("API_BOT_MENU_URL")
 
 
 async def add_child_button(
@@ -30,43 +28,36 @@ async def add_child_button(
     else:
         files = {}
     async with httpx.AsyncClient() as client:
-        response = await client.post(url,
-                                     headers=headers,
-                                     data=data,
-                                     files=files)
-    # print(response.json())
+        response = await client.post(
+            url, headers=headers, data=data, files=files
+        )
     return response.json()
 
 
 async def get_button_content(button_id):
-    url = f'{API_BOT_MENU_URL}{button_id}/get-content'
+    url = f"{API_BOT_MENU_URL}{button_id}/get-content"
     headers = {
-        'accept': 'application/json',
+        "accept": "application/json",
     }
-    # response = requests.get(url, headers=headers)
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers)
-    # return response.json()
     return response
 
 
 async def get_button_image(button_id):
-    url = f'{API_BOT_MENU_URL}{button_id}/get-image-file'
+    url = f"{API_BOT_MENU_URL}{button_id}/get-image-file"
     headers = {
-        'accept': 'application/json',
+        "accept": "application/json",
     }
-    # response = requests.get(url, headers=headers)
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers)
-    # return response.json()
-    # print(response)
     return response
 
 
 async def get_child_buttons(button_id):
-    url = f'{API_BOT_MENU_URL}{button_id}/get-child-buttons'
+    url = f"{API_BOT_MENU_URL}{button_id}/get-child-buttons"
     headers = {
-        'accept': 'application/json',
+        "accept": "application/json",
     }
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers)
@@ -74,9 +65,9 @@ async def get_child_buttons(button_id):
 
 
 async def del_button_with_children(button_id):
-    url = f'{API_BOT_MENU_URL}{button_id}'
+    url = f"{API_BOT_MENU_URL}{button_id}"
     headers = {
-        'accept': 'application/json',
+        "accept": "application/json",
         "Authorization": AUTH_TOKEN,
     }
     async with httpx.AsyncClient() as client:
@@ -85,18 +76,16 @@ async def del_button_with_children(button_id):
 
 
 async def putch_button_parent(button_id, new_parent_id):
-    url = f'{API_BOT_MENU_URL}{button_id}/change_parent'
+    url = f"{API_BOT_MENU_URL}{button_id}/change_parent"
     params = {
         "new_parent_id": new_parent_id,
     }
     headers = {
-        'accept': 'application/json',
+        "accept": "application/json",
         "Authorization": AUTH_TOKEN,
     }
     async with httpx.AsyncClient() as client:
-        response = await client.patch(url,
-                                      headers=headers,
-                                      params=params)
+        response = await client.patch(url, headers=headers, params=params)
     return response
 
 
@@ -104,12 +93,10 @@ async def putch_button_content(button_id, data, files):
     url = f"{API_BOT_MENU_URL}{int(button_id)}"
     headers = {
         "accept": "application/json",
-        "Authorization": AUTH_TOKEN
-        # 'Content-Type': 'multipart/form-data'
+        "Authorization": AUTH_TOKEN,
     }
     async with httpx.AsyncClient() as client:
-        response = await client.patch(url,
-                                      headers=headers,
-                                      data=data,
-                                      files=files)
+        response = await client.patch(
+            url, headers=headers, data=data, files=files
+        )
     return response.json()

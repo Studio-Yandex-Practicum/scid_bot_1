@@ -1,26 +1,22 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from api.users_validators import (
-    check_email_not_use,
-    check_user_is_manager,
-    check_user_is_not_superuser,
-)
+from api.users_validators import (check_email_not_use, check_user_is_manager,
+                                  check_user_is_not_superuser)
 from core.db import get_async_session
 from core.users import current_superuser
 from crud.user import user_crud
+from fastapi import APIRouter, Depends
 from models.user import User
 from schemas.users import ManagerCreate, UserContactRequestResponse
 from services.users import create_user
+from sqlalchemy.ext.asyncio import AsyncSession
 
-router = APIRouter(prefix='/managers', tags=['managers'])
+router = APIRouter(prefix="/managers", tags=["managers"])
 
 
 @router.post(
-    '/',
+    "/",
     response_model=UserContactRequestResponse,
     dependencies=[Depends(current_superuser)],
-    summary='Добавляет Менеджера',
+    summary="Добавляет Менеджера",
 )
 async def create_review(
     new_user: ManagerCreate, session: AsyncSession = Depends(get_async_session)
@@ -37,10 +33,10 @@ async def create_review(
 
 
 @router.get(
-    '/all',
+    "/all",
     response_model=list[UserContactRequestResponse],
     dependencies=[Depends(current_superuser)],
-    summary='Получает всех менеджеров',
+    summary="Получает всех менеджеров",
 )
 async def get_contact_request(
     session: AsyncSession = Depends(get_async_session),
@@ -49,10 +45,10 @@ async def get_contact_request(
 
 
 @router.delete(
-    '/{user_id}',
+    "/{user_id}",
     response_model=UserContactRequestResponse,
     dependencies=[Depends(current_superuser)],
-    summary='Удаляет менеджера',
+    summary="Удаляет менеджера",
 )
 async def delete_contact_request(
     user_id: int,

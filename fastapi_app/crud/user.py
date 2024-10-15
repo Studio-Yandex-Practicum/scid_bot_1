@@ -1,10 +1,8 @@
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from crud.base import CRUDBase
 from models.contact_requests import ContactRequest
 from models.user import User
 from schemas.users import UserCreate, UserUpdate
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 

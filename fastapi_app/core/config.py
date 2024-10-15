@@ -28,7 +28,7 @@ class DBConfig(BaseModel):
 
 
 class SecurityConfig(BaseModel):
-    secret: str = 'YOUR_SECRET_KEY'
+    secret: str = "YOUR_SECRET_KEY"
     jwt_lifetime: int = 86400
 
 

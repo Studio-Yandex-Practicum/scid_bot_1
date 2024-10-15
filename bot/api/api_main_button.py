@@ -1,6 +1,6 @@
 import aiohttp
 
-API_URL = 'http://127.0.0.1/bot_menu/get-main-menu-button'
+API_URL = "http://127.0.0.1/bot_menu/get-main-menu-button"
 
 
 # Асинхронная функция для получения данных с API

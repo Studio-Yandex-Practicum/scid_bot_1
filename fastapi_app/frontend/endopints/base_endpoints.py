@@ -2,19 +2,18 @@ from typing import Optional
 from urllib.parse import quote
 
 import httpx
-from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.security import OAuth2PasswordRequestForm
-from fastapi_users.password import PasswordHelper
-
 from api.dependencies.auth import (check_user_is_manager_or_superuser,
                                    get_user_token)
 from core.config import settings
 from core.frontend import templates
 from core.users import get_jwt_strategy, get_user_manager
+from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi_users.password import PasswordHelper
 from models.user import User
-from services.frontend import redirect_by_httpexeption
 from services.email import send_change_password_email
+from services.frontend import redirect_by_httpexeption
 
 router = APIRouter(tags=['frontend_base'])
 
