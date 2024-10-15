@@ -1,6 +1,6 @@
 from urllib.parse import quote
 
-from fastapi import APIRouter, Depends, Form, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -18,7 +18,6 @@ from core.db import get_async_session
 from core.frontend import templates
 from crud.contact_requests import contact_requests_crud
 
-from models.contact_requests import ContactRequest
 from models.user import User
 from services.frontend import redirect_by_httpexeption
 
@@ -89,7 +88,6 @@ async def contact_request_details(
                 'Заявки на обратную связь не существует'
             )}'
         )
-    print(contact_request.id)
     context = {
         'request': request,
         'user': user,
@@ -112,7 +110,6 @@ async def contact_request_close(
     contact_request_id: int,
     session: AsyncSession = Depends(get_async_session),
 ):
-    print(contact_request_id)
     await close_contact_request(
         contact_request_id=contact_request_id,
         session=session
@@ -140,7 +137,6 @@ async def contact_request_to_work(
     user: User = Depends(check_user_is_manager_or_superuser),
     session: AsyncSession = Depends(get_async_session),
 ):
-    print(contact_request_id)
     await take_contact_request_to_work(
         contact_request_id=contact_request_id,
         managet_telegram_id=user.telegram_user_id,

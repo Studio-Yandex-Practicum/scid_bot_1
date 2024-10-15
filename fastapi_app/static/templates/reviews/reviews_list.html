@@ -1,0 +1,41 @@
+{% extends 'base_pages/main_page.html' %} {% block main_content %}
+
+<div class="p-5">
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table
+      class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+    >
+      <caption
+        class="p-5 text-lg font-semibold text-left rtl:text-right text-text-light-secondary dark:text-text-dark bg-background-light dark:bg-background-dark"
+      >
+        <div class="grid grid-cols-2 content-start">
+          <code class="me-5">Средний рейтинг: {{ avg_rating }}; Всего отзывов: {{ reviews|length }}</code>
+        </div>
+      </caption>
+      <thead
+        class="text-xs text-text-light uppercase bg-background-light-secondary dark:bg-background-dark-secondary dark:text-text-dark"
+      >
+        <tr>
+          <th scope="col" class="px-6 py-3">Текст</th>
+          <th scope="col" class="px-6 py-3">Рейтинг</th>
+          <th scope="col" class="px-6 py-3">Дата создания</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for review in reviews %}
+        <tr
+          class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary cursor-pointer"
+          onClick=window.location.replace("{{ url_for('review_details', review_id=review.id) }}")
+        >
+          <th scope="row" class="px-6 py-4 font-bold text-text-light-secondary dark:text-text-dark-secondary whitespace-nowrap">
+            {{ review.text|truncate(60) }}
+          </th>
+          <td class="px-6 py-4 text-text-light-secondary whitespace-nowrap dark:text-text-dark">{{ review.rating }} / 5</td>
+          <td class="px-6 py-4">{{ review.created_at.strftime('%d.%m.%Y %H:%M:%S') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock main_content %}
