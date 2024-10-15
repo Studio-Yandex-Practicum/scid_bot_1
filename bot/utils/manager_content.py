@@ -7,6 +7,7 @@ from aiogram.types import InlineKeyboardMarkup, Message
 from aiogram.fsm.context import FSMContext
 
 from api.api_managers import get_all_orders_for_manager
+from keyboards.manager import MANAGER_MAIN_MENU
 from utils.manager_state import ManagerState
 
 
@@ -18,6 +19,18 @@ async def remove_previous_message(
     await bot.delete_message(
         message_id=data['prev_message_id'],
         chat_id=chat_id
+    )
+
+
+async def show_error(
+    state: FSMContext,
+    message: Message,
+    detail: str,
+):
+    await state.set_state(ManagerState.authorized)
+    await message.answer(
+        text=detail,
+        reply_markup=MANAGER_MAIN_MENU
     )
 
 
@@ -65,7 +78,35 @@ async def generate_order_text(
     if not preview:
         text += "\n\n"
         text += (
-            f"Телефон: {order['phone']}\n"
-            f"email: {order['email']}\n"
+            f"Телеграм: @{order['name']}\n"
+            f"Телефон: <a href='tel:{order['phone']}'>{order['phone']}</a>\n"
+            f"email: <a href='mailto:{order['email']}'>{order['email']}</a>\n"
         )
     return text
+
+
+async def get_orders(
+    jwt: str,
+    message: Message,
+    state: FSMContext,
+    in_progress: bool
+) -> tuple[int, str, list[dict[str, Any]]]:
+    orders = await get_all_orders_for_manager(
+        jwt=jwt,
+        in_progress=in_progress,
+        for_user=in_progress
+    )
+    if 'detail' in orders:
+        await show_error(
+            detail=orders['detail'],
+            message=message,
+            state=state
+        )
+        return None, None, None
+    await state.update_data({ 'orders': orders })
+    orders_len = len(orders)
+    if orders_len == 0:
+        text = "Новых заявок нет" if in_progress else "Заявок в работе нет"
+    else:
+        text = await generate_order_text(orders[0])
+    return orders_len, text, orders

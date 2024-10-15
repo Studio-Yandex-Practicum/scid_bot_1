@@ -10,7 +10,7 @@ from api.users_validators import check_user_exist_by_tg_id
 from core.db import get_async_session
 from core.users import current_superuser, current_user
 from crud.contact_requests import contact_requests_crud
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Form, Query
 from models.contact_requests import ContactRequest
 from models.user import User
 from schemas.contact_requests import (ContactRequestCreate,
@@ -22,14 +22,14 @@ router = APIRouter(prefix="/contact_requests", tags=["contact_requests"])
 
 
 @router.post(
-    "{contact_request_id}/take-to-work",
+    "/{contact_request_id}/take-to-work",
     response_model=ContactRequestResponse,
     dependencies=[Depends(get_manager_or_superuser)],
     summary='Устанавливает статус заявки на "В работе", и указывает менеджера',
 )
 async def take_contact_request_to_work(
     contact_request_id: int,
-    managet_telegram_id: str,
+    managet_telegram_id: str = Form(...),
     session: AsyncSession = Depends(get_async_session),
 ) -> ContactRequest:
     user = await check_user_exist_by_tg_id(
@@ -45,7 +45,7 @@ async def take_contact_request_to_work(
 
 
 @router.post(
-    '/close_request',
+    '/{contact_request_id}/close-request',
     response_model=ContactRequestResponse,
     summary='"Закрывает" заявку. Устанавливает статус выполнена.',
 )

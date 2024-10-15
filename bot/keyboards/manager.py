@@ -5,7 +5,31 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 class OrderCallback(CallbackData, prefix="order"):
     to_work: bool
+    done: bool
     current_order: int
+    order_id: int
+    in_progress: bool
+
+
+def generate_keyboard_from_structure(
+    structure: list[dict]
+) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=button["text"], callback_data=button["callback_data"]
+                )
+            ]
+            for button in structure
+        ]
+    )
+
+
+MAIN_MENU_BUTTON = InlineKeyboardButton(
+    text="⬆️ В главное меню",
+    callback_data="go_to_start"
+)
 
 
 MANAGER_MAIN_MENU_STRUCTURE = [
@@ -15,7 +39,7 @@ MANAGER_MAIN_MENU_STRUCTURE = [
     },
     {
         "text": "📓 Заявки в работе",
-        "callback_data": "managers_order",
+        "callback_data": "in_process_orders",
     },
         {
         "text": "🔻 ЗАВЕРШИТЬ РАБОТУ",
@@ -24,33 +48,47 @@ MANAGER_MAIN_MENU_STRUCTURE = [
 ]
 
 
-START_MANAGER_WORK = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text="🔹 Начать работу 🔹",
-                callback_data="manager_start_work"
-            )
-        ]
-    ]
+START_MANAGER_WORK_STRUCTURE = [
+    {
+        "text": "🔹 Начать работу 🔹",
+        "callback_data": "manager_start_work"
+    },
+]
+
+
+START_MANAGER_WORK = generate_keyboard_from_structure(
+    START_MANAGER_WORK_STRUCTURE
+)
+MANAGER_MAIN_MENU = generate_keyboard_from_structure(
+    MANAGER_MAIN_MENU_STRUCTURE
 )
 
 
-MANAGER_MAIN_MENU = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text=button["text"], callback_data=button["callback_data"]
-            )
-        ]
-        for button in MANAGER_MAIN_MENU_STRUCTURE
-    ]
-)
+async def generate_order_work_keyboard(
+    order_id: int
+) -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+    keyboard.row(
+        InlineKeyboardButton(
+            text="✅ Заявка выполнена",
+            callback_data=OrderCallback(
+                to_work=False,
+                done=True,
+                current_order=-999,
+                order_id=order_id,
+                in_progress=False
+            ).pack()
+        )
+    )
+    keyboard.row(MAIN_MENU_BUTTON)
+
+    return keyboard.as_markup()
 
 
 async def generate_order_keyboard(
     page: int = 0,
-    orders_len: int = 0
+    orders_len: int = 0,
+    in_progress: bool = False
 ) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     has_next_page = orders_len >= page + 1
@@ -59,40 +97,49 @@ async def generate_order_keyboard(
             text="⬅️ Предыдущая",
             callback_data=OrderCallback(
                 to_work=False,
-                current_order=(page - 1) if page >= 1 else page
+                done=False,
+                current_order=(page - 1) if page >= 1 else page,
+                order_id=-1,
+                in_progress=in_progress
             ).pack()
         ),
         InlineKeyboardButton(
             text=f"• {page + 1}/{orders_len} •",
             callback_data=OrderCallback(
                 to_work=False,
-                current_order = page
+                done=False,
+                current_order = page,
+                order_id=-1,
+                in_progress=in_progress
             ).pack()
         ),
         InlineKeyboardButton(
             text="Следующая ➡️",
             callback_data=OrderCallback(
                 to_work=False,
-                current_order=(page + 1) if has_next_page else page
+                done=False,
+                current_order=(page + 1) if has_next_page else page,
+                order_id=-1,
+                in_progress=in_progress
             ).pack()
         )
     ]
     keyboard.row(*navigate_buttons, width=3)
     keyboard.row(
         InlineKeyboardButton(
-            text="📑 Взять в работу",
+            text="📑 Подробнее" if in_progress else "📑 Взять в работу",
             callback_data=OrderCallback(
                 to_work=True,
-                current_order=page
+                current_order=page,
+                done=False,
+                order_id=-1,
+                in_progress=in_progress
             ).pack()
         ),
         width=1
     )
     keyboard.row(
-        InlineKeyboardButton(
-            text="⬆️ В главное меню",
-            callback_data="go_to_start"
-        ),
+        MAIN_MENU_BUTTON,
         width=1
     )
     return keyboard.as_markup()
