@@ -34,7 +34,10 @@ async def contact_requests_main(
     managers = await contact_requests_crud.get_all(
         user=user,
         session=session,
-        for_current_user=not user.is_superuser,
+        for_current_user=(
+            not user.is_superuser and
+            not contact_request_type == 'new'
+        ),
         in_progress=contact_request_type == 'work',
         is_processed=(
             contact_request_type == 'processed' and
