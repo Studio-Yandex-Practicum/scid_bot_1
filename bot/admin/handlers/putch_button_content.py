@@ -12,7 +12,8 @@ from crud import putch_button_content
 
 from .base import (cancel_and_return_to_admin_panel,
                    base_reply_markup,
-                   not_required_reply_markup)
+                   not_required_reply_markup,
+                   handle_photo_upload)
 
 
 API_URL = os.getenv("API_URL")
@@ -111,15 +112,7 @@ async def save_button_image(message: Message, state: FSMContext):
     if message.text != "Убрать изображение":
         await state.update_data(remove_content_image="true")
     if message.text != "Пропустить":
-        photo_id = message.photo[-1].file_id
-        photo_path_ = await bot.get_file(photo_id)
-        photo_path = photo_path_.file_path
-
-        photo_bytes = BytesIO()
-        await bot.download_file(photo_path, photo_bytes)
-        photo_bytes.seek(0)
-
-        await state.update_data(sent_content_image=photo_bytes)
+        photo_id = await handle_photo_upload(message, state)
 
     user_data = await state.get_data()
     new_reply_markup = ReplyKeyboardMarkup(

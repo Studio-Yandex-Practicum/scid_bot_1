@@ -1,5 +1,6 @@
 import os
 import os.path
+from io import BytesIO
 from aiogram import Router, types
 from aiogram.filters import Command
 from aiogram.enums import ParseMode
@@ -7,6 +8,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, Message, ReplyKeyboardMarkup,
                            URLInputFile)
+from admin_bot import bot
 
 API_URL = os.getenv("API_URL")
 router = Router()
@@ -107,3 +109,27 @@ async def show_button(button, message):
             caption=text,
             parse_mode=ParseMode.HTML,
         )
+
+
+async def handle_photo_upload(message: Message, state: FSMContext):
+    photo_id = message.photo[-1].file_id
+    photo_path_ = await bot.get_file(photo_id)
+    photo_path = photo_path_.file_path
+
+    photo_bytes = BytesIO()
+    await bot.download_file(photo_path, photo_bytes)
+    photo_bytes.seek(0)
+
+    await state.update_data(sent_content_image=photo_bytes)
+    return photo_id
+
+
+# async def photo_from_message_to_obj(message: Message):
+#     photo_id = message.photo[-1].file_id
+#     photo_path_ = await bot.get_file(photo_id)
+#     photo_path = photo_path_.file_path
+
+#     photo_bytes = BytesIO()
+#     await bot.download_file(photo_path, photo_bytes)
+#     photo_bytes.seek(0)
+#     return photo_bytes

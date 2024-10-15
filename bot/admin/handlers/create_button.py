@@ -1,7 +1,5 @@
 import os
 import os.path
-from io import BytesIO
-from admin_bot import bot
 from aiogram import F, Router, types
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
@@ -13,7 +11,8 @@ from crud import add_child_button
 from .base import (cancel_and_return_to_admin_panel,
                    base_reply_markup,
                    not_required_reply_markup,
-                   show_button
+                   show_button,
+                   handle_photo_upload
                    )
 
 API_URL = os.getenv("API_URL")
@@ -99,16 +98,7 @@ async def content_image_sent(message: Message, state: FSMContext):
         await cancel_and_return_to_admin_panel(message, state)
         return
     if message.text != "Пропустить":
-        photo_id = message.photo[-1].file_id
-        photo_path_ = await bot.get_file(photo_id)
-        photo_path = photo_path_.file_path
-
-        photo_bytes = BytesIO()
-        await bot.download_file(photo_path, photo_bytes)
-        photo_bytes.seek(0)
-
-        await state.update_data(sent_content_image=photo_bytes)
-
+        photo_id = await handle_photo_upload(message, state)
     user_data = await state.get_data()
     new_reply_markup = ReplyKeyboardMarkup(
         keyboard=[[KeyboardButton(text="✅ Создать кнопку")]]
