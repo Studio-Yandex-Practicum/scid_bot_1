@@ -120,8 +120,12 @@ async def handle_contact_requests_delete(request_id):
 
 
 # reviews
-async def handle_reviews_create():
-    return await post_api_data(f'{REVIEWS_COMMON_URL}/', {})
+async def handle_reviews_create(user_id: int, review_text: str):
+    data = {
+        "user_id": user_id,
+        "review_text": review_text
+    }
+    return await post_api_data(f'{REVIEWS_COMMON_URL}/', data)
 
 
 async def handle_reviews_get_all():
