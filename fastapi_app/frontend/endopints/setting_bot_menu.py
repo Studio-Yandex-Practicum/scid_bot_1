@@ -1,14 +1,11 @@
 from typing import Optional
 from urllib.parse import quote
 
-<<<<<<< HEAD
-=======
 from fastapi import (APIRouter, Depends, File, Form, HTTPException, Query,
                      Request, UploadFile)
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
->>>>>>> dev
 from api.bot_menu_validators import check_button_exist
 from api.dependencies.auth import check_user_is_superuser
 from api.endpoints.bot_menu import (add_files_to_button,

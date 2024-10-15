@@ -9,11 +9,16 @@ from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, Message, ReplyKeyboardMarkup,
                            URLInputFile)
 # from admin_bot import bot
+from core.config import settings
 
-API_URL = os.getenv("API_URL")
-API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
+# API_URL = os.getenv("API_URL")
+# API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
+
+API_URL = settings.api.base_url
+API_TOKEN = settings.app.token
 
 bot = Bot(token=API_TOKEN)  # почему-то не подтягивается из основного файла, поправить
+
 
 router = Router()
 

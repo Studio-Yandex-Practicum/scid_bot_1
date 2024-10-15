@@ -13,17 +13,10 @@ class MenuButton(Base):
     parent_id: Mapped[int] = mapped_column(
         ForeignKey("menubutton.id"), nullable=True
     )
-<<<<<<< HEAD
     parent: Mapped["MenuButton"] = relationship(
         "MenuButton",
         backref="button_parent",
         remote_side="MenuButton.id",
-=======
-    parent: Mapped['MenuButton'] = relationship(
-        'MenuButton',
-        backref='button_parent',
-        remote_side='MenuButton.id',
->>>>>>> dev
         viewonly=True,
     )
     is_main_menu_button: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -52,9 +45,5 @@ class MenuButtonFile(Base):
 
     def __repr__(self):
         return (
-<<<<<<< HEAD
             f"<MenuButtonFile(button={self.button_id}, " f"{self.file_path})>"
-=======
-            f'<MenuButtonFile(button={self.button_id}, ' f'{self.file_path})>'
->>>>>>> dev
         )

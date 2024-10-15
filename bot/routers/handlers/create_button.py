@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import (KeyboardButton, Message,
                            ReplyKeyboardMarkup)
-from crud import add_child_button, get_button_content
+from routers.crud import add_child_button, get_button_content
 
 from .base import (cancel_and_return_to_admin_panel,
                    base_reply_markup,
@@ -15,8 +15,11 @@ from .base import (cancel_and_return_to_admin_panel,
                    handle_photo_upload,
                    validate_response
                    )
+from core.config import settings
 
-API_URL = os.getenv("API_URL")
+
+# API_URL = os.getenv("API_URL")
+API_URL = settings.api.base_url
 router = Router()
 
 
