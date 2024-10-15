@@ -1,5 +1,4 @@
 from aiogram import F, Router, types
-from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message
@@ -7,7 +6,7 @@ from crud import get_button_content
 
 from .base import (base_reply_markup,
                    cancel_and_return_to_admin_panel,
-                   show_button)
+                   message_button_response)
 
 router = Router()
 
@@ -31,11 +30,5 @@ async def name_typed(message: Message, state: FSMContext):
         await cancel_and_return_to_admin_panel(message, state)
         return
     response = await get_button_content(message.text)
-    button = response.json()
-    if response.status_code == 200:
-        button = response.json()
-        await show_button(button, message)
-    else:
-        await message.answer(text=(button["detail"]))
-
+    await message_button_response(response, message, state)
     await cancel_and_return_to_admin_panel(message, state)

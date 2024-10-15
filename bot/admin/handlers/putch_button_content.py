@@ -1,25 +1,22 @@
 import os
 import os.path  # убрать протестить
-from io import BytesIO
 
-from aiogram import Bot, F, Router, types
+from aiogram import F, Router, types
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import (KeyboardButton, Message,
-                           ReplyKeyboardMarkup, URLInputFile)
+                           ReplyKeyboardMarkup)
 from crud import putch_button_content
 
 from .base import (cancel_and_return_to_admin_panel,
                    base_reply_markup,
                    not_required_reply_markup,
-                   handle_photo_upload)
+                   handle_photo_upload,
+                   message_button_response)
 
 
 API_URL = os.getenv("API_URL")
-API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
-
-bot = Bot(token=API_TOKEN)  # почему-то не подтягивается из основного файла, поправить
 
 router = Router()
 
@@ -159,22 +156,6 @@ async def button_submited(message: Message, state: FSMContext):
     if content_image is not None:
         files = {"content_image": content_image}
 
-    button = await putch_button_content(button_id, data, files)
-    text = (
-        f"Успешно обновил кнопку:\n"
-        f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
-        f"Айди кнопки: <b>{button['id']}</b>\n"
-        f"Текст на кнопке: <b>{button['label']}</b>\n"
-        f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
-        f"Линк кнопки: <b>{button['content_link']}</b>\n"
-    )
-    await message.answer(text=text, parse_mode=ParseMode.HTML)
-
-    if button["content_image"] is not None:
-        await message.answer_photo(
-            photo=URLInputFile(f"{API_URL}{button['content_image']}"),
-            caption=text,
-            parse_mode=ParseMode.HTML,
-        )
-
+    response = await putch_button_content(button_id, data, files)
+    await message_button_response(response, message, state)
     await cancel_and_return_to_admin_panel(message, state)

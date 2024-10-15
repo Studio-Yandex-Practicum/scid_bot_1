@@ -1,16 +1,20 @@
 import os
 import os.path
 from io import BytesIO
-from aiogram import Router, types
+from aiogram import types, Bot, Router
 from aiogram.filters import Command
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, Message, ReplyKeyboardMarkup,
                            URLInputFile)
-from admin_bot import bot
+# from admin_bot import bot
 
 API_URL = os.getenv("API_URL")
+API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
+
+bot = Bot(token=API_TOKEN)  # почему-то не подтягивается из основного файла, поправить
+
 router = Router()
 
 # корневое инлайн меню админки
@@ -37,7 +41,7 @@ admin_start_keyboard_structure = {
             },
             {
                 "text": "Удалить кнопку",
-                "callback_data": "del_button_with_children",
+                "callback_data": "del_button_with_sub",
             },
         ]
     },
@@ -91,33 +95,31 @@ async def cancel_and_return_to_admin_panel(
         "Возвращаюсь в основное меню", reply_markup=types.ReplyKeyboardRemove()
     )
     await show_base_admin_panel(message)
+    return state
 
 
-# async def update_field_or_cancel_or_skip(message: Message, state: FSMContext, update_field: str = None):
-#     if message.text == "Отмена":
-#         await cancel_and_return_to_admin_panel(message, state)
-#         return True  # Возвращаем True, чтобы выйти из основной функции
-#     if message.text != "Пропустить" and update_field:
-#         await state.update_data({update_field: message.text})
-#     return False
-
-
-async def show_button(button, message):
-    text = (
-        f"Успешно создал кнопку:\n"
-        f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
-        f"Айди кнопки: <b>{button['id']}</b>\n"
-        f"Текст на кнопке: <b>{button['label']}</b>\n"
-        f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
-        f"Линк кнопки: <b>{button['content_link']}</b>\n"
-    )
-    await message.answer(text=text, parse_mode=ParseMode.HTML)
-    if button["content_image"] is not None:
-        await message.answer_photo(
-            photo=URLInputFile(f"{API_URL}{button['content_image']}"),
-            caption=text,
-            parse_mode=ParseMode.HTML,
+async def message_button_response(response, message, state):
+    await validate_response(response, message, state)
+    button = response.json()
+    if response.status_code == 200:
+        button = response.json()
+        text = (
+            f"Результат:\n"
+            f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
+            f"Айди кнопки: <b>{button['id']}</b>\n"
+            f"Текст на кнопке: <b>{button['label']}</b>\n"
+            f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
+            f"Линк кнопки: <b>{button['content_link']}</b>\n"
         )
+        await message.answer(text=text, parse_mode=ParseMode.HTML)
+        if button["content_image"] is not None:
+            await message.answer_photo(
+                photo=URLInputFile(f"{API_URL}{button['content_image']}"),
+                caption=text,
+                parse_mode=ParseMode.HTML,
+            )
+    else:
+        await message.answer(text=(button["detail"]))
 
 
 async def handle_photo_upload(message: Message, state: FSMContext):
@@ -133,12 +135,11 @@ async def handle_photo_upload(message: Message, state: FSMContext):
     return photo_id
 
 
-# async def photo_from_message_to_obj(message: Message):
-#     photo_id = message.photo[-1].file_id
-#     photo_path_ = await bot.get_file(photo_id)
-#     photo_path = photo_path_.file_path
-
-#     photo_bytes = BytesIO()
-#     await bot.download_file(photo_path, photo_bytes)
-#     photo_bytes.seek(0)
-#     return photo_bytes
+async def validate_response(response, message, state):
+    print()
+    if response.status_code != 200:
+        if response is None:
+            await message.answer("Ошибка")
+        else:
+            await message.answer(text=response.json().get("detail", "Ошибка"))
+        await cancel_and_return_to_admin_panel(message, state)

@@ -6,13 +6,14 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import (KeyboardButton, Message,
                            ReplyKeyboardMarkup)
-from crud import add_child_button
+from crud import add_child_button, get_button_content
 
 from .base import (cancel_and_return_to_admin_panel,
                    base_reply_markup,
                    not_required_reply_markup,
-                   show_button,
+                   message_button_response,
                    handle_photo_upload,
+                   validate_response
                    )
 
 API_URL = os.getenv("API_URL")
@@ -31,31 +32,36 @@ class CreateButton(StatesGroup):
 @router.callback_query(F.data == "post_button")
 async def handle_post_button(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.answer(
-        text="Введите название новой кнопки", reply_markup=base_reply_markup
+        text="Введите айди кнопки-родителя:",
+        reply_markup=base_reply_markup
     )
     await callback.answer()
-    await state.set_state(CreateButton.typing_button_name)
-
-
-@router.message(CreateButton.typing_button_name)
-async def name_typed(message: Message, state: FSMContext):
-    if message.text == "Отмена":
-        await cancel_and_return_to_admin_panel(message, state)
-        return
-    await state.update_data(typed_name=message.text)
-    await message.answer(
-        text="Теперь введите айди кнопки-родителя:",
-        reply_markup=base_reply_markup,
-    )
     await state.set_state(CreateButton.typing_parent_id)
 
 
 @router.message(CreateButton.typing_parent_id)
+async def name_typed(message: Message, state: FSMContext):
+    if message.text == "Отмена":
+        await cancel_and_return_to_admin_panel(message, state)
+        return
+    response = await get_button_content(int(message.text))
+    print(state)
+    await validate_response(response, message, state)
+    print(state)
+    await state.update_data(typed_parent_id=message.text)
+    await message.answer(
+        text="Теперь введите название новой кнопки",
+        reply_markup=base_reply_markup,
+    )
+    await state.set_state(CreateButton.typing_button_name)
+
+
+@router.message(CreateButton.typing_button_name)
 async def parent_id_typed(message: Message, state: FSMContext):
     if message.text == "Отмена":
         await cancel_and_return_to_admin_panel(message, state)
         return
-    await state.update_data(typed_parent_id=message.text)
+    await state.update_data(typed_name=message.text)
     await message.answer(
         text="Теперь введите текст сообщения над кнопкой (можно пропустить):",
         reply_markup=not_required_reply_markup,
@@ -140,10 +146,5 @@ async def button_submited(message: Message, state: FSMContext):
     response = await add_child_button(
         label, parent_id, content_text, content_link, content_image
     )
-    button = response.json()
-    if response.status_code == 200:
-        button = response.json()
-        await show_button(button, message)
-    else:
-        await message.answer(text=(button["detail"]))
+    await message_button_response(response, message, state)
     await cancel_and_return_to_admin_panel(message, state)

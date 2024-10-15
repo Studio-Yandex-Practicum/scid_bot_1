@@ -9,7 +9,10 @@ from aiogram.types import (KeyboardButton,
                            ReplyKeyboardMarkup)
 from crud import get_button_content, putch_button_parent
 
-from .base import base_reply_markup, cancel_and_return_to_admin_panel
+from .base import (base_reply_markup,
+                   cancel_and_return_to_admin_panel,
+                   message_button_response,
+                   validate_response)
 
 API_URL = os.getenv("API_URL")
 router = Router()
@@ -35,6 +38,8 @@ async def name_typed(message: Message, state: FSMContext):
     if message.text == "Отмена":
         await cancel_and_return_to_admin_panel(message, state)
         return
+    response = await get_button_content(int(message.text))
+    await validate_response(response, message, state)
     await state.update_data(typed_button_id=message.text)
     await message.answer(
         text="Теперь введите айди новой кнопки-родителя:",
@@ -56,6 +61,8 @@ async def parent_id_typed(message: Message, state: FSMContext):
         resize_keyboard=True,
     )
     response = await get_button_content(user_data["typed_button_id"])
+    await validate_response(response, message, state)
+
     button = response.json()
     await message.answer(
         text=(
@@ -80,17 +87,5 @@ async def button_submited(message: Message, state: FSMContext):
     new_parent_id = user_data["typed_new_parent_id"]
 
     response = await putch_button_parent(button_id, new_parent_id)
-    button = response.json()
-    await message.answer(
-        text=(
-            f"Успешно обновил родителя кнопки:\n"
-            f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
-            f"Айди кнопки: <b>{button['id']}</b>\n"
-            f"Текст на кнопке: <b>{button['label']}</b>\n"
-            f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
-            f"Линк кнопки: <b>{button['content_link']}</b>\n"
-        ),
-        parse_mode=ParseMode.HTML,
-    )
-
+    await message_button_response(response, message, state)
     await cancel_and_return_to_admin_panel(message, state)

@@ -1,7 +1,8 @@
 import os
-
 import httpx
 from dotenv import load_dotenv
+import functools
+
 
 load_dotenv()
 
@@ -9,7 +10,20 @@ AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 API_BOT_MENU_URL = os.getenv("API_BOT_MENU_URL")
 
 
+def handle_http_errors(func):
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        try:
+            response = await func(*args, **kwargs)
+            return response
+        except httpx.RequestError as e:
+            print(f"Ошибка запроса: {e}")  # Можно заменить на логирование
+            return None
+    return wrapper
+
+
 # может собрать все снаружи в headers?
+@handle_http_errors
 async def add_child_button(
     label, parent_id, content_text, content_link, content_image
 ):
@@ -34,6 +48,7 @@ async def add_child_button(
     return response
 
 
+@handle_http_errors
 async def get_button_content(button_id):
     url = f"{API_BOT_MENU_URL}{button_id}/get-content"
     headers = {
@@ -44,6 +59,7 @@ async def get_button_content(button_id):
     return response
 
 
+@handle_http_errors
 async def get_button_image(button_id):
     url = f"{API_BOT_MENU_URL}{button_id}/get-image-file"
     headers = {
@@ -54,6 +70,7 @@ async def get_button_image(button_id):
     return response
 
 
+@handle_http_errors
 async def get_child_buttons(button_id):
     url = f"{API_BOT_MENU_URL}{button_id}/get-child-buttons"
     headers = {
@@ -64,7 +81,8 @@ async def get_child_buttons(button_id):
     return response
 
 
-async def del_button_with_children(button_id):
+@handle_http_errors
+async def del_button_with_sub(button_id):
     url = f"{API_BOT_MENU_URL}{button_id}"
     headers = {
         "accept": "application/json",
@@ -76,6 +94,7 @@ async def del_button_with_children(button_id):
 
 
 # может передать сразу params?
+@handle_http_errors
 async def putch_button_parent(button_id, new_parent_id):
     url = f"{API_BOT_MENU_URL}{button_id}/change_parent"
     params = {
@@ -92,6 +111,7 @@ async def putch_button_parent(button_id, new_parent_id):
 
 # может лучше передать переменные со значениями, как в функции выше
 # а внутри уже собрать в headers?
+@handle_http_errors
 async def putch_button_content(button_id, data, files):
     url = f"{API_BOT_MENU_URL}{int(button_id)}"
     headers = {
@@ -102,4 +122,4 @@ async def putch_button_content(button_id, data, files):
         response = await client.patch(
             url, headers=headers, data=data, files=files
         )
-    return response.json()
+    return response

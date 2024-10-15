@@ -5,9 +5,13 @@ import os
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
-from handlers import (base, create_button, del_button_with_children,
-                      get_button_content, get_child_buttons,
-                      putch_button_content, putch_button_parent)
+from handlers import (base,
+                      create_button,
+                      get_button_content,
+                      get_child_buttons,
+                      putch_button_content,
+                      putch_button_parent,
+                      del_button_with_sub)
 
 load_dotenv()
 
@@ -34,7 +38,7 @@ async def main():
         create_button.router,
         get_button_content.router,
         get_child_buttons.router,
-        del_button_with_children.router,
+        del_button_with_sub.router,
         putch_button_parent.router,
         putch_button_content.router,
     )

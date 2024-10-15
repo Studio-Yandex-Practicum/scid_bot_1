@@ -2,10 +2,12 @@ from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import (KeyboardButton, Message, ReplyKeyboardMarkup)
-from crud import (del_button_with_children, get_button_content,
+from crud import (del_button_with_sub,
                   get_child_buttons)
 
-from .base import base_reply_markup, cancel_and_return_to_admin_panel
+from .base import (base_reply_markup,
+                   cancel_and_return_to_admin_panel,
+                   validate_response)
 
 router = Router()
 
@@ -15,7 +17,7 @@ class DelButton(StatesGroup):
     confirming_del = State()
 
 
-@router.callback_query(F.data == "del_button_with_children")
+@router.callback_query(F.data == "del_button_with_sub")
 async def handle_del_button(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.answer(
         text="Введите айди кнопки", reply_markup=base_reply_markup
@@ -32,14 +34,12 @@ async def ask_for_confirmation(message: Message, state: FSMContext):
     await state.update_data(typed_id=message.text)
     user_data = await state.get_data()
     response = await get_child_buttons(user_data["typed_id"])
+    await validate_response(response, message, state)
+
     buttons = response.json()
-    if response.status_code == 200:  # убрать
-        buttons_text = ""
-        for button in buttons:
-            button_info = f"{button['label']} ({button['id']})"
-            buttons_text += button_info + "\n"
-        if buttons_text == "":
-            buttons_text = "Нет дочерних кнопок"
+    buttons_text = ("\n".join(
+        f"{button['label']} ({button['id']})" for button in buttons)
+        or "Нет дочерних кнопок")
     confirmation_markup = ReplyKeyboardMarkup(
         keyboard=[[KeyboardButton(text="Да")]] + base_reply_markup.keyboard,
         resize_keyboard=True,
@@ -61,10 +61,16 @@ async def confirm_del_button(message: Message, state: FSMContext):
         await cancel_and_return_to_admin_panel(message, state)
         return
     user_data = await state.get_data()
-    await del_button_with_children(
-        user_data["typed_id"]
-    )
-    await message.answer(text="Кнопка и все дочерние удалены")
-    response = await get_button_content(user_data["typed_id"])
-    await message.answer(text=f"{response.json()}")
+    response = await del_button_with_sub(user_data["typed_id"])
+    if response.status_code == 200:
+        await message.answer(text="Кнопка и все дочерние удалены")
+    else:
+        try:
+            detail = response.json().get("detail", "Неизвестная ошибка")
+            await message.answer(text=detail)
+        except (KeyError, ValueError):
+            await message.answer("Ошибка. Не удалось получить ответ с сервера.")
+        except Exception:
+            await message.answer("Ошибка. Эту кнопку удалить не удалось.")
+            print()
     await cancel_and_return_to_admin_panel(message, state)
