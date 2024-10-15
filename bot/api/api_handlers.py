@@ -4,16 +4,18 @@ from core.config import settings
 
 async def post_api_data(
     endpoint: str,
-    data: dict = {},
+    data: dict = None,
     headers: dict = {},
-    params: dict = {}
+    params: dict = {},
+    json: dict = None
 ):
     async with ClientSession() as session:
         async with session.post(
             f"{settings.api.base_url}/{endpoint}",
             data=data,
             headers=headers,
-            params=params
+            params=params,
+            json=json
         ) as response:
             return await response.json()
 
