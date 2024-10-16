@@ -25,7 +25,7 @@ async def cancel_and_return_to_admin_panel(
     await message.answer(
         "Возвращаюсь в основное меню", reply_markup=types.ReplyKeyboardRemove()
     )
-    await show_base_admin_panel(message)
+    await show_base_admin_panel(message, state)
 
 
 @router.message(F.text == "/admin")

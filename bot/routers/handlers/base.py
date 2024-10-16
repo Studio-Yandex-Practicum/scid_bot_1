@@ -5,16 +5,19 @@ from aiogram import types, Bot, Router
 from aiogram.filters import Command
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
+# from aiogram.dispatcher import FSMContext
+
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, Message, ReplyKeyboardMarkup,
                            URLInputFile)
 # from admin_bot import bot
+from routers.crud import get_user_jwf_by_tg_id
 from core.config import settings
 from dotenv import load_dotenv
 
 load_dotenv()
 
-AUTH_TOKEN = os.getenv("AUTH_TOKEN")
+# AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 
 # API_URL = os.getenv("API_URL")
 # API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
@@ -92,12 +95,35 @@ def generate_main_menu(buttons_structure):
 # async def handle_post_button(callback: types.CallbackQuery, state: FSMContext):
 
 @router.message(Command(commands=["admin"]))
-async def show_base_admin_panel(message: types.Message):
-    # авторизация на входе
+async def show_base_admin_panel(message: types.Message, state: FSMContext):
+    # норм авторизация на входе
     # if not AUTH_TOKEN:
     #     await message.answer("Введите емеил")
     #     await message.answer("Введите пароль")
     #     await message.answer("Вы авторизованы как администратор")
+    # тестовая авторизация на входе
+    tg_user_id = message.from_user.id
+
+    response = await get_user_jwf_by_tg_id(tg_user_id)
+    # print(response)
+    # print(response.json())
+    if not await validate_response(response, message, state):
+        await message.answer("Ошибка авторизации.")
+        return
+
+    data = response.json()
+    # print(data)
+    auth_token = data.get("jwt")
+    # auth_token = data['jwt']
+    # print(auth_token)
+    await state.update_data(auth_token="Bearer " + auth_token)
+    # user_data = await state.get_data()
+    # auth_token = user_data.get('auth_token', '')
+    # print('хмхм')
+    # print(auth_token)
+
+    await message.answer("Вы успешно авторизованы как админ.")
+
     await message.answer(
         admin_start_keyboard_structure["admin_block_start_message"],
         reply_markup=generate_main_menu(admin_start_keyboard_structure),
@@ -111,7 +137,7 @@ async def cancel_and_return_to_admin_panel(
     await message.answer(
         "Возвращаюсь в основное меню", reply_markup=types.ReplyKeyboardRemove()
     )
-    await show_base_admin_panel(message)
+    await show_base_admin_panel(message, state)
     # return state
 
 

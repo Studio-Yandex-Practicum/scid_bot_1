@@ -31,7 +31,7 @@ class PutchButtonParent(StatesGroup):
 async def handle_del_button(callback: types.CallbackQuery, state: FSMContext):
     await send_tree(callback.message)
     await callback.message.answer(
-        text="Введите кнопки", reply_markup=base_reply_markup
+        text="Введите айди кнопки", reply_markup=base_reply_markup
     )
     await callback.answer()
     await state.set_state(PutchButtonParent.typing_button_id)
@@ -91,7 +91,8 @@ async def button_submited(message: Message, state: FSMContext):
     user_data = await state.get_data()
     button_id = user_data["typed_button_id"]
     new_parent_id = user_data["typed_new_parent_id"]
+    auth_token = user_data.get('auth_token', '')
 
-    response = await putch_button_parent(button_id, new_parent_id)
+    response = await putch_button_parent(button_id, new_parent_id, auth_token)
     if await message_button_response(response, message, state):
         await cancel_and_return_to_admin_panel(message, state)

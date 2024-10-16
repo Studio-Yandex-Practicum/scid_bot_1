@@ -156,9 +156,10 @@ async def button_submited(message: Message, state: FSMContext):
     }
     files = {}
     content_image = user_data.get("sent_content_image", None)
+    auth_token = user_data.get('auth_token', '')
     if content_image is not None:
         files = {"content_image": content_image}
 
-    response = await putch_button_content(button_id, data, files)
+    response = await putch_button_content(button_id, data, files, auth_token)
     if await message_button_response(response, message, state):
         await cancel_and_return_to_admin_panel(message, state)

@@ -62,7 +62,9 @@ async def confirm_del_button(message: Message, state: FSMContext):
         await cancel_and_return_to_admin_panel(message, state)
         return
     user_data = await state.get_data()
-    response = await del_button_with_sub(user_data["typed_id"])
+    typed_id = user_data["typed_id"]
+    auth_token = user_data.get('auth_token', '')
+    response = await del_button_with_sub(typed_id, auth_token)
     if response.status_code == 200:
         await message.answer(text="Кнопка и все дочерние удалены")
     else:

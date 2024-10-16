@@ -120,8 +120,8 @@ async def content_image_sent(message: Message, state: FSMContext):
     await message.answer(
         text=(
             f"Кнопка почти готова, осталось подтвердить:\n"
-            f"Текст на кнопке: <b>{user_data['typed_name']}</b>\n"
-            f"Айди кнопки-родителя: <b>{user_data['typed_parent_id']}</b>\n"
+            f"Текст на кнопке: <b>{user_data['typed_name']}</b>\n" # через гет протви багов
+            f"Айди кнопки-родителя: <b>{user_data['typed_parent_id']}</b>\n" # через гет протви багов
             f"Текст сообщения над кнопкой:\n"
             f"{user_data.get('typed_content_text', '')}\n"
             f"Линк кнопки: <b>{user_data.get('typed_content_link', '')}</b>\n"
@@ -147,9 +147,12 @@ async def button_submited(message: Message, state: FSMContext):
     content_text = user_data.get("typed_content_text", "")
     content_link = user_data.get("typed_content_link", "")
     content_image = user_data.get("sent_content_image", None)
+    auth_token = user_data.get('auth_token', '')
+    # print('опа')
+    # print(auth_token)
 
     response = await add_child_button(
-        label, parent_id, content_text, content_link, content_image
+        label, parent_id, content_text, content_link, content_image, auth_token
     )
     if await message_button_response(response, message, state):
         await cancel_and_return_to_admin_panel(message, state)

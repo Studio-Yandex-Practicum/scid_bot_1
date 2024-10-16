@@ -9,15 +9,16 @@ from core.config import settings
 
 load_dotenv()
 
-AUTH_TOKEN = os.getenv("AUTH_TOKEN")
+# AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 # API_BOT_MENU_URL = os.getenv("API_BOT_MENU_URL")
 API_TOKEN = settings.app.token
-
 API_URL = settings.api.base_url
 # API_BOT_MENU_URL = 'http://127.0.0.1/bot_menu/'
 # API_BOT_MENU_URL = 'http://localhost/bot_menu/'
 # API_BOT_MENU_URL = 'http://fastapi_app:8000/bot_menu/'  # тоже работает
 API_BOT_MENU_URL = 'http://nginx/bot_menu/'
+# API_AUTH_URL = "http://127.0.0.1/auth/get_user-jwf-by-tg-id"
+API_TG_AUTH_URL = "http://nginx/auth/get_user-jwf-by-tg-id"
 
 
 def handle_http_errors(func):
@@ -35,12 +36,12 @@ def handle_http_errors(func):
 # может собрать все снаружи в headers?
 @handle_http_errors
 async def add_child_button(
-    label, parent_id, content_text, content_link, content_image
+    label, parent_id, content_text, content_link, content_image, auth_token
 ):
     url = f"{API_BOT_MENU_URL}{int(parent_id)}/add-child-button"
     headers = {
         "accept": "application/json",
-        "Authorization": AUTH_TOKEN,
+        "Authorization": auth_token,
     }
     data = {
         "label": label,
@@ -116,11 +117,11 @@ async def get_child_buttons(button_id):
 
 
 @handle_http_errors
-async def del_button_with_sub(button_id):
+async def del_button_with_sub(button_id, auth_token):
     url = f"{API_BOT_MENU_URL}{button_id}"
     headers = {
         "accept": "application/json",
-        "Authorization": AUTH_TOKEN,
+        "Authorization": auth_token,
     }
     async with httpx.AsyncClient() as client:
         response = await client.delete(url, headers=headers)
@@ -129,14 +130,14 @@ async def del_button_with_sub(button_id):
 
 # может передать сразу params?
 @handle_http_errors
-async def putch_button_parent(button_id, new_parent_id):
+async def putch_button_parent(button_id, new_parent_id, auth_token):
     url = f"{API_BOT_MENU_URL}{button_id}/change_parent"
     params = {
         "new_parent_id": new_parent_id,
     }
     headers = {
         "accept": "application/json",
-        "Authorization": AUTH_TOKEN,
+        "Authorization": auth_token,
     }
     async with httpx.AsyncClient() as client:
         response = await client.patch(url, headers=headers, params=params)
@@ -146,14 +147,57 @@ async def putch_button_parent(button_id, new_parent_id):
 # может лучше передать переменные со значениями, как в функции выше
 # а внутри уже собрать в headers?
 @handle_http_errors
-async def putch_button_content(button_id, data, files):
+async def putch_button_content(button_id, data, files, auth_token):
     url = f"{API_BOT_MENU_URL}{int(button_id)}"
     headers = {
         "accept": "application/json",
-        "Authorization": AUTH_TOKEN,
+        "Authorization": auth_token,
     }
     async with httpx.AsyncClient() as client:
         response = await client.patch(
             url, headers=headers, data=data, files=files
         )
+    return response
+
+
+# handle_http_errors
+# async def get_user_jwf_by_tg_id(user_id):
+#     async with aiohttp.ClientSession() as session:
+#         async with session.post(
+#             API_AUTH_URL, 
+#             headers={
+#                 "accept": "application/json", 
+#                 "Content-Type": "application/x-www-form-urlencoded"
+#             }, 
+#             data={"tg_id": user_id}  # Передаем tg_id в формате form-data
+#         ) as response:
+#             if response.status == 200:
+#                 data = await response.json()
+#                 auth_token = data.get("token")
+                
+#                 # Сохраняем токен в state
+#                 await state.update_data(AUTH_TOKEN=auth_token)
+                
+#                 await message.answer("Вы успешно авторизованы.")
+#             else:
+#                 await message.answer("Ошибка авторизации.")
+
+
+@handle_http_errors
+async def get_user_jwf_by_tg_id(tg_user_id):
+    headers = {
+        "accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    data = {
+        "tg_id": tg_user_id
+    }
+    # print('ооооооооооооооооооо')
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            API_TG_AUTH_URL,
+            headers=headers,
+            data=data)
+    # print('aaaaaaaaaaaaaaaaaaaaaaaa')
+
     return response
