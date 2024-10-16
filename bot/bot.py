@@ -1,6 +1,5 @@
 import asyncio
-# import logging
-import os
+import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
@@ -12,7 +11,7 @@ from routers import (
     contact_request,
     main_menu,
     managers,
-    # navigation,
+    navigation,
     tree_commands,
     reviews
 )
@@ -25,20 +24,18 @@ from routers.handlers import (base,
                               del_button_with_sub)
 
 from utils.menus import set_commands
-import os  #
-from dotenv import load_dotenv  #
 
 
 async def main():
-    # logging.basicConfig(
-    #     level=logging.INFO,
-    #     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-    # )
-    # if not settings.app.token:
-    #     raise ValueError(
-    #         "Не найден токен бота. Пожалуйста,"
-    #         "добавьте BOT_CONFIG__APP__TOKEN в .env файл."
-    #     )
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    )
+    if not settings.app.token:
+        raise ValueError(
+            "Не найден токен бота. Пожалуйста,"
+            "добавьте BOT_CONFIG__APP__TOKEN в .env файл."
+        )
     dp = Dispatcher(storage=MemoryStorage())
     bot = Bot(
         token=settings.app.token,
@@ -46,14 +43,10 @@ async def main():
             parse_mode=ParseMode.HTML,
         )
     )
-    # load_dotenv()  #
-    # # API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")  #
-    # API_TOKEN = os.getenv("BOT_CONFIG__APP__TOKEN")  #
-    # bot = Bot(token=API_TOKEN)  #
 
     await set_commands(bot)
-    # dp.include_router(main_menu.router)
-    # dp.include_router(navigation.router)
+    dp.include_router(main_menu.router)
+    dp.include_router(navigation.router)
     dp.include_router(tree_commands.router)
     dp.include_router(contact_request.router)
     dp.include_router(managers.router)
