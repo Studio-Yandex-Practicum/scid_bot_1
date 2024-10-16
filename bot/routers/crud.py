@@ -57,9 +57,7 @@ async def get_button_content(button_id):
         "accept": "application/json",
     }
     async with httpx.AsyncClient() as client:
-        print(url)
         response = await client.get(url, headers=headers)
-    print(response)
     return response
 
 

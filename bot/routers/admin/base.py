@@ -115,21 +115,22 @@ async def message_button_response(response, message, state):
     button = response.json()
     if response.status_code == 200:
         button = response.json()
+        await message.answer("Результат:")
         text = (
-            f"Результат:\n"
             f"Айди кнопки: <b>{button['id']}</b>\n"
             f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
             f"Текст на кнопке: <b>{button['label']}</b>\n"
             f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
             f"Линк кнопки: <b>{button['content_link']}</b>\n"
         )
-        await message.answer(text=text, parse_mode=ParseMode.HTML)
         if button["content_image"] is not None:
             await message.answer_photo(
-                photo=URLInputFile(f"{API_URL}{button['content_image']}"),
+                photo=URLInputFile(f"{API_URL}/{button['content_image']}"),
                 caption=text,
                 parse_mode=ParseMode.HTML,
             )
+        else:
+            await message.answer(text=text, parse_mode=ParseMode.HTML)
     else:
         await message.answer(text=(button["detail"]))
     return True

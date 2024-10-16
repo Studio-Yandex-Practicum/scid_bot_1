@@ -31,7 +31,7 @@ class PutchButtonContent(StatesGroup):
 async def handle_del_button(callback: types.CallbackQuery, state: FSMContext):
     await send_tree(callback.message)
     await callback.message.answer(
-        text="Введите кнопки", reply_markup=base_reply_markup
+        text="Введите айди кнопки", reply_markup=base_reply_markup
     )
     await callback.answer()
     await state.set_state(PutchButtonContent.typing_button_id)
@@ -41,6 +41,9 @@ async def handle_del_button(callback: types.CallbackQuery, state: FSMContext):
 async def save_button_id(message: Message, state: FSMContext):
     if message.text == "Отмена":
         await cancel_and_return_to_admin_panel(message, state)
+        return
+    if not message.text.isdigit():
+        await message.answer("Введите число")
         return
     await state.update_data(typed_button_id=message.text)
     await message.answer(

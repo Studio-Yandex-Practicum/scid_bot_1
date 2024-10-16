@@ -40,6 +40,9 @@ async def name_typed(message: Message, state: FSMContext):
     if message.text == "Отмена":
         await cancel_and_return_to_admin_panel(message, state)
         return
+    if not message.text.isdigit():
+        await message.answer("Введите число")
+        return
     response = await get_button_content(int(message.text))
     if not await validate_response(response, message, state):
         return
@@ -138,6 +141,8 @@ async def button_submited(message: Message, state: FSMContext):
     content_link = user_data.get("typed_content_link", "")
     content_image = user_data.get("sent_content_image", None)
     auth_token = user_data.get("auth_token", "")
+
+    print(content_image)
 
     response = await add_child_button(
         label, parent_id, content_text, content_link, content_image, auth_token
