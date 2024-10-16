@@ -57,6 +57,13 @@ base_reply_markup = ReplyKeyboardMarkup(
     resize_keyboard=True,
 )
 
+# нижние кнопки Отмена + Пропустить + Сделать пустым
+not_required_and_empty_reply_markup = ReplyKeyboardMarkup(
+    keyboard=[[KeyboardButton(text="Пропустить"),
+               KeyboardButton(text="Удалить")]]
+    + base_reply_markup.keyboard,
+    resize_keyboard=True,
+)
 
 # нижние кнопки Отмена + Пропустить
 not_required_reply_markup = ReplyKeyboardMarkup(
@@ -84,8 +91,8 @@ def generate_main_menu(buttons_structure):
 async def show_base_admin_panel(message: types.Message, state: FSMContext):
     tg_user_id = message.from_user.id
     response = await get_user_jwf_by_tg_id(tg_user_id)
-    if not await validate_response(response, message, state):
-        await message.answer("Ошибка авторизации.")
+    if response.status_code != 200:
+        await message.answer("У вас нет прав доступа.")
         return
 
     data = response.json()
@@ -115,7 +122,7 @@ async def message_button_response(response, message, state):
     button = response.json()
     if response.status_code == 200:
         button = response.json()
-        await message.answer("Результат:")
+        await message.answer("Контент кнопки:")
         text = (
             f"Айди кнопки: <b>{button['id']}</b>\n"
             f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
