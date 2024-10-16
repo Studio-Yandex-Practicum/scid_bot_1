@@ -3,11 +3,13 @@ import logging
 import os
 
 from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from core.config import settings
 from routers import (
-    admin,
+    contact_request,
     main_menu,
     managers,
     navigation,
@@ -37,14 +39,17 @@ async def main():
         )
     dp = Dispatcher(storage=MemoryStorage())
     bot = Bot(
-        token=settings.app.token
+        token=settings.app.token,
+        default=DefaultBotProperties(
+            parse_mode=ParseMode.HTML,
+        )
     )
 
     await set_commands(bot)
     dp.include_router(main_menu.router)
     dp.include_router(navigation.router)
     dp.include_router(tree_commands.router)
-    # dp.include_router(admin.router)
+    dp.include_router(contact_request.router)
     dp.include_router(managers.router)
     dp.include_router(reviews.router)  # роутер review
     dp.include_routers(
