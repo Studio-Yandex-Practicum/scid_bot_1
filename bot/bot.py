@@ -1,13 +1,12 @@
 import asyncio
 import logging
-import os
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
-
 from core.config import settings
+
 from routers import (
     contact_request,
     main_menu,

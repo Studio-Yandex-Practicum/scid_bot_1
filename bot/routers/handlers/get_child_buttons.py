@@ -3,10 +3,11 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message
-from routers.crud import get_child_buttons
 
-from .base import (base_reply_markup,
-                   cancel_and_return_to_admin_panel,
+from routers.crud import get_child_buttons
+from routers.tree_commands import send_tree
+
+from .base import (base_reply_markup, cancel_and_return_to_admin_panel,
                    validate_response)
 
 router = Router()
@@ -20,8 +21,9 @@ class GetChildButtons(StatesGroup):
 async def handle_get_child_buttons(
     callback: types.CallbackQuery, state: FSMContext
 ):
+    await send_tree(callback.message)
     await callback.message.answer(
-        text="Введите айди кнопки", reply_markup=base_reply_markup
+        text="Введите кнопки", reply_markup=base_reply_markup
     )
     await callback.answer()
     await state.set_state(GetChildButtons.typing_button_id)
@@ -33,7 +35,8 @@ async def show_child_buttons(message: Message, state: FSMContext):
         await cancel_and_return_to_admin_panel(message, state)
         return
     response = await get_child_buttons(message.text)
-    await validate_response(response, message, state)
+    if not await validate_response(response, message, state):
+        return
 
     buttons = response.json()
     buttons_text = ""

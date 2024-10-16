@@ -1,23 +1,17 @@
-import os
-import os.path
 from aiogram import F, Router, types
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import (KeyboardButton,
-                           Message,
-                           ReplyKeyboardMarkup)
-from routers.crud import get_button_content, putch_button_parent
-
-from .base import (base_reply_markup,
-                   cancel_and_return_to_admin_panel,
-                   message_button_response,
-                   validate_response)
+from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
 from core.config import settings
 
+from routers.crud import get_button_content, putch_button_parent
+from routers.tree_commands import send_tree
+
+from .base import (base_reply_markup, cancel_and_return_to_admin_panel,
+                   message_button_response, validate_response)
 
 API_URL = settings.api.base_url
-# API_URL = os.getenv("API_URL")
 router = Router()
 
 
@@ -29,6 +23,7 @@ class PutchButtonParent(StatesGroup):
 
 @router.callback_query(F.data == "putch_button_parent")
 async def handle_del_button(callback: types.CallbackQuery, state: FSMContext):
+    await send_tree(callback.message)
     await callback.message.answer(
         text="Введите айди кнопки", reply_markup=base_reply_markup
     )
@@ -42,7 +37,8 @@ async def name_typed(message: Message, state: FSMContext):
         await cancel_and_return_to_admin_panel(message, state)
         return
     response = await get_button_content(int(message.text))
-    await validate_response(response, message, state)
+    if not await validate_response(response, message, state):
+        return
     await state.update_data(typed_button_id=message.text)
     await message.answer(
         text="Теперь введите айди новой кнопки-родителя:",
@@ -64,7 +60,8 @@ async def parent_id_typed(message: Message, state: FSMContext):
         resize_keyboard=True,
     )
     response = await get_button_content(user_data["typed_button_id"])
-    await validate_response(response, message, state)
+    if not await validate_response(response, message, state):
+        return
 
     button = response.json()
     await message.answer(
@@ -88,7 +85,8 @@ async def button_submited(message: Message, state: FSMContext):
     user_data = await state.get_data()
     button_id = user_data["typed_button_id"]
     new_parent_id = user_data["typed_new_parent_id"]
+    auth_token = user_data.get("auth_token", "")
 
-    response = await putch_button_parent(button_id, new_parent_id)
-    await message_button_response(response, message, state)
-    await cancel_and_return_to_admin_panel(message, state)
+    response = await putch_button_parent(button_id, new_parent_id, auth_token)
+    if await message_button_response(response, message, state):
+        await cancel_and_return_to_admin_panel(message, state)
