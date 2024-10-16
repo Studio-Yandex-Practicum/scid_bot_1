@@ -30,7 +30,7 @@ async def check_user_exist_by_tg_id(
     if user is None:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail=(f"У Вас нет прав доступа, для этого действия."),
+            detail=(f"У Вас нет прав доступа."),
         )
     return user
 
