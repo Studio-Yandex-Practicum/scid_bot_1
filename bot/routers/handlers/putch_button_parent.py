@@ -1,23 +1,17 @@
-import os
-import os.path
 from aiogram import F, Router, types
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import (KeyboardButton,
-                           Message,
-                           ReplyKeyboardMarkup)
-from routers.crud import get_button_content, putch_button_parent
-from routers.tree_commands import send_tree
-from .base import (base_reply_markup,
-                   cancel_and_return_to_admin_panel,
-                   message_button_response,
-                   validate_response)
+from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
 from core.config import settings
 
+from routers.crud import get_button_content, putch_button_parent
+from routers.tree_commands import send_tree
+
+from .base import (base_reply_markup, cancel_and_return_to_admin_panel,
+                   message_button_response, validate_response)
 
 API_URL = settings.api.base_url
-# API_URL = os.getenv("API_URL")
 router = Router()
 
 
@@ -91,7 +85,7 @@ async def button_submited(message: Message, state: FSMContext):
     user_data = await state.get_data()
     button_id = user_data["typed_button_id"]
     new_parent_id = user_data["typed_new_parent_id"]
-    auth_token = user_data.get('auth_token', '')
+    auth_token = user_data.get("auth_token", "")
 
     response = await putch_button_parent(button_id, new_parent_id, auth_token)
     if await message_button_response(response, message, state):

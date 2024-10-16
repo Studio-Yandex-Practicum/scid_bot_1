@@ -11,6 +11,7 @@ router = Router()
 
 comm = ["Получить данные кнопки", "Проверить работу API"]
 
+
 # Хендлер для команды /main_button
 @router.message(Command(commands=["main_button"]))
 async def cmd_main_button(message: Message):
@@ -25,10 +26,7 @@ async def cmd_main_button(message: Message):
     keyboard = await inline_menu(main_menu, start_id=1)
 
     # Отправляем сообщение с клавиатурой
-    await message.answer(
-        text="Выберите команду:",
-        reply_markup=keyboard
-    )
+    await message.answer(text="Выберите команду:", reply_markup=keyboard)
 
 
 @router.message(F.text.in_(comm))
@@ -45,4 +43,3 @@ async def handle_command(message: Message):
         await message.answer(text_message, parse_mode="HTML")
     elif message.text == "Проверить работу API":
         await message.answer("Данные получены!")
-

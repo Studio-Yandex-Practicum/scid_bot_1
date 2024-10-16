@@ -1,24 +1,18 @@
-import os
-import os.path  # убрать протестить
-
 from aiogram import F, Router, types
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import (KeyboardButton, Message,
-                           ReplyKeyboardMarkup)
-from routers.crud import putch_button_content
-from routers.tree_commands import send_tree
-from .base import (cancel_and_return_to_admin_panel,
-                   base_reply_markup,
-                   not_required_reply_markup,
-                   handle_photo_upload,
-                   message_button_response)
+from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
 from core.config import settings
 
+from routers.crud import putch_button_content
+from routers.tree_commands import send_tree
+
+from .base import (base_reply_markup, cancel_and_return_to_admin_panel,
+                   handle_photo_upload, message_button_response,
+                   not_required_reply_markup)
 
 API_URL = settings.api.base_url
-# API_URL = os.getenv("API_URL")
 
 router = Router()
 
@@ -78,7 +72,7 @@ async def save_button_text(message: Message, state: FSMContext):
     if message.text != "Пропустить":
         await state.update_data(typed_content_text=message.html_text)
     await message.answer(
-        text="Теперь отправьте линк кнопки (можно пропустить):",  # где будет этот линк?
+        text="Теперь отправьте линк кнопки (можно пропустить):",
         reply_markup=not_required_reply_markup,
     )
     await state.set_state(PutchButtonContent.typing_content_link)
@@ -156,7 +150,7 @@ async def button_submited(message: Message, state: FSMContext):
     }
     files = {}
     content_image = user_data.get("sent_content_image", None)
-    auth_token = user_data.get('auth_token', '')
+    auth_token = user_data.get("auth_token", "")
     if content_image is not None:
         files = {"content_image": content_image}
 

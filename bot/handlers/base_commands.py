@@ -19,4 +19,3 @@ async def handle_command_code(message: types.Message):
         # Ответ который отправил еще и клавиатуру
         reply_markup=get_start_keyboard(),
     )
-

@@ -1,11 +1,12 @@
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import (KeyboardButton, Message, ReplyKeyboardMarkup)
-from routers.crud import (del_button_with_sub, get_child_buttons)
+from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
+
+from routers.crud import del_button_with_sub, get_child_buttons
 from routers.tree_commands import send_tree
-from .base import (base_reply_markup,
-                   cancel_and_return_to_admin_panel,
+
+from .base import (base_reply_markup, cancel_and_return_to_admin_panel,
                    validate_response)
 
 router = Router()
@@ -38,9 +39,10 @@ async def ask_for_confirmation(message: Message, state: FSMContext):
         return
 
     buttons = response.json()
-    buttons_text = ("\n".join(
-        f"{button['label']} ({button['id']})" for button in buttons)
-        or "Нет дочерних кнопок")
+    buttons_text = (
+        "\n".join(f"{button['label']} ({button['id']})" for button in buttons)
+        or "Нет дочерних кнопок"
+    )
     confirmation_markup = ReplyKeyboardMarkup(
         keyboard=[[KeyboardButton(text="Да")]] + base_reply_markup.keyboard,
         resize_keyboard=True,
@@ -63,7 +65,7 @@ async def confirm_del_button(message: Message, state: FSMContext):
         return
     user_data = await state.get_data()
     typed_id = user_data["typed_id"]
-    auth_token = user_data.get('auth_token', '')
+    auth_token = user_data.get("auth_token", "")
     response = await del_button_with_sub(typed_id, auth_token)
     if response.status_code == 200:
         await message.answer(text="Кнопка и все дочерние удалены")
@@ -72,7 +74,9 @@ async def confirm_del_button(message: Message, state: FSMContext):
             detail = response.json().get("detail", "Неизвестная ошибка")
             await message.answer(text=detail)
         except (KeyError, ValueError):
-            await message.answer("Ошибка. Не удалось получить ответ с сервера.")
+            await message.answer(
+                "Ошибка. Не удалось получить ответ с сервера."
+            )
         except Exception:
             await message.answer("Ошибка. Эту кнопку удалить не удалось.")
             print()
