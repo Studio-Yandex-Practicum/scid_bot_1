@@ -21,7 +21,7 @@ class DelButton(StatesGroup):
 async def handle_del_button(callback: types.CallbackQuery, state: FSMContext):
     await send_tree(callback.message)
     await callback.message.answer(
-        text="Введите кнопки", reply_markup=base_reply_markup
+        text="Введите айди кнопки", reply_markup=base_reply_markup
     )
     await callback.answer()
     await state.set_state(DelButton.typing_button_id)

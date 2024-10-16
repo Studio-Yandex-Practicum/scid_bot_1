@@ -20,7 +20,7 @@ class GetButtonContent(StatesGroup):
 async def handle_get_button(callback: types.CallbackQuery, state: FSMContext):
     await send_tree(callback.message)
     await callback.message.answer(
-        text="Введите кнопки", reply_markup=base_reply_markup
+        text="Введите айди кнопки", reply_markup=base_reply_markup
     )
     await callback.answer()
     await state.set_state(GetButtonContent.typing_button_id)
@@ -30,6 +30,9 @@ async def handle_get_button(callback: types.CallbackQuery, state: FSMContext):
 async def name_typed(message: Message, state: FSMContext):
     if message.text == "Отмена":
         await cancel_and_return_to_admin_panel(message, state)
+        return
+    if not message.text.isdigit():
+        await message.answer("Введите число")
         return
     response = await get_button_content(message.text)
     if await message_button_response(response, message, state):

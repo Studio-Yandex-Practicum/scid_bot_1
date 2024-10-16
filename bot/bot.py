@@ -15,13 +15,13 @@ from routers import (
     tree_commands,
     reviews
 )
-from routers.handlers import (base,
-                              create_button,
-                              get_button_content,
-                              get_child_buttons,
-                              putch_button_content,
-                              putch_button_parent,
-                              del_button_with_sub)
+from routers.admin import (base,
+                           create_button,
+                           get_button_content,
+                           get_child_buttons,
+                           putch_button_content,
+                           putch_button_parent,
+                           del_button_with_sub)
 
 from utils.menus import set_commands
 
