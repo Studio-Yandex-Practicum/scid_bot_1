@@ -122,7 +122,7 @@ async def show_base_admin_panel(message: types.Message, state: FSMContext):
     # print('хмхм')
     # print(auth_token)
 
-    await message.answer("Вы успешно авторизованы как админ.")
+    # await message.answer("Вы успешно авторизованы как админ.")
 
     await message.answer(
         admin_start_keyboard_structure["admin_block_start_message"],

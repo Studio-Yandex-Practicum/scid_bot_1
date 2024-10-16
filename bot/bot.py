@@ -4,6 +4,7 @@ import os
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
+from core.config import settings
 
 from routers import (
     # main_menu,
@@ -36,13 +37,13 @@ async def main():
     #         "добавьте BOT_CONFIG__APP__TOKEN в .env файл."
     #     )
     dp = Dispatcher(storage=MemoryStorage())
-    # bot = Bot(
-    #     token=settings.app.token
-    # )
-    load_dotenv()  #
-    # API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")  #
-    API_TOKEN = os.getenv("BOT_CONFIG__APP__TOKEN")  #
-    bot = Bot(token=API_TOKEN)  #
+    bot = Bot(
+        token=settings.app.token
+    )
+    # load_dotenv()  #
+    # # API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")  #
+    # API_TOKEN = os.getenv("BOT_CONFIG__APP__TOKEN")  #
+    # bot = Bot(token=API_TOKEN)  #
 
     await set_commands(bot)
     # dp.include_router(main_menu.router)

@@ -16,9 +16,12 @@ API_URL = settings.api.base_url
 # API_BOT_MENU_URL = 'http://127.0.0.1/bot_menu/'
 # API_BOT_MENU_URL = 'http://localhost/bot_menu/'
 # API_BOT_MENU_URL = 'http://fastapi_app:8000/bot_menu/'  # тоже работает
-API_BOT_MENU_URL = 'http://nginx/bot_menu/'
-# API_AUTH_URL = "http://127.0.0.1/auth/get_user-jwf-by-tg-id"
-API_TG_AUTH_URL = "http://nginx/auth/get_user-jwf-by-tg-id"
+
+# API_BOT_MENU_URL = 'http://nginx/bot_menu/'
+API_BOT_MENU_URL = f"{API_URL}/bot_menu/"
+
+# API_TG_AUTH_URL = "http://nginx/auth/get_user-jwf-by-tg-id"
+API_TG_AUTH_URL = f"{API_URL}/auth/get_user-jwf-by-tg-id"
 
 
 def handle_http_errors(func):
