@@ -1,9 +1,10 @@
 import os
+import re
 
 from pathlib import Path
-from typing import Optional
+from typing import Pattern
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -17,6 +18,12 @@ class APIConfig(BaseModel):
     base_url: str = 'http://localhost'
 
 
+class ValidationConfig(BaseModel):
+    regex_email_validation: Pattern = re.compile(
+        r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
+    )
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -27,6 +34,7 @@ class Settings(BaseSettings):
     )
     app: AppConfig = AppConfig()
     api: APIConfig = APIConfig()
+    validation: ValidationConfig = ValidationConfig()
 
 
 settings = Settings()

@@ -150,20 +150,20 @@ MenuButton:
     parent_id: 1
     id: 26
   - label: "Общие вопросы"
-    content_text: "Вы можете связаться с сотрудником поддержки или перейти по ссылке"
-    content_link: "https://scid.ru/contacts"
+    content_text: "FAQ - заполняется заказчиком"
+    content_link: null
     content_image: null
     parent_id: 26
     id: 27
   - label: "Проблемы с продуктами"
-    content_text: "Вы можете связаться с сотрудником поддержки или перейти по ссылке"
+    content_text: "Пожалуйста, воспользуйтесь командой бота /request_contact, чтобы создать заявку на обратную связь"
     content_link: "https://scid.ru/contacts"
     content_image: null
     parent_id: 26
     id: 28
   - label: "Запрос на обратный звонок"
-    content_text: "Вы можете связаться с сотрудником поддержки или перейти по ссылке"
-    content_link: "https://scid.ru/contacts"
+    content_text: "Пожалуйста, воспользуйтесь командой бота /request_contact, чтобы создать заявку на обратную связь"
+    content_link: null
     content_image: null
     parent_id: 26
     id: 29
