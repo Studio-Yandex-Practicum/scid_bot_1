@@ -117,6 +117,7 @@ async def putch_button_content(button_id, data, files, auth_token):
         "accept": "application/json",
         "Authorization": auth_token,
     }
+    print(data)
     async with httpx.AsyncClient() as client:
         response = await client.patch(
             url, headers=headers, data=data, files=files

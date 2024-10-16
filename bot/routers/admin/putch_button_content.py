@@ -62,7 +62,7 @@ async def save_button_name(message: Message, state: FSMContext):
     if message.text == "Отмена":
         await cancel_and_return_to_admin_panel(message, state)
         return
-    elif message.text != "Пропустить":
+    elif message.text == "Пропустить":
         await state.update_data(typed_name=None)
     else:
         await state.update_data(typed_name=message.html_text)
@@ -122,9 +122,9 @@ async def save_button_image(message: Message, state: FSMContext):
         await cancel_and_return_to_admin_panel(message, state)
         return
     elif message.text == "Убрать изображение":
-        await state.update_data(remove_content_image="true")
+        await state.update_data(remove_content_image=True)
     elif message.text == "Пропустить":
-        await state.update_data(photo_id=None)
+        await state.update_data(remove_content_image=False)
     else:
         photo_id = await handle_photo_upload(message, state)
 
@@ -137,11 +137,11 @@ async def save_button_image(message: Message, state: FSMContext):
 
     await message.answer(
         text=(
-            f"Все готово, осталось подтвердить:\n"
-            f"Текст на кнопке: <b>{user_data['typed_name']}</b>\n"
+            f"Все готово, осталось подтвердить изменения:\n"
+            f"Текст на кнопке: <b>{user_data.get('typed_name') or 'поле остается без изменений'}</b>\n"
             f"Текст сообщения над кнопкой:\n"
-            f"{user_data.get('typed_content_text', '')}\n"
-            f"Линк кнопки: <b>{user_data.get('typed_content_link', '')}</b>\n"
+            f"{user_data.get('typed_content_text') or 'поле остается без изменений'}\n"
+            f"Линк кнопки: <b>{user_data.get('typed_content_link') or 'поле остается без изменений'}</b>\n"
             f"Изображение:"
         ),
         reply_markup=new_reply_markup,

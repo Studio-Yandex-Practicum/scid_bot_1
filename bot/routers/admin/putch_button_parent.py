@@ -58,6 +58,9 @@ async def parent_id_typed(message: Message, state: FSMContext):
     if not message.text.isdigit():
         await message.answer("Введите число")
         return
+    response = await get_button_content(int(message.text))
+    if not await validate_response(response, message, state):
+        return
     await state.update_data(typed_new_parent_id=message.text)
     user_data = await state.get_data()
     new_reply_markup = ReplyKeyboardMarkup(
