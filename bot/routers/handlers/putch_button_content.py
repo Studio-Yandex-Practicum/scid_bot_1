@@ -8,7 +8,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import (KeyboardButton, Message,
                            ReplyKeyboardMarkup)
 from routers.crud import putch_button_content
-
+from routers.tree_commands import send_tree
 from .base import (cancel_and_return_to_admin_panel,
                    base_reply_markup,
                    not_required_reply_markup,
@@ -35,8 +35,9 @@ class PutchButtonContent(StatesGroup):
 
 @router.callback_query(F.data == "putch_button_content")
 async def handle_del_button(callback: types.CallbackQuery, state: FSMContext):
+    await send_tree(callback.message)
     await callback.message.answer(
-        text="Введите айди кнопки", reply_markup=base_reply_markup
+        text="Введите кнопки", reply_markup=base_reply_markup
     )
     await callback.answer()
     await state.set_state(PutchButtonContent.typing_button_id)
@@ -159,5 +160,5 @@ async def button_submited(message: Message, state: FSMContext):
         files = {"content_image": content_image}
 
     response = await putch_button_content(button_id, data, files)
-    await message_button_response(response, message, state)
-    await cancel_and_return_to_admin_panel(message, state)
+    if await message_button_response(response, message, state):
+        await cancel_and_return_to_admin_panel(message, state)

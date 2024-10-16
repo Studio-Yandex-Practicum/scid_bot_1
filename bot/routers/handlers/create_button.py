@@ -7,6 +7,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import (KeyboardButton, Message,
                            ReplyKeyboardMarkup)
 from routers.crud import add_child_button, get_button_content
+from routers.tree_commands import send_tree
 
 from .base import (cancel_and_return_to_admin_panel,
                    base_reply_markup,
@@ -35,6 +36,7 @@ class CreateButton(StatesGroup):
 
 @router.callback_query(F.data == "post_button")
 async def handle_post_button(callback: types.CallbackQuery, state: FSMContext):
+    await send_tree(callback.message)
     await callback.message.answer(
         text="Введите айди кнопки-родителя:",
         reply_markup=base_reply_markup
@@ -49,9 +51,8 @@ async def name_typed(message: Message, state: FSMContext):
         await cancel_and_return_to_admin_panel(message, state)
         return
     response = await get_button_content(int(message.text))
-    print(state)
-    await validate_response(response, message, state)
-    print(state)
+    if not await validate_response(response, message, state):
+        return
     await state.update_data(typed_parent_id=message.text)
     await message.answer(
         text="Теперь введите название новой кнопки",
@@ -150,5 +151,5 @@ async def button_submited(message: Message, state: FSMContext):
     response = await add_child_button(
         label, parent_id, content_text, content_link, content_image
     )
-    await message_button_response(response, message, state)
-    await cancel_and_return_to_admin_panel(message, state)
+    if await message_button_response(response, message, state):
+        await cancel_and_return_to_admin_panel(message, state)

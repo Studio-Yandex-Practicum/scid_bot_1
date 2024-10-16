@@ -10,6 +10,11 @@ from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            URLInputFile)
 # from admin_bot import bot
 from core.config import settings
+from dotenv import load_dotenv
+
+load_dotenv()
+
+AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 
 # API_URL = os.getenv("API_URL")
 # API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN2")
@@ -18,7 +23,6 @@ API_URL = settings.api.base_url
 API_TOKEN = settings.app.token
 
 bot = Bot(token=API_TOKEN)  # почему-то не подтягивается из основного файла, поправить
-
 
 router = Router()
 
@@ -89,6 +93,11 @@ def generate_main_menu(buttons_structure):
 
 @router.message(Command(commands=["admin"]))
 async def show_base_admin_panel(message: types.Message):
+    # авторизация на входе
+    # if not AUTH_TOKEN:
+    #     await message.answer("Введите емеил")
+    #     await message.answer("Введите пароль")
+    #     await message.answer("Вы авторизованы как администратор")
     await message.answer(
         admin_start_keyboard_structure["admin_block_start_message"],
         reply_markup=generate_main_menu(admin_start_keyboard_structure),
@@ -99,23 +108,23 @@ async def cancel_and_return_to_admin_panel(
     message: Message, state: FSMContext
 ):
     await state.clear()
-    # await state.finish()
     await message.answer(
         "Возвращаюсь в основное меню", reply_markup=types.ReplyKeyboardRemove()
     )
     await show_base_admin_panel(message)
-    return state
+    # return state
 
 
 async def message_button_response(response, message, state):
-    await validate_response(response, message, state)
+    if not await validate_response(response, message, state):
+        return
     button = response.json()
     if response.status_code == 200:
         button = response.json()
         text = (
             f"Результат:\n"
-            f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
             f"Айди кнопки: <b>{button['id']}</b>\n"
+            f"Айди кнопки-родителя: <b>{button['parent_id']}</b>\n"
             f"Текст на кнопке: <b>{button['label']}</b>\n"
             f"Текст сообщения над кнопкой:\n{button['content_text']}\n"
             f"Линк кнопки: <b>{button['content_link']}</b>\n"
@@ -129,6 +138,7 @@ async def message_button_response(response, message, state):
             )
     else:
         await message.answer(text=(button["detail"]))
+    return True
 
 
 async def handle_photo_upload(message: Message, state: FSMContext):
@@ -151,3 +161,5 @@ async def validate_response(response, message, state):
         else:
             await message.answer(text=response.json().get("detail", "Ошибка"))
         await cancel_and_return_to_admin_panel(message, state)
+        return False
+    return True

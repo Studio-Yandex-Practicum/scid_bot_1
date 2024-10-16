@@ -160,6 +160,7 @@ async def button_submited(message: Message, state: FSMContext):
 
 @router.callback_query(F.data == "get_button_content")
 async def handle_get_button(callback: types.CallbackQuery, state: FSMContext):
+    await send_tree(callback.message)
     await callback.message.answer(
         text="Введите айди кнопки", reply_markup=BASE_REPLY_MARKUP
     )
