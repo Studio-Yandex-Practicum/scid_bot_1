@@ -193,7 +193,7 @@ async def contact_request_send_response(
     response = await create_contact_request(data)
     if 'detail' not in response:
         await state.clear()
-        await message.answer(
+        return await message.answer(
             text=(
                 "Ваша заявка отправлена. Наш менеджер свяжится с Вами "
                 "в ближайщее время"
