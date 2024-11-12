@@ -165,3 +165,24 @@ async def validate_response(response, message, state):
         await cancel_and_return_to_admin_panel(message, state)
         return False
     return True
+
+
+@router.message(Command(commands=["test"]))
+async def test(message: types.Message, state: FSMContext):
+    # text = '<a href="tg://msg?text=5">5</a>'
+    # text2 = '<a href="https://www.google.com/">5</a>'
+    # await message.answer("Ку ку (5).")
+    # await message.answer(f"Ку ку ({text}).")
+    # await message.answer(f"Ку ку ({text}).", parse_mode=ParseMode.HTML)
+    # await message.answer("Ку ку (/5).")
+    # await message.answer(f"Ку ку ({text2}).", parse_mode=ParseMode.HTML)
+    BOT_USERNAME = "mlvn_price2_bot"
+    # text = f'Нажми на <a href="tg://resolve?domain={BOT_USERNAME}&start=send_5">эту ссылку</a> чтобы отправить "5"'
+    text = f'Нажми на <a href="https://t.me/{BOT_USERNAME}?start=airplane">эту ссылку</a> чтобы отправить "5"'
+    # await message.answer(text, parse_mode=types.ParseMode.HTML)
+    await message.answer(text, parse_mode=ParseMode.HTML)
+
+
+@router.message(Command(commands=["5"]))
+async def send_five(message: types.Message):
+    await message.answer("5")
