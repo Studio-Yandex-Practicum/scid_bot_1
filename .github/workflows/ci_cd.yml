@@ -1,6 +1,9 @@
 name: HRspace workflow
 
-on: [push]
+on:
+  push:
+    branches:
+      - feature_ci_cd
 
 jobs:
   install:
