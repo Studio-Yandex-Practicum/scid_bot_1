@@ -48,6 +48,12 @@ jobs:
           push: true
           context: ./fastapi_app
           tags: ${{ secrets.DOCKER_USERNAME }}/scid_bot_app:latest
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2 
+        with:
+          push: true
+          context: ./bot
+          tags: ${{ secrets.DOCKER_USERNAME }}/scid_bot:latest
       # - name: Push to Docker Hub
       #   uses: docker/build-push-action@v2 
       #   with:
@@ -67,7 +73,7 @@ jobs:
             key: ${{ secrets.SSH_KEY }}
             passphrase: ${{ secrets.PASSPHRASE }}
             script: |
-              sudo docker-compose stop
+              sudo docker-compose -f scid/docker-compose.yml stop
               sudo docker system prune -f
               sudo docker pull ${{ secrets.DOCKER_USERNAME }}/scid_bot_app:latest
               rm .env
@@ -79,4 +85,4 @@ jobs:
               echo DB_HOST=${{ secrets.DB_HOST }} >> .env
               echo DB_PORT=${{ secrets.DB_PORT }} >> .env
               echo DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} >> .env
-              sudo docker-compose up -d
+              sudo docker-compose -f scid/docker-compose.yml up -d
