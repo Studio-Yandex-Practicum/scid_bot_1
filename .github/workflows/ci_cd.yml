@@ -73,7 +73,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
         source: "./docker-compose_cd.yml"
-        target: "scid/docker-compose.yml"
+        target: "/home/find_y/scid/docker-compose.yml"
     - name: executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master
       with:
