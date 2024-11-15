@@ -65,15 +65,57 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
     steps:
-        - name: executing remote ssh commands to deploy
-          uses: appleboy/ssh-action@master
-          with:
-            host: ${{ secrets.HOST }}
-            username: ${{ secrets.USER }}
-            key: ${{ secrets.SSH_KEY }}
-            passphrase: ${{ secrets.PASSPHRASE }}
-            script: |
-              sudo docker-compose -f scid/docker-compose.yml stop
-              sudo docker system prune -f
-              sudo docker pull ${{ secrets.DOCKER_USERNAME }}/scid_bot_app:latest
-              sudo docker-compose -f scid/docker-compose.yml up -d
+    - name: Copy docker-compose.yml to server
+      uses: appleboy/scp-action@v0.1.1
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        source: "docker-compose_cd.yml"
+        target: "scid/docker-compose.yml"
+    - name: executing remote ssh commands to deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        script: |
+          sudo docker-compose -f scid/docker-compose.yml stop
+          sudo docker system prune -f
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/scid_bot_app:latest
+          sudo docker-compose -f scid/docker-compose.yml up -d
+
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push_to_docker_hub
+    steps:
+    - name: Copy docker-compose.yml to server
+      uses: appleboy/scp-action@v0.1.1
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        source: "scid/docker-compose.yml"
+        target: "/path/to/your/remote/directory/scid/docker-compose.yml"
+        
+    - name: Deploy and restart Docker Compose
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        script: |
+          source: "scid/docker-compose.yml"
+          target: "/path/to/your/remote/directory/scid/docker-compose.yml"
+          cd /path/to/your/remote/directory/scid
+          sudo docker-compose down
+          sudo docker system prune -f
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/scid_bot_app:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/scid_bot:latest
+          sudo docker-compose up -d
