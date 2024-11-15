@@ -1,4 +1,4 @@
-name: HRspace workflow
+name: CI_CD workflow
 
 on:
   push:
