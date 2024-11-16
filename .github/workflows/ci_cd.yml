@@ -65,8 +65,6 @@ jobs:
     steps:
     - name: Check out the repo
       uses: actions/checkout@v2 
-    # - name: Check current directory
-    #   run: pwd
     - name: List directory structure
       run: ls
     - name: Rename file on GitHub Actions runner
@@ -86,7 +84,7 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
-        source: "docker-compose.yml nginx/default.conf"
+        source: "docker-compose.yml, nginx/default.conf"
         target: scid
         # target: ./scid/docker-compose.yml
         # overwrite: true
