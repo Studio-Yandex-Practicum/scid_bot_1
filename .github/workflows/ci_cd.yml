@@ -78,8 +78,8 @@ jobs:
         ls
         cd nginx
         ls
-    - name: Check if docker-compose.yml exists
-      run: ls -l docker-compose.yml
+    # - name: Check if docker-compose.yml exists
+    #   run: ls -l docker-compose.yml
     - name: Copy docker-compose.yml to server
       uses: appleboy/scp-action@v0.1.1
       with:
@@ -100,8 +100,6 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-          sudo pwd
-          sudo ls -la
           sudo docker-compose -f scid/docker-compose.yml stop
           sudo docker system prune -f
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/scid_bot_app:latest
