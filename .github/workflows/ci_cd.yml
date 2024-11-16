@@ -67,6 +67,8 @@ jobs:
     steps:
     - name: Check current directory
       run: pwd
+    - name: List directory structure
+      run: ls -R
     - name: Check if docker-compose_cd.yml exists
       run: ls -l docker-compose_cd.yml
     - name: Copy docker-compose.yml to server
