@@ -6,7 +6,7 @@ on:
       - feature_ci_cd
 
 jobs:
-  install and test:
+  install:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -19,26 +19,18 @@ jobs:
       run: | 
         python -m pip install --upgrade pip 
         pip install -r requirements.txt
-        - name: Check current directory
+  tests:
+      runs-on: ubuntu-latest
+      needs: install
+      steps:
+      - name: Check current directory
         run: pwd
-    - name: List directory structure
-      run: ls -R
-    - name: Test with flake8
-      run: |
-        pip install flake8 pep8-naming flake8-broken-line flake8-return
-        python -m flake8
-  # tests:
-  #     runs-on: ubuntu-latest
-  #     needs: install
-  #     steps:
-  #     - name: Check current directory
-  #       run: pwd
-  #     - name: List directory structure
-  #       run: ls -R
-  #     - name: Test with flake8
-  #       run: |
-  #         pip install flake8 pep8-naming flake8-broken-line flake8-return
-  #         python -m flake8
+      - name: List directory structure
+        run: ls -R
+      - name: Test with flake8
+        run: |
+          pip install flake8 pep8-naming flake8-broken-line flake8-return
+          python -m flake8
   build_and_push_to_docker_hub:
       name: Push Docker image to Docker Hub
       runs-on: ubuntu-latest
