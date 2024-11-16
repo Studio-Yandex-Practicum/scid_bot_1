@@ -79,8 +79,8 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
         source: docker-compose_cd.yml
+        target: ./docker-compose_yyy.yml
         # target: ./scid/docker-compose.yml
-        target: docker-compose_yyy.yml
         # overwrite: true
         # debug: true  # Включаем отладку
     - name: executing remote ssh commands to deploy
