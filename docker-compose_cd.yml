@@ -1,4 +1,4 @@
-#volumes:
+volumes:
 #  postgres_data:
 #  fastapi_app_files:
 #  static:
@@ -46,9 +46,10 @@
   nginx:
     image: nginx:alpine
     volumes:
-     - .scid/nginx:/etc/nginx/conf.d
-      - fastapi_app_files:/usr/share/nginx/html/files
-      - static:/usr/share/nginx/html/static
+    #  - .scid/nginx:/etc/nginx/conf.d
+     - ./scid/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      # - fastapi_app_files:/usr/share/nginx/html/files
+      # - static:/usr/share/nginx/html/static
     ports:
       - "80:80"
 #    depends_on:
