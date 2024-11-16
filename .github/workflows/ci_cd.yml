@@ -74,7 +74,10 @@ jobs:
         rm nginx/default.conf
         mv nginx/default_cd.conf nginx/default.conf
     - name: List directory structure
-      run: ls
+      run: |
+        ls
+        cd nginx
+        ls
     - name: Check if docker-compose.yml exists
       run: ls -l docker-compose.yml
     - name: Copy docker-compose.yml to server
