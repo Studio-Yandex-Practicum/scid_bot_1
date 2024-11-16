@@ -3,7 +3,7 @@ volumes:
 #  fastapi_app_files:
 #  static:
 
-#services:
+services:
 #  db:
  #   restart: always
   #  image: postgres:13
