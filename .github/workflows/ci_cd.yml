@@ -73,13 +73,11 @@ jobs:
         mv docker-compose_cd.yml docker-compose.yml
         rm nginx/default.conf
         mv nginx/default_cd.conf nginx/default.conf
-    - name: List directory structure
-      run: |
-        ls
-        cd nginx
-        ls
-    # - name: Check if docker-compose.yml exists
-    #   run: ls -l docker-compose.yml
+    # - name: List directory structure
+    #   run: |
+    #     ls
+    #     cd nginx
+    #     ls
     - name: Copy docker-compose.yml to server
       uses: appleboy/scp-action@v0.1.1
       with:
@@ -89,7 +87,6 @@ jobs:
         passphrase: ${{ secrets.PASSPHRASE }}
         source: "docker-compose.yml, nginx/default.conf"
         target: scid
-        # target: ./scid/docker-compose.yml
         # overwrite: true
         # debug: true  # Включаем отладку
     - name: executing remote ssh commands to deploy
