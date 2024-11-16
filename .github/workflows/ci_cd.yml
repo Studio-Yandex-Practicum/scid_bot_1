@@ -74,8 +74,8 @@ jobs:
         mv docker-compose_cd.yml docker-compose.yml
     - name: List directory structure
       run: ls
-    - name: Check if docker-compose_cd.yml exists
-      run: ls -l docker-compose_cd.yml
+    - name: Check if docker-compose.yml exists
+      run: ls -l docker-compose.yml
     - name: Copy docker-compose.yml to server
       uses: appleboy/scp-action@v0.1.1
       with:
