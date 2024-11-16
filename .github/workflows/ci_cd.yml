@@ -65,10 +65,15 @@ jobs:
     steps:
     - name: Check out the repo
       uses: actions/checkout@v2 
-    - name: Check current directory
-      run: pwd
+    # - name: Check current directory
+    #   run: pwd
     - name: List directory structure
-      run: ls -R
+      run: ls
+    - name: Rename file on GitHub Actions runner
+      run: |
+        mv docker-compose_cd.yml docker-compose.yml
+    - name: List directory structure
+      run: ls
     - name: Check if docker-compose_cd.yml exists
       run: ls -l docker-compose_cd.yml
     - name: Copy docker-compose.yml to server
@@ -78,8 +83,8 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
-        source: docker-compose_cd.yml
-        target: ./docker-compose_yyy.yml
+        source: docker-compose.yml
+        target: scid
         # target: ./scid/docker-compose.yml
         # overwrite: true
         # debug: true  # Включаем отладку
