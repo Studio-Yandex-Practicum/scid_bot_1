@@ -6,7 +6,7 @@ on:
       - feature_ci_cd
 
 jobs:
-  install and test:
+  install_and_test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
