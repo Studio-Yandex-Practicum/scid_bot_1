@@ -71,7 +71,10 @@ jobs:
       run: ls
     - name: Rename file on GitHub Actions runner
       run: |
+        rm docker-compose.yml
         mv docker-compose_cd.yml docker-compose.yml
+        rm nginx/default.conf
+        mv nginx/default_cd.conf nginx/default.conf
     - name: List directory structure
       run: ls
     - name: Check if docker-compose.yml exists
@@ -83,7 +86,7 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
-        source: docker-compose.yml
+        source: "docker-compose.yml nginx/default.conf"
         target: scid
         # target: ./scid/docker-compose.yml
         # overwrite: true

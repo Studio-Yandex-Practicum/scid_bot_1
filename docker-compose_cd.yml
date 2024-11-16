@@ -46,7 +46,7 @@
   nginx:
     image: nginx:alpine
     volumes:
-  #    - .scid:/etc/nginx/conf.d
+     - .scid:/etc/nginx/conf.d
       - fastapi_app_files:/usr/share/nginx/html/files
       - static:/usr/share/nginx/html/static
     ports:
