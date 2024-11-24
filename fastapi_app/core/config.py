@@ -16,6 +16,7 @@ class AppConfig(BaseModel):
     # необхоидмо не забыть изменить настройки nginx и docker volume
     chunk_size: int = 1024
     load_demo_data_fixtures: bool = False
+    domain: str = "scidtest.hopto.org"
 
 
 class DBConfig(BaseModel):
