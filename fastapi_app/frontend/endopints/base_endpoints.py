@@ -211,5 +211,6 @@ async def authorization(
         max_age=settings.security.jwt_lifetime,
         httponly=True,
         secure=True,
+        domain=settings.app.domain
     )
     return response
