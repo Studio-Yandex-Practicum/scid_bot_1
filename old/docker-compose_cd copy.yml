@@ -17,8 +17,7 @@ services:
       - scid_bot_1
 
   fastapi_app:
-    build:
-      context: ./fastapi_app
+    image: findy1bz/scid_bot_app:latest
     volumes:
       # - ./fastapi_app:/app
       - fastapi_app_files:/app/files
@@ -34,10 +33,7 @@ services:
       - scid_bot_1
 
   bot:
-    build:
-      context: ./bot
-    # volumes:
-    #   - ./bot:/app # попробовать добавть авто подгрузку изменений
+    image: findy1bz/scid_bot:latest
     env_file:      
       - './.env'
     depends_on:

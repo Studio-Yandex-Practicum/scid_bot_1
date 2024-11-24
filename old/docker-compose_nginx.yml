@@ -1,0 +1,61 @@
+volumes:
+  postgres_data:
+  fastapi_app_files:
+  static:
+
+services:
+  # db:
+  #   restart: always
+  #   image: postgres:13
+  #   env_file:      
+  #     - './.env'
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - scid_bot_1
+
+  # fastapi_app:
+  #   image: findy1bz/scid_bot_app:latest
+  #   volumes:
+  #     # - ./fastapi_app:/app
+  #     - fastapi_app_files:/app/files
+  #     - static:/app/static
+  #   env_file:      
+  #     - './.env'
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - "8000:8000"  
+  #     # - "80:80"
+  #   networks:
+  #     - scid_bot_1
+
+  # bot:
+  #   image: findy1bz/scid_bot:latest
+  #   env_file:      
+  #     - './.env'
+  #   depends_on:
+  #     - fastapi_app
+  #   networks:
+  #     - scid_bot_1   
+  #   volumes:
+  #     - fastapi_app_files:/usr/src/app/files
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      # - ./nginx:/etc/nginx/conf.d
+      - fastapi_app_files:/usr/share/nginx/html/files
+      - static:/usr/share/nginx/html/static
+    ports:
+      - "80:80"
+    depends_on:
+      - fastapi_app
+#     networks:
+#       - scid_bot_1
+
+
+# networks:
+#   scid_bot_1:
