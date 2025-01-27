@@ -1,0 +1,270 @@
+MenuButton:
+  - label: "Получить информацию о компании"
+    content_text: "Вот несколько вариантов информации о нашей компании. Что именно вас интересует?"
+    content_link: null
+    content_image: "files/images/logo.png"
+    parent_id: 1
+    id: 2
+  - label: "Презентация компании"
+    content_text: "Вот ссылка на презентацию о компании"
+    content_link: "https://scid.ru/upload/presentation_scid_2024.pdf"
+    content_image: "files/presentation.png"
+    parent_id: 2
+    id: 3
+  - label: "Карточка компании"
+    content_text: "Вот ссылка на карточку компании"
+    content_link: "https://scid.ru/agency"
+    content_image: "files/agency.png"
+    parent_id: 2
+    id: 4
+  - label: "Узнать о продуктах и услугах"
+    content_text: "Мы предлагаем следующие продукты и услуги. Какой из них вас интересует?"
+    content_link: null
+    content_image: "files/logo.png"
+    parent_id: 1
+    id: 5
+  - label: "Разработка сайтов"
+    content_text: "Мы создаем различные типы сайтов, включая корпоративные, лендинги и интернет-магазины. Хотите узнать подробнее о каком-то конкретном типе?"
+    content_link: null
+    content_image: null
+    parent_id: 5
+    id: 6
+  - label: "Корпоративные сайты"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 6
+    id: 7
+  - label: "Лендинги"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 6
+    id: 8
+  - label: "Интернет-магазины"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 6
+    id: 9
+  - label: "Создание Порталов"
+    content_text: "Наши порталы помогают организовать информацию и взаимодействие пользователей. Какие типы порталов вас интересуют?"
+    content_link: null
+    content_image: null
+    parent_id: 5
+    id: 10
+  - label: "Программы лояльности"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 10
+    id: 11
+  - label: "Порталы для госучреждений"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 10
+    id: 12
+  - label: "Личные кабинеты"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 10
+    id: 13
+  - label: "Разработка Мобильных приложений"
+    content_text: "Мы разрабатываем мобильные приложения для iOS и Android. Какой тип приложения вас интересует?"
+    content_link: null
+    content_image: null
+    parent_id: 5
+    id: 14
+  - label: "Программы лояльности"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 14
+    id: 15
+  - label: "Интернет магазины"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 14
+    id: 16
+  - label: "Сервисы"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 14
+    id: 17
+  - label: "Консультация по КИОСК365"
+    content_text: "НБП ЕЖА — это продукт для управления бизнес-процессами. Какую информацию вы хотели бы получить?"
+    content_link: null
+    content_image: null
+    parent_id: 5
+    id: 18
+  - label: "Запрос предложения"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 18
+    id: 19
+  - label: "Функционал"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 18
+    id: 20
+  - label: "Цены"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 18
+    id: 21
+  - label: "Портфолио"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 18
+    id: 22
+  - label: "Хостинг"
+    content_text: "Мы предлагаем надежный хостинг с различными тарифами. Какую информацию вы хотите узнать?"
+    content_link: null
+    content_image: null
+    parent_id: 5
+    id: 23
+  - label: "Тарифы"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 23
+    id: 24
+  - label: "Поддержка и услуги"
+    content_text: null
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 23
+    id: 25
+  - label: "Получить техническую поддержку"
+    content_text: "Какой вид поддержки вам нужен"
+    content_link: null
+    content_image: "files/support.jpeg"
+    parent_id: 1
+    id: 26
+  - label: "Общие вопросы"
+    content_text: "FAQ - заполняется заказчиком"
+    content_link: null
+    content_image: null
+    parent_id: 26
+    id: 27
+  - label: "Проблемы с продуктами"
+    content_text: "Пожалуйста, воспользуйтесь командой бота /request_contact, чтобы создать заявку на обратную связь"
+    content_link: "https://scid.ru/contacts"
+    content_image: null
+    parent_id: 26
+    id: 28
+  - label: "Запрос на обратный звонок"
+    content_text: "Пожалуйста, воспользуйтесь командой бота /request_contact, чтобы создать заявку на обратную связь"
+    content_link: null
+    content_image: null
+    parent_id: 26
+    id: 29
+  - label: "Посмотреть портфолио"
+    content_text: "Вот ссылка на наше портфолио. Хотите узнать больше о конкретных проектах или услугах?"
+    content_link: "https://scid.ru/cases"
+    content_image: "files/potfolio.jpg"
+    parent_id: 1
+    id: 30
+  - label: "Посмотреть проекты"
+    content_text: "Вот некоторые из наших проектов. Выберите, чтобы узнать больше о каждом из них:"
+    content_link: "https://scid.ru/cases"
+    content_image: null
+    parent_id: 30
+    id: 31
+  - label: "Проект 1"
+    content_text: "Название и описание проекта 1"
+    content_link: "https://scid.ru/project1"
+    content_image: null
+    parent_id: 31
+    id: 32
+  - label: "Проект 2"
+    content_text: "Название и описание проекта 2"
+    content_link: "https://scid.ru/project2"
+    content_image: null
+    parent_id: 31
+    id: 33
+  - label: "Проект 3"
+    content_text: "Название и описание проекта 3"
+    content_link: "https://scid.ru/project3"
+    content_image: null
+    parent_id: 31
+    id: 34
+  - label: "Проект 4"
+    content_text: "Название и описание проекта 4"
+    content_link: "https://scid.ru/project4"
+    content_image: null
+    parent_id: 31
+    id: 35
+
+MenuButtonFile:
+  - id: 1
+    button_id: 3
+    file_path: "files/presentation_scid_2024.pdf"
+    file_type: "application/pdf"
+
+ContactRequest:
+  - id: 1
+    telegram_user_id: "12345"
+    name: "user 1"
+    text: "test 1"
+    phone: "00000000000"
+    email: "mail@mail.com"
+    contact_via_telegram: false
+    contact_via_phone: true
+    contact_via_email: false
+    is_processed: false
+    in_progress: true
+    manager_id: 1
+  - id: 2
+    telegram_user_id: "54432"
+    name: "user 2"
+    text: "test 2"
+    phone: "56745356785"
+    email: "mail@mail.com"
+    contact_via_telegram: true
+    contact_via_phone: false
+    contact_via_email: false
+    is_processed: false
+    in_progress: false
+  - id: 3
+    telegram_user_id: "554433"
+    name: "user 3"
+    phone: "77788866554"
+    email: "mail@mail.com"
+    text: "test 3"
+    contact_via_telegram: false
+    contact_via_phone: false
+    contact_via_email: true
+    is_processed: true
+    in_progress: false
+    closed_at: 2024-10-27T08:26:49
+
+Review:
+  - id: 1
+    telegram_user_id: "12345"
+    text: "it's ok"
+    rating: 4
+    created_at: 2024-10-01T08:26:49
+  - id: 2
+    telegram_user_id: "232323"
+    text: "Opa-pa"
+    rating: 3
+    created_at: 2024-10-02T08:26:49
+  - id: 3
+    telegram_user_id: "753423"
+    text: "Wow!"
+    rating: 5
+    created_at: 2024-10-03T08:26:49
+  - id: 4
+    telegram_user_id: "54321"
+    text: "it's not ok"
+    rating: 2
+    created_at: 2024-10-04T08:26:49
