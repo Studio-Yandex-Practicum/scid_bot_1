@@ -12,13 +12,15 @@
 - aiogram
 - SQLAlchemy
 - PostgreSQL
+
+
+sfasdfasf
+
+sfsadfsa
 - Docker
-
-## Подготовка и запуск проекта с DockerHub
-
-Клонировать репозиторий и перейти в него в командной строке:
-```shell
-git clone git@github.com:Studio-Yandex-Practicum/scid_bot_1.git
+рейти в него в командной строке:
+```shellsfas
+git clone git@gitsfasfsb.com:Studio-Yandex-Practicum/scid_bot_1.git
 ```
 ```shell
 cd scid_bot_1
@@ -35,7 +37,11 @@ docker compose -f docker-compose.yml up
 ## Команда разработки
 **Александр Пастух**  
 **Андрей Горбаненко**  
-**Андрей Егоров**  
-**Владимир Бондаренко**  
+**Аренко**  
 **Петр Горюнов**  
 **Яков Аустер**  
+
+
+
+
+asfsdafasdf
